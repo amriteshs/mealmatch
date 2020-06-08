@@ -1,0 +1,7 @@
+Week 1
+
+- Created github repo for project.
+- Finalized Project topic with teammates and any potential limitations.
+- Discussed tech stack and initialized boiler plate code.
+- Volunteered for Developer role and provided input from existing knowledge to finalize the front-end web framework (React.js).
+- Intialized working branches and explained git workflow for project to fellow teammates. 
