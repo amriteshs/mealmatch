@@ -1,0 +1,6 @@
+Week 1 Diary:
+- Assigned to an existing group with 4 members
+- Compared all projects and chose MealMatch
+- Created Slack account for communication, GitHub Branch, Jira account
+- Researched about different full stack solution to build a 3-tier (front-end, middleware, back-end) website
+- Searched similar websites and compared with the project's requirement to understand what need to be done
