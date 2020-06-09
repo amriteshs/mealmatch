@@ -1,0 +1,8 @@
+-Initially formed the gtoup of 4 members and during the tutorial session found the 5th as well.
+-Introduced ourselfs and what are our strengths and which field we are good at.
+-Discusses all the project topics and everyone's opinion about them.
+-finalised to proceed with MealMatch.
+-As per the instructions created the Jira account, Git Repo, and setting up the environment.
+-Decided to use Slack to communicate and interact throughout the project.
+-Planned how to proceed and started researching some relevant ideas and solutions.
+-Discussed which technologies and languages to use.
