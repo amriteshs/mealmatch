@@ -1,0 +1,6 @@
+  WEEK 1
+• Formed a team with 5 members for completing the project.
+• Discussed the different projects available, both before and during the tutorial session, and finalized MealMatch.
+• Joined the Slack group, for all project-associated communication, accepted the collaboration invitation for the project's Github repository, and joined the project group created on Jira.
+• Discussed and are close to finalizing the full stack solution to develop the project.
+• Started the learning process for the technologies and frameworks to be used.
