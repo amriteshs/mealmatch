@@ -4,4 +4,12 @@ Week 1
 - Finalized Project topic with teammates and any potential limitations.
 - Discussed tech stack and initialized boiler plate code.
 - Volunteered for Developer role and provided input from existing knowledge to finalize the front-end web framework (React.js).
-- Intialized working branches and explained git workflow for project to fellow teammates. 
+- Intialized working branches and explained git workflow for project to fellow teammates.
+
+Week 2
+
+- pushed the boiler plate code for front-end framework to repo
+- created slack channel for better real-time communication
+- discussed product features with fellow teamates and designed first draft of wireframe/prototype.
+- researched about similar products and discussed drawbacks
+- contributed in the first deliverable for project proposal and background along with a brief description of the product.
