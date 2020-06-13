@@ -13,3 +13,4 @@ Week 2
 - discussed product features with fellow teamates and designed first draft of wireframe/prototype.
 - researched about similar products and discussed drawbacks
 - contributed in the first deliverable for project proposal and background along with a brief description of the product.
+- established a well defined git workflow for the team.
