@@ -11,3 +11,11 @@ npm install
 npm start
 
 ```
+
+### Backend installation:
+```
+cd Back-End
+python -m venv env
+pip install flask
+
+```
