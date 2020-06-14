@@ -17,5 +17,6 @@ npm start
 cd Back-End
 python -m venv env
 pip install flask
-
+pip install python-dotenv
+flask run
 ```
