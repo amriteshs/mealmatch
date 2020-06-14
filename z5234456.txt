@@ -4,3 +4,11 @@ Week 1 Diary:
 - Created Slack account for communication, GitHub Branch, Jira account
 - Researched about different full stack solution to build a 3-tier (front-end, middleware, back-end) website
 - Searched similar websites and compared with the project's requirement to understand what need to be done
+
+Week 2 Diary:
+- Discussed with team-mates about the feature of the website: prioritize what is essential feature, what is extra feature
+- Draft the proto-type for Recipe Contributor role (workflow, interface)
+- Give comment to teammates about prototye of Recipe Explorer: Make Cuisine type an optional feature, move Search bar to below Ingredient for better user experience
+- Research about Flask, React and other projects using these 2 frameworks
+- Research about websites that has similar functions
+- Research about how to put everything to the cloud
