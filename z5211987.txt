@@ -4,3 +4,10 @@
 • Joined the Slack group, for all project-associated communication, accepted the collaboration invitation for the project's Github repository, and joined the project group created on Jira.
 • Discussed and are close to finalizing the full stack solution to develop the project.
 • Started the learning process for the technologies and frameworks to be used.
+
+  WEEK 2
+• Finalized the full stack solution to develop the project.
+• Discussed and finalized the site wireframe and the mandatory and optional features that are to be implemented.
+• Researched the already available solutions in the market to find drawbacks and missing functionalities that could be addressed in our project. 
+• Discussed the project proposal and started work on the system architecture for the project.
+• Continued the learning process for the technologies and frameworks to be used (React, Flask) and researched their implementation and integration.
