@@ -6,3 +6,12 @@
 -Decided to use Slack to communicate and interact throughout the project.
 -Planned how to proceed and started researching some relevant ideas and solutions.
 -Discussed which technologies and languages to use.
+
+
+Week2 :
+Discussed the Design and out look of the MealMatch 
+- Functinalities and drawbacks we are overcoming
+- Overall outline about the project
+- Deciding the Backlogs and detailed discussion about the Proposal.
+- Resaerch about other applications and solutions available in the market and planning our solution according to the project discription.
+- Starting to work on front end to have a outline:
