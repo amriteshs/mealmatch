@@ -12,3 +12,11 @@ Week 2 Diary:
 - Research about Flask, React and other projects using these 2 frameworks
 - Research about websites that has similar functions
 - Research about how to put everything to the cloud
+
+Week 3 Diary:
+- Did user stories according to project requirements and clarifications during tutorial
+- Provide start date/end date to user stories
+- Map user stories with project requirements
+- Contribute to the proposal (user stories / sprint part)
+- Did some example integration between Flask <-> React for team-mates
+- Continue to research about Flask, React framework
