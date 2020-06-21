@@ -1,0 +1,16 @@
+Week 1
+- Collaborated with the team and discussed project topics of interest.
+- Finalised the project topic based on feasibility.
+- Joined Github repository.
+- Discussed limitations of the project and curated on some of the ideas.
+- Discussed project role and responsibilities - back end development, some front-end exercises
+- Learnt and developed an understanding of GIT workflow.
+- Decided potential tech stack to be implemented and started exploring it in more detail.
+
+
+
+
+
+
+
+
