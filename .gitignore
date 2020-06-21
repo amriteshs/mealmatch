@@ -1,0 +1,4 @@
+**/.vscode
+**/__pycache__
+Back-End/env
+**/package-lock.json
