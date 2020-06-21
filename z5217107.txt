@@ -15,3 +15,15 @@ Discussed the Design and out look of the MealMatch
 - Deciding the Backlogs and detailed discussion about the Proposal.
 - Resaerch about other applications and solutions available in the market and planning our solution according to the project discription.
 - Starting to work on front end to have a outline:
+
+
+
+Week3:
+Discussed the flow of the project
+-Discussed about the proposal and distributed the tasks
+-Defined all the backlogs and started making the Sprints.
+-WOrked on System Architecture
+-Studuet how Flask, React and python works
+-Create Temporary outlook of the landing page
+-How other existing solutions are different with one we are developing.
+
