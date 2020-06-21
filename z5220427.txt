@@ -14,3 +14,13 @@ Week 2
 - researched about similar products and discussed drawbacks
 - contributed in the first deliverable for project proposal and background along with a brief description of the product.
 - established a well defined git workflow for the team.
+
+Week 3
+
+- Discussed proposal specifications with project mentor and drew out a plan for proposal implementation with project Manager.
+- Wrote a detailed description of all technologies used in the project, in proposal document.
+- Specified the function of all layers in system architecture of the application.
+- Collaborated with team member on drawing detailed wireframe for each view/screen of our application.
+- Designed and implemented application workflow by connecting screens in form of a flow diagram.
+- Collaborated with team members for deciding app specifications and modifying wireframe accordingly on the features decided.
+- Conducted peer review for pull requests raised by fellow teammates.
