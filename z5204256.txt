@@ -1,4 +1,4 @@
-Week 1
+WEEK 1
 - Collaborated with the team and discussed project topics of interest.
 - Finalised the project topic based on feasibility.
 - Joined Github repository.
@@ -6,6 +6,25 @@ Week 1
 - Discussed project role and responsibilities - back end development, some front-end exercises
 - Learnt and developed an understanding of GIT workflow.
 - Decided potential tech stack to be implemented and started exploring it in more detail.
+
+
+WEEK 2
+- Completed exploration of similar products and services to find drawbacks, thus utilising this information along with product review information from customers to decide features for the project.
+- Planned team meetings and curated the wire framing of the project. 
+- Finalised the tech stack to be used for the project after discussing pros and cons of each technology. Also analysed the skill sets of teammates for better functioning.
+- Discussed potential features which could be implemented later on or for the future scope of the project.
+- Learnt wire framing (Lucidchart) and prototyping tools (Figma) which could be later on helpful
+
+
+WEEK 3
+- Started up-skilling on front end technologies by learning HTML. For this went through the course "HTML Essential Training" by Jen Simmons on LinkedIn Learning.
+- Discussed the Project Proposal draft with other teammates to finalise user stories, system architecture and flow diagram.
+- Checked if all the project requirements are mapped to the proposal.
+- Completed Project Proposal draft with other teammates, specifically taking care of Background section and formatting of the final draft.
+- Discussed coming deliverables and short term action plan for next weeks
+
+
+
 
 
 
