@@ -8,6 +8,14 @@
   WEEK 2
 • Finalized the full stack solution to develop the project.
 • Discussed and finalized the site wireframe and the mandatory and optional features that are to be implemented.
-• Researched the already available solutions in the market to find drawbacks and missing functionalities that could be addressed in our project. 
+• Researched the already available solutions in the market to find drawbacks and missing functionalities that could be addressed in our project.
 • Discussed the project proposal and started work on the system architecture for the project.
 • Continued the learning process for the technologies and frameworks to be used (React, Flask) and researched their implementation and integration.
+
+  WEEK 3
+• To meet the proposal deadline, collaborated with team member Rishabh Khurana to prepare the project's System Architecture as well as the Interface and Flow Diagram for the proposal document.
+• Designed the system architecture diagram on Lucidcharts and wrote detailed description for each layer of the architecture.
+• Using the wireframe designed in the previous week, designed wireframes on Lucidcharts for each view of the application.
+• Designed the flow diagram on Lucidcharts, discussed the interconnection of components, and explained the overall workflow of the application in the document.
+• Reviewed the final version of the proposal document and suggested improvements before submission.
+• Finished the learning process for the technologies and frameworks to be used (React, Flask).
