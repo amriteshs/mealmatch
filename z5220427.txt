@@ -24,3 +24,14 @@ Week 3
 - Designed and implemented application workflow by connecting screens in form of a flow diagram.
 - Collaborated with team members for deciding app specifications and modifying wireframe accordingly on the features decided.
 - Conducted peer review for pull requests raised by fellow teammates.
+
+Week 4 
+
+- Completed Login Page implementation
+- added material UI framework to project repo
+- finalised all front-end user stories for sprint 1 with Project Srum Master
+- Discussed redistribution of work amongst team mates due to one of the team members quitting the project
+- Finalised front-end tech stack along with integrating helper libraries for efficient development cycle
+- Conducted Peer review for code committed by team mates along with providing constructive criticism.
+- updated all existing branches while merging master branch code and explaining git workflow to fellow team mates.
+ 
