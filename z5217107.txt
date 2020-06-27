@@ -27,3 +27,11 @@ Discussed the flow of the project
 -Create Temporary outlook of the landing page
 -How other existing solutions are different with one we are developing.
 
+
+Week4:
+-Planned how front end and backend will work.
+-Dicided Rishub and Sahil will take the front end tasks. And Malay and Amritesh will do the backend (Database).
+-Designed structure how login and signup will look like.
+- How data base mapping would work (Discussed by malay and Amritesh).
+-Worked on Jira to allocate tasks and ecide which one will be done by the first demo. So that we can present what's done for the 1st sprint.
+-Decided to meet once a week physically to work more effeciently.
