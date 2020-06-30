@@ -19,3 +19,10 @@
 • Designed the flow diagram on Lucidcharts, discussed the interconnection of components, and explained the overall workflow of the application in the document.
 • Reviewed the final version of the proposal document and suggested improvements before submission.
 • Finished the learning process for the technologies and frameworks to be used (React, Flask).
+
+  WEEK 4
+• Discussed the reassignment of the project tasks among the remaining members to cope with the departure of a team member Minh Phuong Nguyen from the course.
+• Volunteered for the task of designing the database for the project, which is part of the first sprint, and was allocated the task for the same on Jira (TEC-28).
+• Started work on the database design and deciding the mappings in collaboration with team member Malay Raghuwanshi.
+• Discussed with team members how the code for the Login and Signup would be written, to get an idea of front-end design tasks for upcoming sprints.
+• WORK FOR NEXT WEEK: Create all tables for the database, in particular the User table (needed for Login and Signup), in time for the first demo on Friday.
