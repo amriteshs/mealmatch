@@ -29,7 +29,7 @@ class LoginPage extends React.Component{
 
     LoginHandler = () => {
         // check if user and password exists in database
-        console.log("Login Handling")
+        console.log("Login Handling");
     }
 
     HandleOnBlur(event){
