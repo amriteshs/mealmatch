@@ -24,6 +24,14 @@ WEEK 3
 - Discussed coming deliverables and short term action plan for next weeks
 
 
+WEEK 4
+- Discussed team restructuring with other members as one of the members suddenly left the team
+- Completed sign up implementation of the web page using references from material UI, tech stack React
+- Started learning CSS (Cascading Style Sheets) for describing the presentation of HTML documents
+- Provided suggestions to felow teammates about database implementation in the backend
+- Looked after assigned sprints on Jira so that work is ready for the first demonstration in week 5
+
+
 
 
 
