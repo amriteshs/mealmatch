@@ -21,29 +21,44 @@ class SignUpPage extends React.Component{
 
     SignUpHandler = () => {
         // check if entry exists in database
+        const axios = require('axios');
+
+        axios.post('http://127.0.0.1:5000/signup', {
+                "username": this.state.userName,
+                "password": this.state.password,
+                "first_name": this.state.firstName,
+                "last_name": this.state.lastName
+            })
+            .then(function(response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            }
+        );
 
         // if it does throw error
 
         //console.log(this.state)
-        console.log("Sign up is done")
+        // console.log("Sign up is done")
         // redirect to login page
     }
 
     setUserName(event){
-        this.setState({userName:event.target.value}) 
+        this.setState({userName:event.target.value})
     }
 
     setPassword(event){
-        this.setState({password:event.target.value}) 
+        this.setState({password:event.target.value})
     }
 
 
     setFirstName(event){
-        this.setState({firstName:event.target.value}) 
+        this.setState({firstName:event.target.value})
     }
 
     setLastName(event){
-        this.setState({lastName:event.target.value}) 
+        this.setState({lastName:event.target.value})
     }
 
     render(){
@@ -87,7 +102,7 @@ class SignUpPage extends React.Component{
                             label="Password"
                             type="password"
                             fullWidth
-                            onBlur={this.setPassword.bind(this)}   
+                            onBlur={this.setPassword.bind(this)}
                         />
                     </DialogContent>
                     <DialogActions>

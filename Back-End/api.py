@@ -1,9 +1,10 @@
 import sqlite3
 from flask import Flask, request
-from flask_restplus import Resource, Api, fields, inputs
+from flask_restplus import Resource, Api, fields, inputs, cors
 import requests
 import json
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app, default='MealMatch', title='MealMatch', description='MealMatch')
@@ -138,9 +139,6 @@ class login(Resource):
         username = api.payload['username']
         password = api.payload['password']
 
-        # username = request.args.get('username')
-        # password = request.args.get('password')
-
         conn = create_db(db_name)
         c = conn.cursor()
 
@@ -170,11 +168,6 @@ class Signup(Resource):
         password = api.payload['password']
         first_name = api.payload['first_name']
         last_name = api.payload['last_name']
-
-        # username = request.args.get('username')
-        # password = request.args.get('password')
-        # first_name = request.args.get('first_name')
-        # last_name = request.args.get('last_name')
 
         conn = create_db(db_name)
         c = conn.cursor()

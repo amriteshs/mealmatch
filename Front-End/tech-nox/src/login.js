@@ -29,7 +29,21 @@ class LoginPage extends React.Component{
 
     LoginHandler = () => {
         // check if user and password exists in database
-        console.log("Login Handling");
+        const axios = require('axios');
+
+        axios.post('http://127.0.0.1:5000/login', {
+                "username": this.state.userData.userName,
+                "password": this.state.userData.password
+            })
+            .then(function(response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            }
+        );
+
+        // console.log("Login Handling");
     }
 
     HandleOnBlur(event){
@@ -72,7 +86,7 @@ class LoginPage extends React.Component{
                             fullWidth
                             name='password'
                             required
-                            onBlur = {this.HandleOnBlur.bind(this)}   
+                            onBlur = {this.HandleOnBlur.bind(this)}
                         />
                     </DialogContent>
                     <DialogActions>
