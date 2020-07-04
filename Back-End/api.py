@@ -8,6 +8,8 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app, default='MealMatch', title='MealMatch', description='MealMatch')
+app.config.from_object(__name__)
+CORS(app, resources={r'/*': {'origins': '*'}})
 
 login_model = api.model('login', {
     'username': fields.String(required=True, example='heisenberg'),
