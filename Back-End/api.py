@@ -1,4 +1,6 @@
 import sqlite3
+import werkzeug
+werkzeug.cached_property = werkzeug.utils.cached_property
 from flask import Flask, request
 from flask_restplus import Resource, Api, fields, inputs, cors
 import requests
@@ -8,8 +10,6 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app, default='MealMatch', title='MealMatch', description='MealMatch')
-app.config.from_object(__name__)
-CORS(app, resources={r'/*': {'origins': '*'}})
 
 login_model = api.model('login', {
     'username': fields.String(required=True, example='heisenberg'),
