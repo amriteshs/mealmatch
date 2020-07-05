@@ -35,3 +35,11 @@ Week 4
 - Conducted Peer review for code committed by team mates along with providing constructive criticism.
 - updated all existing branches while merging master branch code and explaining git workflow to fellow team mates.
  
+ Week 5
+ - Presented first demo to Mentor.
+ - Assisted scrum master for planning tasks in upcoming sprint.
+ - Implemented feedback on design changes suggested by Mentor.
+ - Implemented route for login, signup and dashboard page.
+ - Implemented Sidebar for navigation and display of selected ingredients.
+ - Conducted code review for fellow teammates and merged pull requests.
+ - Assisted in resolving backend issues regarding werkzeug library.
