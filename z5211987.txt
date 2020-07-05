@@ -14,9 +14,9 @@
 
   WEEK 3
 • To meet the proposal deadline, collaborated with team member Rishabh Khurana to prepare the project's System Architecture as well as the Interface and Flow Diagram for the proposal document.
-• Designed the system architecture diagram on Lucidcharts and wrote detailed description for each layer of the architecture.
-• Using the wireframe designed in the previous week, designed wireframes on Lucidcharts for each view of the application.
-• Designed the flow diagram on Lucidcharts, discussed the interconnection of components, and explained the overall workflow of the application in the document.
+• Designed the system architecture diagram on Lucidchart and wrote detailed description for each layer of the architecture.
+• Using the wireframe designed in the previous week, designed wireframes on Lucidchart for each view of the application.
+• Designed the flow diagram on Lucidchart, discussed the interconnection of components, and explained the overall workflow of the application in the document.
 • Reviewed the final version of the proposal document and suggested improvements before submission.
 • Finished the learning process for the technologies and frameworks to be used (React, Flask).
 
@@ -26,3 +26,15 @@
 • Started work on the database design and deciding the mappings in collaboration with team member Malay Raghuwanshi.
 • Discussed with team members how the code for the Login and Signup would be written, to get an idea of front-end design tasks for upcoming sprints.
 • WORK FOR NEXT WEEK: Create all tables for the database, in particular the User table (needed for Login and Signup), in time for the first demo on Friday.
+
+  WEEK 5
+• Implemented the relational mappings and completed the database design for the database layer.
+• Wrote the SQL queries for the creation of the database tables and integrated them with the back-end using SQLite3.
+• Initialized the back-end using Flask-RESTPlus and created endpoints for the Login and Signup components.
+• Implemented the back-end code for Login and Signup, including storing and fetching of user details in the database.
+• CHALLENGE FACED (Connectivity issues between front-end and back-end): Enabled CORS in Flask to allow interaction with the React front-end.
+• CHALLENGE FACED (Sending of user details from front-end to back-end): Researched Axios and used it to send POST requests from the front-end to the back-end.
+• CHALLENGE FACED (Import error arising from werkzeug library for Python): Assisted in the resolution of errors emanating from the package's use in the back-end code.
+• Presented the project, with all tasks of the first sprint completed, to the mentor during the lab session and noted the feedback received.
+• Discussed future work with team members and volunteered for specific tasks that were subsequently assigned by the scrum master as part of the second sprint.
+• WORK FOR NEXT WEEK: Finalize the Login and Signup modules, and work on tasks pertaining to the Ingredients module of the project.
