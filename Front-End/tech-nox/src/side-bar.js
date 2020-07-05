@@ -12,7 +12,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
-import Button from '@material-ui/core/Button';
+
 
 const drawerWidth = 240;
 
@@ -23,9 +23,6 @@ const useStyles = makeStyles(theme => ({
   appBar: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth
-  },
-  title: {
-    flexGrow: 1,
   },
   drawer: {
     width: drawerWidth,
@@ -43,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function PermanentDrawerLeft() {
+export default function SideBar() {
   const classes = useStyles();
 
   return (
@@ -51,10 +48,9 @@ export default function PermanentDrawerLeft() {
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          <Typography variant="h6" noWrap className={classes.title}>
-            Meal Match
+          <Typography variant="h6" noWrap>
+            Permanent drawer
           </Typography>
-          <Button color="inherit" href='/login'>Login</Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -68,7 +64,7 @@ export default function PermanentDrawerLeft() {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          {["Ingredient Category", "Meal Type"].map((text, index) => (
+          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -79,10 +75,7 @@ export default function PermanentDrawerLeft() {
         </List>
         <Divider />
         <List>
-        <ListItem>
-        <ListItemText primary={"Selected Ingredients"} />
-        </ListItem>
-          {["Ingredient 1", "Ingredient 2", "Ingredient 3"].map((text, index) => (
+          {["All mail", "Trash", "Spam"].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
