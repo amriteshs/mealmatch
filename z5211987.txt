@@ -14,9 +14,9 @@
 
   WEEK 3
 • To meet the proposal deadline, collaborated with team member Rishabh Khurana to prepare the project's System Architecture as well as the Interface and Flow Diagram for the proposal document.
-• Designed the system architecture diagram on Lucidcharts and wrote detailed description for each layer of the architecture.
-• Using the wireframe designed in the previous week, designed wireframes on Lucidcharts for each view of the application.
-• Designed the flow diagram on Lucidcharts, discussed the interconnection of components, and explained the overall workflow of the application in the document.
+• Designed the system architecture diagram on Lucidchart and wrote detailed description for each layer of the architecture.
+• Using the wireframe designed in the previous week, designed wireframes on Lucidchart for each view of the application.
+• Designed the flow diagram on Lucidchart, discussed the interconnection of components, and explained the overall workflow of the application in the document.
 • Reviewed the final version of the proposal document and suggested improvements before submission.
 • Finished the learning process for the technologies and frameworks to be used (React, Flask).
 
