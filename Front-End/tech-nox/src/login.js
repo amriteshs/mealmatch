@@ -34,7 +34,13 @@ class LoginPage extends React.Component {
             })
             .then(response => {
                 console.log(response)
-                this.setState({redirectToHome: true})
+                this.setState({
+                    userData: {
+                        username: response.data.username,
+                        password: response.data.password
+                    },
+                    redirectToHome: true
+                })
             })
             .catch(error => {
                 console.log(error)
@@ -64,7 +70,7 @@ class LoginPage extends React.Component {
 
     render() {
         if (this.state.redirectToHome === true) {
-            return <Redirect to='/home' />
+            return <Redirect to={'/' + this.state.userData.username} />
         }
 
         return (
