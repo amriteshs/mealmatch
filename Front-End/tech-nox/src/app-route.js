@@ -1,9 +1,11 @@
 import React from 'react';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
+
 import LoginPage from './login';
 import SignUpPage from './signup';
 import HomePage from './home';
 import UserHomePage from './user-home';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import ContributePage from './user-contribute';
 
 class LandingPage extends React.Component {
     render() {
@@ -15,6 +17,7 @@ class LandingPage extends React.Component {
                     <Route exact path='/signup' component={SignUpPage}/>
                     <Route exact path='/home' component={HomePage}/>
                     <Route exact path='/:username' component={UserHomePage}/>
+                    <Route exact path='/:username/contribute' component={ContributePage}/>
                 </Switch>
             </BrowserRouter>
         );
