@@ -64,6 +64,8 @@ class UserHomePage extends React.Component {
                     Meal Match
                 </Typography>
                 <Button color="inherit" >{this.state.username}</Button>
+                <Button color="inherit" href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                <Button color="inherit" href='/'>Logout</Button>
                 </Toolbar>
             </AppBar>
             <Drawer
