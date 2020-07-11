@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -12,48 +13,61 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import axios from 'axios';
 
-class LoginPage extends React.Component{
-
-    constructor(props){
+class LoginPage extends React.Component {
+    constructor(props) {
         super(props)
         this.state = {
-            userData:{
-                userName:'',
-                password:'',
+            userData: {
+                userName: '',
+                password: '',
             },
-            alertOpen:false
+            alertOpen: false,
+            redirectToHome: false
         }
     }
 
     LoginHandler = () => {
         // check if user and password exists in database
         axios.post('/login', {
-                "username": this.state.userData.userName,
-                "password": this.state.userData.password
+                'username': this.state.userData.userName,
+                'password': this.state.userData.password
             })
-            .then(function(response) {
-                console.log(response);
+            .then(response => {
+                console.log(response)
+                this.setState({redirectToHome: true})
             })
-            .catch(function (error) {
-                console.log(error);
+            .catch(error => {
+                console.log(error)
             }
         );
     }
 
-    HandleOnBlur(event){
-        var Obj=this.state.userData
+    HandleOnBlur(event) {
+        var Obj = this.state.userData
         Obj[event.target.name] = event.target.value
-        this.setState({userData:Obj,alertOpen:this.state.alertOpen})
+        this.setState({
+            userData: Obj,
+            alertOpen: this.state.alertOpen,
+            redirectToHome: this.state.redirectToHome
+        })
         console.log(this.state)
     }
 
-    HandleClose(event){
+    HandleClose(event) {
         console.log(this.state)
-        this.setState({userData:{...this.state.userData},alertOpen:false})
+        this.setState({
+            userData: {...this.state.userData},
+            alertOpen:false,
+            redirectToHome:false
+        })
     }
 
-    render(){
-        return(
+    render() {
+        if (this.state.redirectToHome === true) {
+            return <Redirect to='/home' />
+        }
+
+        return (
             <div>
                 <Dialog open={true}>
                     <DialogTitle id="form-dialog-title">Login</DialogTitle>
