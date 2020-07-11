@@ -35,3 +35,23 @@ Week4:
 - How data base mapping would work (Discussed by malay and Amritesh).
 -Worked on Jira to allocate tasks and ecide which one will be done by the first demo. So that we can present what's done for the 1st sprint.
 -Decided to meet once a week physically to work more effeciently.
+
+
+Week5:
+-Started Sprint 1.
+-Decided and divided Tasks as one of the member left and the tasks needed to be divided again.
+-Prepared for Demo A
+-Had Scrum calls and regular followup on the database, frontend, and Backend parts.
+-Designed and explored how we will make our Database connected to Backend.
+-Learned Front end React and Material UI.
+
+
+
+Week6:
+ Defined second sprint and tasks to be done in sprint 2.
+ Started adding features to the platform and divided tasks accordingly.
+ Did retrospective for week5 Demo A.
+ Created the Catagory for Meal Type.
+ Having selected ingrediets lists.
+ Started connecting backed and front end.
+ Had few issues while working in front end since I have no exprience in it. Though Team-mates helped a lot.
