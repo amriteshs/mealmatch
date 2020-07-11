@@ -6,13 +6,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
-
-// to be used once database is initialised
-// import axios from 'axios';
-
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+
+import axios from 'axios';
 
 class LoginPage extends React.Component{
 
@@ -29,9 +27,7 @@ class LoginPage extends React.Component{
 
     LoginHandler = () => {
         // check if user and password exists in database
-        const axios = require('axios');
-
-        axios.post('http://127.0.0.1:5000/login', {
+        axios.post('/login', {
                 "username": this.state.userData.userName,
                 "password": this.state.userData.password
             })
@@ -42,8 +38,6 @@ class LoginPage extends React.Component{
                 console.log(error);
             }
         );
-
-        // console.log("Login Handling");
     }
 
     HandleOnBlur(event){

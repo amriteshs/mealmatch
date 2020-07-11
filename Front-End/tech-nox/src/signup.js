@@ -7,6 +7,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 
+import axios from 'axios';
+
 class SignUpPage extends React.Component{
 
     constructor(props){
@@ -21,9 +23,7 @@ class SignUpPage extends React.Component{
 
     SignUpHandler = () => {
         // check if entry exists in database
-        const axios = require('axios');
-
-        axios.post('http://127.0.0.1:5000/signup', {
+        axios.post('/signup', {
                 "username": this.state.userName,
                 "password": this.state.password,
                 "first_name": this.state.firstName,
@@ -36,12 +36,6 @@ class SignUpPage extends React.Component{
                 console.log(error);
             }
         );
-
-        // if it does throw error
-
-        //console.log(this.state)
-        // console.log("Sign up is done")
-        // redirect to login page
     }
 
     setUserName(event){
@@ -51,7 +45,6 @@ class SignUpPage extends React.Component{
     setPassword(event){
         this.setState({password:event.target.value})
     }
-
 
     setFirstName(event){
         this.setState({firstName:event.target.value})
