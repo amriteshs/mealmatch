@@ -32,16 +32,16 @@ const useStyles = makeStyles(theme => ({
     backgroundColor:'black'
   },
   searchBar:{
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    marginTop:'25rem',
-    backgroundColor:'black'
+    backgroundColor: 'black',
+    height: '4rem',
+    borderRadius: '5px',
+    marginTop: '1rem'
   },
   title: {
     flexGrow: 1,
   },
   inputRoot: {
-    color: 'inherit',
+    color: 'white',
   },
   search: {
     position: 'relative',
@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: '100ch',
+      width: '50ch',
     },
   },
   searchIcon: {
@@ -76,6 +76,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    color:'white'
+  },
+  searchBtn:{
+    color:'orange',
+    backgroundColor:'black',
+    borderColor:'orange',
+    border:'1px solid orange',
   },
   drawer: {
     width: drawerWidth,
@@ -144,10 +151,21 @@ export default function PermanentDrawerLeft() {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-
-        {/* This is the search bar */}
-        <AppBar className={classes.searchBar}>
+      <Typography>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
+          facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
+          gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
+          donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
+          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
+          Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
+          imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
+          arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
+          donec massa sapien faucibus et molestie ac.
+        </Typography>
+        <div className={classes.searchBar}>
         <Toolbar>
+        {/* This is the search bar */}
         <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -161,8 +179,9 @@ export default function PermanentDrawerLeft() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
+          <Button className={classes.searchBtn}>Search</Button>
         </Toolbar>
-      </AppBar>
+        </div>
         
       </main>
     </div>

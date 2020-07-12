@@ -43,3 +43,13 @@ Week 4
  - Implemented Sidebar for navigation and display of selected ingredients.
  - Conducted code review for fellow teammates and merged pull requests.
  - Assisted in resolving backend issues regarding werkzeug library.
+
+ Week 6
+ - initialized Search functionality for recipe
+ - Added theme pallette / color scheme to app for better aesthetics.
+ - Upgraded package with new helper libraries for routing and app rendering.
+ - Updated first retrospective with fellow teammates.
+ - Conducted code reviews for pull requests raised by teammates.
+ - Planned tasks for upcoming week with scrum master (Malay).
+ - Did minor design tweaks for better User experience.
+
