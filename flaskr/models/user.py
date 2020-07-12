@@ -18,7 +18,7 @@ signup_model = api.model('signup', {
 })
 
 @api.route('/login')
-class login(Resource):
+class Login(Resource):
     @api.response(200, 'Login successful')
     @api.response(404, 'Login failed')
     @api.doc(description='User Login')

@@ -1,31 +1,49 @@
-# import json
-# from flask_restplus import Resource, Api, fields
+import json
+from flask_restplus import Resource, Api, fields
 
-# from flaskr import api, db_file
-# from flaskr.db import db_connect
+from flaskr import api, db_file
+from flaskr.db import db_connect
 
 
-# @api.route('/ingredients')
-# class ingredient(Resource):
-#     # @api.response(200, 'Login successful')
-#     # @api.response(404, 'Login failed')
-#     # @api.doc(description='User Login')
-#     # @api.expect(login_model, validate=True)
-#     def get(self):
-#         conn = db_connect(db_file)
-#         c = conn.cursor()
+@api.route('/ingredients')
+class Ingredient(Resource):
+    @api.response(200, 'OK')
+    @api.doc(description='Get list of ingredients')
+    def get(self):
+        ingredient_list = api.payload['ingredient_list']
 
-#         query = [row for row in c.execute('SELECT * FROM Ingredient WHERE username = ?', (username,))]
+        conn = db_connect(db_file)
+        c = conn.cursor()
 
-#         conn.close()
+        if len(ingredient_list) == 1:
+            query = [row for row in c.execute('SELECT name FROM Ingredient WHERE name LIKE ? ORDER BY name', (ingredient_list[0],))]    
 
-#         # if not query:
-#         #     return json.loads(json.dumps({'message': 'Username does not exist.'})), 404
+            if query:
+                conn.close()
 
-#         # if password != query[0][1]:
-#         #     return json.loads(json.dumps({'message': 'Password is incorrect.'})), 404
+                return json.loads(json.dumps({
+                    'ingredient_list': query
+                })), 200
 
-#         return json.loads(json.dumps({
-#             'username': username,
-#             'password': password
-#         })), 200
+            query = [row for row in c.execute('SELECT name FROM Ingredient WHERE name LIKE ? ORDER BY name', (ingredient_list[0] + '%',))]
+
+            if query:
+                conn.close()
+
+                return json.loads(json.dumps({
+                    'ingredient_list': query
+                })), 200
+            
+            conn.close()
+
+            return json.loads(json.dumps({
+                'ingredient_list': query
+            })), 200
+
+        query = [row for row in c.execute('SELECT name FROM Ingredient WHERE name IN ({0}) ORDER BY name'.format(', '.join('?' for _ in ingredient_list)), ingredient_list)]
+
+        conn.close()
+
+        return json.loads(json.dumps({
+            'ingredient_list': query
+        })), 200
