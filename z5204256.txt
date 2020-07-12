@@ -32,8 +32,22 @@ WEEK 4
 - Looked after assigned sprints on Jira so that work is ready for the first demonstration in week 5
 
 
+WEEK 5:
+- Started working on the tasks assigned by Scrum Master for Sprint 1.
+- Completed exploration of backend database and envisioned code structure for smooth integration with the front end.
+- Prepared first demonstration (time limit: 12 min) covering mainly signup/login page and home page.
+- Learnt JavaScript through LinkedIn tutorials by Morten Hendriksen ("JavaScript Essential Training"), thus implementing functionalities through small use-cases.
+- Looked into design changes suggested by the mentor for better layout of the website/user interface.
 
 
+WEEK 6:
+- Started working on the tasks assigned by Scrum Master for Sprint 2; mostly related to the ingredients section of the interface.
+- Recieved feedback on deliverables in phase 1 and discussed shortcomings with fellow teammates to improve the project flow.
+- Learnt React through LinkedIn tutorials by Eve Porcello ("React Essential Training") and through documentation on W3 schools.
+- Completed retrospective for the demonstration in week5 (Demo A).
+- Scripted queries using SQLite3 in Python to create database tables and finalized its integration with the front-end.
+- Worked on back-end using Flask-RESTPlus and created some more endpoints for the users.
+- Managed code reviews for pull requests raised by fellow teammates and analysed the ongoing progress.
 
 
 
