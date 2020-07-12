@@ -1,0 +1,5 @@
+flask
+flask-restplus
+flask-cors
+python-dotenv
+werkzeug

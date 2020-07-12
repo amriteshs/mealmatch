@@ -12,11 +12,8 @@ npm start
 
 ```
 
-### Backend installation:
+### Backend Installation:
 ```
-cd Back-End
-python -m venv env
-pip install flask
-pip install python-dotenv
+pip3 install -r requirements.txt
 flask run
 ```

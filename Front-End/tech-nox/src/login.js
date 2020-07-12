@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -6,60 +7,73 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
-
-// to be used once database is initialised
-// import axios from 'axios';
-
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
-class LoginPage extends React.Component{
+import axios from 'axios';
 
-    constructor(props){
+class LoginPage extends React.Component {
+    constructor(props) {
         super(props)
         this.state = {
-            userData:{
-                userName:'',
-                password:'',
+            userData: {
+                userName: '',
+                password: '',
             },
-            alertOpen:false
+            alertOpen: false,
+            redirectToHome: false
         }
     }
 
     LoginHandler = () => {
         // check if user and password exists in database
-        const axios = require('axios');
-
-        axios.post('http://127.0.0.1:5000/login', {
-                "username": this.state.userData.userName,
-                "password": this.state.userData.password
+        axios.post('/login', {
+                'username': this.state.userData.userName,
+                'password': this.state.userData.password
             })
-            .then(function(response) {
-                console.log(response);
+            .then(response => {
+                console.log(response)
+                this.setState({
+                    userData: {
+                        username: response.data.username,
+                        password: response.data.password
+                    },
+                    redirectToHome: true
+                })
             })
-            .catch(function (error) {
-                console.log(error);
+            .catch(error => {
+                console.log(error)
             }
         );
-
-        // console.log("Login Handling");
     }
 
-    HandleOnBlur(event){
-        var Obj=this.state.userData
+    HandleOnBlur(event) {
+        var Obj = this.state.userData
         Obj[event.target.name] = event.target.value
-        this.setState({userData:Obj,alertOpen:this.state.alertOpen})
+        this.setState({
+            userData: Obj,
+            alertOpen: this.state.alertOpen,
+            redirectToHome: this.state.redirectToHome
+        })
         console.log(this.state)
     }
 
-    HandleClose(event){
+    HandleClose(event) {
         console.log(this.state)
-        this.setState({userData:{...this.state.userData},alertOpen:false})
+        this.setState({
+            userData: {...this.state.userData},
+            alertOpen:false,
+            redirectToHome:false
+        })
     }
 
-    render(){
-        return(
+    render() {
+        if (this.state.redirectToHome === true) {
+            return <Redirect to={'/' + this.state.userData.username} />
+        }
+
+        return (
             <div>
                 <Dialog open={true}>
                     <DialogTitle id="form-dialog-title">Login</DialogTitle>
