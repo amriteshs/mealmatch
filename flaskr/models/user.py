@@ -1,5 +1,5 @@
 import json
-from flask_restplus import Resource, Api, fields
+from flask_restplus import Resource, fields
 
 from flaskr import api, db_file
 from flaskr.db import db_connect
@@ -30,7 +30,7 @@ class Login(Resource):
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row for row in c.execute('SELECT username, password FROM User WHERE username = ?', (username,))]
+        query = [row for row in c.execute(f'SELECT username, password FROM User WHERE username = "{username}"')]
 
         conn.close()
 
@@ -60,23 +60,21 @@ class Signup(Resource):
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row for row in c.execute('SELECT username FROM User WHERE username = ?', (username,))]
+        query = [row for row in c.execute(f'SELECT username FROM User WHERE username = "{username}"')]
 
         if query:
             conn.close()
 
             return json.loads(json.dumps({'message': 'Username already exists.'})), 404
 
-        data = {
-            'username': username,
-            'password': password,
-            'first_name': first_name,
-            'last_name': last_name
-        }
-
-        c.execute(f'INSERT INTO User VALUES(null,?,?,?,?)', (data['username'], data['password'], data['first_name'], data['last_name']))
+        c.execute(f'INSERT INTO User VALUES(null, "{username}", "{password}", "{first_name}", "{last_name}")')
 
         conn.commit()
         conn.close()
 
-        return json.loads(json.dumps(data)), 201
+        return json.loads(json.dumps({
+            'username': username,
+            'password': password,
+            'first_name': first_name,
+            'last_name': last_name
+        })), 201
