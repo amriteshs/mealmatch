@@ -5,11 +5,16 @@ from flaskr import api, db_file
 from flaskr.db import db_connect
 
 
+ingredient_model = api.model('ingredients', {
+    'ingredient_list': fields.List(fields.String, example=["eggs", "milk", "butter"])
+})
+
 @api.route('/ingredients')
 class Ingredient(Resource):
     @api.response(200, 'OK')
     @api.doc(description='Get list of ingredients')
-    def get(self):
+    @api.expect(ingredient_model, validate=True)
+    def post(self):
         ingredient_list = api.payload['ingredient_list']
 
         conn = db_connect(db_file)
