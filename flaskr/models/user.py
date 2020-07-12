@@ -30,7 +30,7 @@ class Login(Resource):
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row for row in c.execute(f'SELECT username, password FROM User WHERE username = "{username}"')]
+        query = [row for row in c.execute(f'SELECT username, password FROM User WHERE username LIKE ?', (username,))]
 
         conn.close()
 
@@ -60,14 +60,14 @@ class Signup(Resource):
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row for row in c.execute(f'SELECT username FROM User WHERE username = "{username}"')]
+        query = [row for row in c.execute(f'SELECT username FROM User WHERE username LIKE ?', (username,))]
 
         if query:
             conn.close()
 
             return json.loads(json.dumps({'message': 'Username already exists.'})), 404
 
-        c.execute(f'INSERT INTO User VALUES(null, "{username}", "{password}", "{first_name}", "{last_name}")')
+        c.execute(f'INSERT INTO User VALUES(null,?,?,?,?)', (username, password, first_name, last_name))
 
         conn.commit()
         conn.close()
