@@ -81,8 +81,6 @@ def db_init(db_file):
                   '     id                  INTEGER         NOT NULL,       '
                   '     category_id         INTEGER         NOT NULL,       '
                   '     ingredient_id       INTEGER         NOT NULL,       '
-                  '     step_name           VARCHAR(100),                   '
-                  '     step_description    VARCHAR(1500)   NOT NULL,       '
                   '     PRIMARY KEY(id),                                    '
                   '     FOREIGN KEY(category_id) REFERENCES Category(id),   '
                   '     FOREIGN KEY(ingredient_id) REFERENCES Ingredient(id)'

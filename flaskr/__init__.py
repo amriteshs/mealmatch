@@ -19,3 +19,4 @@ api = Api(app, default='MealMatch', title='MealMatch', description='MealMatch')
 
 
 from flaskr.models.user import *
+from flaskr.models.ingredient import *
