@@ -44,7 +44,7 @@ class Ingredient(Resource):
                 'ingredients': query
             })), 200
 
-        query = [row[0] for row in c.execute(f'SELECT name FROM Ingredient WHERE name LIKE ? ORDER BY name', (ingredient + '%'))]
+        query = [row[0] for row in c.execute(f'SELECT name FROM Ingredient WHERE name LIKE ? ORDER BY name', (ingredient + '%',))]
 
         if query:
             conn.close()

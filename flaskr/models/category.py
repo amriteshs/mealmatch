@@ -47,7 +47,7 @@ class Category(Resource):
 
             return json.loads(json.dumps(data)), 200
 
-        return json.load(json.dumps({
+        return json.loads(json.dumps({
             'message': 'No categories exist'
         })), 200
 
@@ -73,7 +73,7 @@ class Category(Resource):
             'ON Ingredient.id = IC.ingredient_id                                                                                            '
             'WHERE IC.category_name LIKE ?                                                                                                  '
             'ORDER BY IC.category_name, Ingredient.name                                                                                     '
-            , category
+            , (category,)
         )]
 
         conn.close()
@@ -91,6 +91,6 @@ class Category(Resource):
 
             return json.loads(json.dumps(data)), 200
 
-        return json.load(json.dumps({
+        return json.loads(json.dumps({
             'message': 'Category does not exist'
         })), 200
