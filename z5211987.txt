@@ -42,7 +42,7 @@
   WEEK 6
 • Finalized the functionality of the Login and Signup modules.
 • Restructured the flask back-end code to facilitate ease of use for other team members and allow better integration of future modules to be implemented.
-• CHALLENGE FACED (Implementing page redirections in front-end): Researched React and added all page redirections for all the project views.
+• CHALLENGE FACED (Implementing page redirections in front-end): Researched React and added all page redirections for all the project views, both for recipe explorer and for logged-in recipe contributor.
 • Created the flask endpoint for the Ingredient module and added functionality.
 • Created the flask endpoint for the Category module and added functionality.
 • Completed the first retrospective with team members.
