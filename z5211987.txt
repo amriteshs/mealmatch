@@ -38,3 +38,12 @@
 • Presented the project, with all tasks of the first sprint completed, to the mentor during the lab session and noted the feedback received.
 • Discussed future work with team members and volunteered for specific tasks that were subsequently assigned by the scrum master as part of the second sprint.
 • WORK FOR NEXT WEEK: Finalize the Login and Signup modules, and work on tasks pertaining to the Ingredients module of the project.
+
+  WEEK 6
+• Finalized the functionality of the Login and Signup modules.
+• Restructured the flask back-end code to facilitate ease of use for other team members and allow better integration of future modules to be implemented.
+• CHALLENGE FACED (Implementing page redirections in front-end): Researched React and added all page redirections for all the project views, both for recipe explorer and for logged-in recipe contributor.
+• Created the flask endpoint for the Ingredient module and added functionality.
+• Created the flask endpoint for the Category module and added functionality.
+• Completed the first retrospective with team members.
+• WORK FOR NEXT WEEK: Continue work on the Ingredients and Category modules (both front-end and back-end); Create flask endpoints for MealType and Recipe.
