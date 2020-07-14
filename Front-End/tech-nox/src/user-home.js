@@ -16,6 +16,10 @@ import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
 import axios from 'axios';
 
 const drawerWidth = 240;
@@ -105,6 +109,7 @@ class UserHomePage extends React.Component {
             username: this.props.match.params.username,
             ingredient_count: 0,
             ingredient_list: [],
+            ingrIsChecked: [],
             category_list: []
         }
 
@@ -114,7 +119,8 @@ class UserHomePage extends React.Component {
 
                 this.setState({
                     ingredient_count: response.data.count,
-                    ingredient_list: response.data.ingredients
+                    ingredient_list: response.data.ingredients,
+                    ingrIsChecked: new Array(response.data.count).fill().map((item, idx) => item = false)
                 });
             })
             .catch(error => {
@@ -132,6 +138,32 @@ class UserHomePage extends React.Component {
             .catch(error => {
                 console.log(error)
             });
+            
+        this.HandleCheckChange = this.HandleCheckChange.bind(this);
+        this.HandleCheckReset = this.HandleCheckReset.bind(this);
+    }
+
+    HandleCheckChange(event) {
+        var idx = 0;
+
+        for (const ingredient of this.state.ingredient_list) {
+            if (ingredient === event.target.value) {
+                this.state.ingrIsChecked[idx] = event.target.checked;
+            }
+
+            idx += 1;
+        }
+        
+        this.setState({
+            ingrIsChecked: this.state.ingrIsChecked
+        });
+        console.log(this.state.ingrIsChecked);
+    }
+
+    HandleCheckReset() {
+        this.setState({
+            ingrIsChecked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false)
+        });
     }
 
     render() {
@@ -172,17 +204,17 @@ class UserHomePage extends React.Component {
                 </List>
                 <Divider />
                 <List>
-                <ListItem>
-                <ListItemText primary={"Selected Ingredients"} />
-                </ListItem>
-                {this.state.ingredient_list.map((text, index) => (
-                    <ListItem button key={text}>
-                    <ListItemIcon>
-                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
+                    <ListItem>
+                        <ListItemText key={"Selected ingredients"} primary={"Selected Ingredients"} />
                     </ListItem>
+                <FormGroup>
+                {this.state.ingredient_list.map((text, idx) => (
+                    <FormControlLabel
+                        key={idx} control={<Checkbox checked={this.state.ingrIsChecked[idx]} onChange={this.HandleCheckChange} name={text} value={text} color="primary" />}
+                        label={text}
+                    />
                 ))}
+                </FormGroup>
                 </List>
             </Drawer>
             <main className={classes.content}>
