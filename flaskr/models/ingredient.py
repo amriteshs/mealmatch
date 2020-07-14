@@ -35,15 +35,6 @@ class Ingredient(Resource):
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row[0] for row in c.execute(f'SELECT name FROM Ingredient WHERE name LIKE ? ORDER BY name', (ingredient,))]    
-
-        if query:
-            conn.close()
-
-            return json.loads(json.dumps({
-                'ingredients': query
-            })), 200
-
         query = [row[0] for row in c.execute(f'SELECT name FROM Ingredient WHERE name LIKE ? ORDER BY name', (ingredient + '%',))]
 
         if query:

@@ -34,16 +34,34 @@ class Category(Resource):
         conn.close()
 
         if query:
-            data = {}
+            data = {
+                'categories': []
+            }
+
+            visited = []
 
             for q in query:
                 if q[1] is None:
-                    data[q[0]] = []
+                    visited.append(q[0])
+
+                    temp = {
+                        'category': q[0],
+                        'ingredients': []
+                    }
+
+                    data['categories'].append(temp)
                 else:
-                    if q[0] not in data:
-                        data[q[0]] = [q[1]]
+                    if q[0] not in visited:
+                        visited.append(q[0])
+
+                        temp = {
+                            'category': q[0],
+                            'ingredients': [q[1]]
+                        }
+
+                        data['categories'].append(temp)
                     else:
-                        data[q[0]].append(q[1])
+                        data['categories'][-1]['ingredients'].append(q[1])
 
             return json.loads(json.dumps(data)), 200
 

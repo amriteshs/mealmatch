@@ -16,6 +16,8 @@ import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 
+import axios from 'axios';
+
 const drawerWidth = 240;
 
 const useStyles = theme => ({
@@ -101,8 +103,35 @@ class UserHomePage extends React.Component {
         super(props)
         this.state = {
             username: this.props.match.params.username,
-            ingredient_list: []
+            ingredient_count: 0,
+            ingredient_list: [],
+            category_list: []
         }
+
+        axios.get('/ingredient')
+            .then(response => {
+                console.log(response);
+
+                this.setState({
+                    ingredient_count: response.data.count,
+                    ingredient_list: response.data.ingredients
+                });
+            })
+            .catch(error => {
+                console.log(error)
+            });
+
+        axios.get('/category')
+            .then(response => {
+                console.log(response);
+
+                this.setState({
+                    category_list: response.data.categories
+                });
+            })
+            .catch(error => {
+                console.log(error)
+            });
     }
 
     render() {
@@ -125,7 +154,7 @@ class UserHomePage extends React.Component {
                 className={classes.drawer}
                 variant="permanent"
                 classes={{
-                paper: classes.drawerPaper
+                    paper: classes.drawerPaper
                 }}
                 anchor="left"
             >
@@ -146,7 +175,7 @@ class UserHomePage extends React.Component {
                 <ListItem>
                 <ListItemText primary={"Selected Ingredients"} />
                 </ListItem>
-                {["Ingredient 1", "Ingredient 2", "Ingredient 3"].map((text, index) => (
+                {this.state.ingredient_list.map((text, index) => (
                     <ListItem button key={text}>
                     <ListItemIcon>
                         {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -158,38 +187,37 @@ class UserHomePage extends React.Component {
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
-            <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-                facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-                gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-                donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-                Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-                imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-                arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-                donec massa sapien faucibus et molestie ac.
+                <Typography>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                    ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
+                    facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
+                    gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
+                    donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
+                    adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
+                    Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
+                    imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
+                    arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
+                    donec massa sapien faucibus et molestie ac.
                 </Typography>
                 <div className={classes.searchBar}>
-                <Toolbar>
-                {/* This is the search bar */}
-                <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                    <SearchIcon />
+                    <Toolbar>
+                    {/* This is the search bar */}
+                    <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                        <SearchIcon />
+                        </div>
+                        <InputBase
+                        placeholder="Search for recipes ..."
+                        classes={{
+                            root: classes.inputRoot,
+                            input: classes.inputInput,
+                        }}
+                        inputProps={{ 'aria-label': 'search' }}
+                        />
                     </div>
-                    <InputBase
-                    placeholder="Search for recipes ..."
-                    classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                    />
+                    <Button className={classes.searchBtn}>Search</Button>
+                    </Toolbar>
                 </div>
-                <Button className={classes.searchBtn}>Search</Button>
-                </Toolbar>
-                </div>
-                
             </main>
             </div>
         );
