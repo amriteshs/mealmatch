@@ -6,14 +6,15 @@ from flaskr.db import db_connect
 
 
 category_model = api.model('category', {
-    'category': fields.String(example='dairy')
+    'category': fields.String(example='Dairy')
 })
 
 @api.route('/category')
 class Category(Resource):
     @api.response(200, 'OK')
-    @api.doc(description='Retrieve all ingredients by category')
+    @api.doc(description='Retrieve all ingredients from all categories')
     def get(self):
+        '''Retrieve all ingredients from all categories'''
         conn = db_connect(db_file)
         c = conn.cursor()
 
@@ -23,7 +24,7 @@ class Category(Resource):
             '   (                                                                                                                           '
   	        '       SELECT Category.id as category_id, Category.name as category_name, Ingredient_Category.ingredient_id AS ingredient_id   '
             '       FROM Category                                                                                                           '
-            '       LEFT JOIN Ingredient_Category                                                                                           ' 
+            '       LEFT JOIN Ingredient_Category                                                                                           '
   	        '       ON Category.id = Ingredient_Category.category_id                                                                        '
             '   ) as IC                                                                                                                     '
             'LEFT JOIN Ingredient                                                                                                           '
@@ -73,6 +74,7 @@ class Category(Resource):
     @api.doc(description='Retrieve all ingredients in a specific category')
     @api.expect(category_model)
     def post(self):
+        '''Retrieve all ingredients in a specific category'''
         category = api.payload['category']
 
         conn = db_connect(db_file)
@@ -84,7 +86,7 @@ class Category(Resource):
             '   (                                                                                                                           '
   	        '       SELECT Category.id as category_id, Category.name as category_name, Ingredient_Category.ingredient_id AS ingredient_id   '
             '       FROM Category                                                                                                           '
-            '       LEFT JOIN Ingredient_Category                                                                                           ' 
+            '       LEFT JOIN Ingredient_Category                                                                                           '
   	        '       ON Category.id = Ingredient_Category.category_id                                                                        '
             '   ) as IC                                                                                                                     '
             'LEFT JOIN Ingredient                                                                                                           '
@@ -104,7 +106,7 @@ class Category(Resource):
             for q in query:
                 if q[1] is None:
                     break
-                
+
                 data[category].append(q[1])
 
             return json.loads(json.dumps(data)), 200
