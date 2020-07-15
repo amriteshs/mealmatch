@@ -15,7 +15,6 @@ import MailIcon from "@material-ui/icons/Mail";
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -81,6 +80,12 @@ const useStyles = theme => ({
         color:'white'
     },
     searchBtn:{
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange',
+    },
+    clearBtn:{
         color:'orange',
         backgroundColor:'black',
         borderColor:'orange',
@@ -155,6 +160,7 @@ class UserHomePage extends React.Component {
         this.setState({
             ingredient_checked: this.state.ingredient_checked
         });
+
         console.log(this.state.ingredient_checked);
     }
 
@@ -203,16 +209,23 @@ class UserHomePage extends React.Component {
                 <Divider />
                 <List>
                     <ListItem>
-                        <ListItemText key={"Selected ingredients"} primary={"Selected Ingredients"} />
+                        <ListItemText key={"selected ingredients"} primary={"Selected Ingredients"} />
                     </ListItem>
-                <FormGroup>
-                {this.state.ingredient_list.map((text, idx) => (
-                    <FormControlLabel
-                        key={idx} control={<Checkbox checked={this.state.ingredient_checked[idx]} onChange={this.handleCheckChange} name={text} value={text} color="primary" />}
-                        label={text}
-                    />
-                ))}
-                </FormGroup>
+                    <ListItem>
+                        <Button 
+                            key={"clear"} 
+                            onClick={this.handleCheckReset} 
+                            className={classes.clearBtn}>Clear
+                        </Button>
+                    </ListItem>
+                    <FormGroup>
+                    {this.state.ingredient_list.map((text, idx) => (
+                        <FormControlLabel
+                            key={idx} control={<Checkbox checked={this.state.ingredient_checked[idx]} onChange={this.handleCheckChange} name={text} value={text} color="primary" />}
+                            label={text}
+                        />
+                    ))}
+                    </FormGroup>
                 </List>
             </Drawer>
             <main className={classes.content}>
