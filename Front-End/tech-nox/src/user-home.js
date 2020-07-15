@@ -15,6 +15,9 @@ import MailIcon from "@material-ui/icons/Mail";
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import axios from 'axios';
 
@@ -82,6 +85,12 @@ const useStyles = theme => ({
         borderColor:'orange',
         border:'1px solid orange',
     },
+    clearBtn:{
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange',
+    },
     drawer: {
         width: drawerWidth,
         flexShrink: 0
@@ -100,38 +109,63 @@ const useStyles = theme => ({
 
 class UserHomePage extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
+
         this.state = {
             username: this.props.match.params.username,
             ingredient_count: 0,
             ingredient_list: [],
+            ingredient_checked: [],
             category_list: []
+        };
+
+        this.handleCheckChange = this.handleCheckChange.bind(this);
+        this.handleCheckReset = this.handleCheckReset.bind(this);
+    }
+
+    componentDidMount() {
+        this.getIngredients();
+        this.getCategories();
+    }
+
+    async getIngredients() {
+        let response = await axios.get('/ingredient');
+        
+        this.setState({
+            ingredient_count: response.data.count,
+            ingredient_list: response.data.ingredients,
+            ingredient_checked: new Array(response.data.count).fill().map((item, idx) => item = false)
+        });
+    }
+
+    async getCategories() {
+        let response = await axios.get('/category');
+
+        this.setState({
+            category_list: response.data.categories
+        });
+    }
+
+    handleCheckChange(event) {
+        var idx = 0;
+
+        for (const ingredient of this.state.ingredient_list) {
+            if (ingredient === event.target.value) {
+                this.state.ingredient_checked[idx] = event.target.checked;
+            }
+
+            idx += 1;
         }
+        
+        this.setState({
+            ingredient_checked: this.state.ingredient_checked
+        });
+    }
 
-        axios.get('/ingredient')
-            .then(response => {
-                console.log(response);
-
-                this.setState({
-                    ingredient_count: response.data.count,
-                    ingredient_list: response.data.ingredients
-                });
-            })
-            .catch(error => {
-                console.log(error)
-            });
-
-        axios.get('/category')
-            .then(response => {
-                console.log(response);
-
-                this.setState({
-                    category_list: response.data.categories
-                });
-            })
-            .catch(error => {
-                console.log(error)
-            });
+    handleCheckReset() {
+        this.setState({
+            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false)
+        });
     }
 
     render() {
@@ -171,19 +205,22 @@ class UserHomePage extends React.Component {
                 ))}
                 </List>
                 <Divider />
-                <List>
-                <ListItem>
-                <ListItemText primary={"Selected Ingredients"} />
-                </ListItem>
-                {this.state.ingredient_list.map((text, index) => (
-                    <ListItem button key={text}>
-                    <ListItemIcon>
-                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                    </ListItem>
+                <AppBar position="static">
+                    
+                </AppBar>
+                <Button 
+                    key={"clear"} 
+                    onClick={this.handleCheckReset} 
+                    className={classes.clearBtn}>Clear
+                </Button>
+                <FormGroup>
+                {this.state.ingredient_list.map((text, idx) => (
+                    <FormControlLabel
+                        key={idx} control={<Checkbox checked={this.state.ingredient_checked[idx]} onChange={this.handleCheckChange} name={text} value={text} color="primary" />}
+                        label={text}
+                    />
                 ))}
-                </List>
+                </FormGroup>
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />

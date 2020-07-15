@@ -59,7 +59,6 @@ def db_init(db_file):
                   '     id                  INTEGER         NOT NULL,       '
                   '     recipe_id           INTEGER         NOT NULL,       '
                   '     step_no             INTEGER         NOT NULL,       '
-                  '     step_name           VARCHAR(100),                   '
                   '     step_description    VARCHAR(1500)   NOT NULL,       '
                   '     PRIMARY KEY(id),                                    '
                   '     FOREIGN KEY(recipe_id) REFERENCES Recipe(id)        '
