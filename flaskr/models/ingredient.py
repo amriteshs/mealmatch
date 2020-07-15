@@ -14,6 +14,7 @@ class Ingredient(Resource):
     @api.response(200, 'OK')
     @api.doc(description='Retrieve list of all ingredients')
     def get(self):
+        '''Retrieve list of all ingredients'''
         conn = db_connect(db_file)
         c = conn.cursor()
 
@@ -30,6 +31,7 @@ class Ingredient(Resource):
     @api.doc(description='Retrieve the searched ingredient')
     @api.expect(ingredient_model, validate=True)
     def post(self):
+        '''Retrieve the searched ingredient'''
         ingredient = api.payload['ingredient']
 
         conn = db_connect(db_file)
@@ -43,7 +45,7 @@ class Ingredient(Resource):
             return json.loads(json.dumps({
                 'ingredients': query
             })), 200
-            
+
         conn.close()
 
         return json.loads(json.dumps({
