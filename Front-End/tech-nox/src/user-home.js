@@ -104,65 +104,63 @@ const useStyles = theme => ({
 
 class UserHomePage extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
+
         this.state = {
             username: this.props.match.params.username,
             ingredient_count: 0,
             ingredient_list: [],
-            ingrIsChecked: [],
+            ingredient_checked: [],
             category_list: []
-        }
+        };
 
-        axios.get('/ingredient')
-            .then(response => {
-                console.log(response);
-
-                this.setState({
-                    ingredient_count: response.data.count,
-                    ingredient_list: response.data.ingredients,
-                    ingrIsChecked: new Array(response.data.count).fill().map((item, idx) => item = false)
-                });
-            })
-            .catch(error => {
-                console.log(error)
-            });
-
-        axios.get('/category')
-            .then(response => {
-                console.log(response);
-
-                this.setState({
-                    category_list: response.data.categories
-                });
-            })
-            .catch(error => {
-                console.log(error)
-            });
-            
-        this.HandleCheckChange = this.HandleCheckChange.bind(this);
-        this.HandleCheckReset = this.HandleCheckReset.bind(this);
+        this.handleCheckChange = this.handleCheckChange.bind(this);
+        this.handleCheckReset = this.handleCheckReset.bind(this);
     }
 
-    HandleCheckChange(event) {
+    componentDidMount() {
+        this.getIngredients();
+        this.getCategories();
+    }
+
+    async getIngredients() {
+        let response = await axios.get('/ingredient');
+        
+        this.setState({
+            ingredient_count: response.data.count,
+            ingredient_list: response.data.ingredients,
+            ingredient_checked: new Array(response.data.count).fill().map((item, idx) => item = false)
+        });
+    }
+
+    async getCategories() {
+        let response = await axios.get('/category');
+
+        this.setState({
+            category_list: response.data.categories
+        });
+    }
+
+    handleCheckChange(event) {
         var idx = 0;
 
         for (const ingredient of this.state.ingredient_list) {
             if (ingredient === event.target.value) {
-                this.state.ingrIsChecked[idx] = event.target.checked;
+                this.state.ingredient_checked[idx] = event.target.checked;
             }
 
             idx += 1;
         }
         
         this.setState({
-            ingrIsChecked: this.state.ingrIsChecked
+            ingredient_checked: this.state.ingredient_checked
         });
-        console.log(this.state.ingrIsChecked);
+        console.log(this.state.ingredient_checked);
     }
 
-    HandleCheckReset() {
+    handleCheckReset() {
         this.setState({
-            ingrIsChecked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false)
+            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false)
         });
     }
 
@@ -210,7 +208,7 @@ class UserHomePage extends React.Component {
                 <FormGroup>
                 {this.state.ingredient_list.map((text, idx) => (
                     <FormControlLabel
-                        key={idx} control={<Checkbox checked={this.state.ingrIsChecked[idx]} onChange={this.HandleCheckChange} name={text} value={text} color="primary" />}
+                        key={idx} control={<Checkbox checked={this.state.ingredient_checked[idx]} onChange={this.handleCheckChange} name={text} value={text} color="primary" />}
                         label={text}
                     />
                 ))}
