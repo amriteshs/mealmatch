@@ -160,8 +160,6 @@ class UserHomePage extends React.Component {
         this.setState({
             ingredient_checked: this.state.ingredient_checked
         });
-
-        console.log(this.state.ingredient_checked);
     }
 
     handleCheckReset() {
@@ -207,26 +205,22 @@ class UserHomePage extends React.Component {
                 ))}
                 </List>
                 <Divider />
-                <List>
-                    <ListItem>
-                        <ListItemText key={"selected ingredients"} primary={"Selected Ingredients"} />
-                    </ListItem>
-                    <ListItem>
-                        <Button 
-                            key={"clear"} 
-                            onClick={this.handleCheckReset} 
-                            className={classes.clearBtn}>Clear
-                        </Button>
-                    </ListItem>
-                    <FormGroup>
-                    {this.state.ingredient_list.map((text, idx) => (
-                        <FormControlLabel
-                            key={idx} control={<Checkbox checked={this.state.ingredient_checked[idx]} onChange={this.handleCheckChange} name={text} value={text} color="primary" />}
-                            label={text}
-                        />
-                    ))}
-                    </FormGroup>
-                </List>
+                <AppBar position="static">
+                    
+                </AppBar>
+                <Button 
+                    key={"clear"} 
+                    onClick={this.handleCheckReset} 
+                    className={classes.clearBtn}>Clear
+                </Button>
+                <FormGroup>
+                {this.state.ingredient_list.map((text, idx) => (
+                    <FormControlLabel
+                        key={idx} control={<Checkbox checked={this.state.ingredient_checked[idx]} onChange={this.handleCheckChange} name={text} value={text} color="primary" />}
+                        label={text}
+                    />
+                ))}
+                </FormGroup>
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
