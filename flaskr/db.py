@@ -6,17 +6,6 @@ def db_init(db_file):
         conn = sqlite3.connect(db_file)
         c = conn.cursor()
 
-        c.execute('DROP TABLE IF EXISTS MealType_Recipe')
-        c.execute('DROP TABLE IF EXISTS Ingredient_Category')
-        c.execute('DROP TABLE IF EXISTS Recipe_Ingredient')
-        c.execute('DROP TABLE IF EXISTS Recipe_Step')
-        c.execute('DROP TABLE IF EXISTS User_Recipe')
-        c.execute('DROP TABLE IF EXISTS Category')
-        c.execute('DROP TABLE IF EXISTS MealType')
-        c.execute('DROP TABLE IF EXISTS Recipe')
-        c.execute('DROP TABLE IF EXISTS Ingredient')
-        c.execute('DROP TABLE IF EXISTS User')
-
         c.execute('CREATE TABLE IF NOT EXISTS User (                        '
                   '     id              INTEGER         NOT NULL,           '
                   '     username        VARCHAR(30)     NOT NULL    UNIQUE, '
