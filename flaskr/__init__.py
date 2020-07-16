@@ -22,3 +22,4 @@ from flaskr.models.category import *
 from flaskr.models.ingredient import *
 from flaskr.models.user import *
 from flaskr.models.mealtype import *
+from flaskr.models.recipe import *
