@@ -51,6 +51,7 @@ c.execute('INSERT INTO MealType_Recipe VALUES(null,4,3)')
 c.execute('INSERT INTO MealType_Recipe VALUES(null,5,8)')
 c.execute('INSERT INTO MealType_Recipe VALUES(null,5,9)')
 c.execute('INSERT INTO MealType_Recipe VALUES(null,4,12)')
+c.execute('INSERT INTO MealType_Recipe VALUES(null,3,12)')
 
 # specify ingredients for each recipe
 c.execute('INSERT INTO Recipe_Ingredient VALUES(null,12,1,"1 cup")')
