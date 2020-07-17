@@ -15,16 +15,23 @@ import MailIcon from "@material-ui/icons/Mail";
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Paper from '@material-ui/core/Paper';
+
+import axios from 'axios';
 
 const drawerWidth = 240;
+const topAppBarWidth = 64;
 
 const useStyles = theme => ({
     root: {
         display: "flex"
     },
     appBar: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
+        // width: `calc(100% - ${drawerWidth}px)`,
+        // marginLeft: drawerWidth,
         backgroundColor:'black'
     },
     searchBar:{
@@ -78,6 +85,7 @@ const useStyles = theme => ({
         flexShrink: 0
     },
     drawerPaper: {
+        marginTop: topAppBarWidth,
         width: drawerWidth
     },
     // necessary for content to be below app bar
@@ -91,10 +99,72 @@ const useStyles = theme => ({
 
 class ContributePage extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
+
         this.state = {
-            username: this.props.match.params.username
+            username: this.props.match.params.username,
+            ingredient_count: 0,
+            ingredient_list: [],
+            ingredient_checked: [],
+            category_list: [],
+            selected_ingredients: []
+        };
+
+        this.handleCheckChange = this.handleCheckChange.bind(this);
+        this.handleCheckReset = this.handleCheckReset.bind(this);
+    }
+
+    componentDidMount() {
+        this.getIngredients();
+        this.getCategories();
+    }
+
+    async getIngredients() {
+        let response = await axios.get('/ingredient');
+        
+        this.setState({
+            ingredient_count: response.data.count,
+            ingredient_list: response.data.ingredients,
+            ingredient_checked: new Array(response.data.count).fill().map((item, idx) => item = false)
+        });
+    }
+
+    async getCategories() {
+        let response = await axios.get('/category');
+
+        this.setState({
+            category_list: response.data.categories
+        });
+    }
+
+    handleCheckChange(event) {
+        var ingrCheck = [...this.state.ingredient_checked];
+        var ingrSelect = [...this.state.selected_ingredients];
+
+        ingrCheck[event.target.value] = event.target.checked;
+
+        if (event.target.checked) {
+            ingrSelect.push(this.state.ingredient_list[event.target.value]);
+            ingrSelect.sort();
+        } else {
+            var index = ingrSelect.indexOf(event.target.name);
+            if (index !== -1) {
+                ingrSelect.splice(index, 1);
+            }
         }
+
+        this.setState({
+            ingredient_checked: ingrCheck,
+            selected_ingredients: ingrSelect
+        });
+
+        console.log(this.state.selected_ingredients);
+    }
+
+    handleCheckReset() {
+        this.setState({
+            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false)
+        });
     }
 
     render() {
@@ -105,70 +175,51 @@ class ContributePage extends React.Component {
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                <Typography variant="h6" noWrap className={classes.title}>
-                    Meal Match
-                </Typography>
-                <Button color="inherit" >{this.state.username}</Button>
-                <Button color="inherit" href={'/' + this.state.username}>Home</Button>
-                <Button color="inherit" href='/'>Logout</Button>
+                    <Typography variant="h6" noWrap className={classes.title}>
+                        mealmatch
+                    </Typography>
+                    <Button color="inherit" >{this.state.username}</Button>
+                    <Button color="inherit" href={'/' + this.state.username}>Home</Button>
+                    <Button color="inherit" href='/'>Logout</Button>
                 </Toolbar>
             </AppBar>
-            {/* <Drawer
+            <Drawer
                 className={classes.drawer}
                 variant="permanent"
                 classes={{
-                paper: classes.drawerPaper
+                    paper: classes.drawerPaper
                 }}
                 anchor="left"
             >
-                <div className={classes.toolbar} />
-                <Divider />
+                {/* <div className={classes.toolbar} /> */}
+                {/* <Divider /> */}
                 <List>
-                {["Ingredient Category", "Meal Type"].map((text, index) => (
+                {this.state.selected_ingredients.map((text, index) => (
                     <ListItem button key={text}>
-                    <ListItemIcon>
-                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
+                        <ListItemIcon>
+                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                        </ListItemIcon>
+                        <ListItemText primary={text} />
                     </ListItem>
                 ))}
                 </List>
                 <Divider />
-                <List>
-                <ListItem>
-                <ListItemText primary={"Selected Ingredients"} />
-                </ListItem>
-                {["Ingredient 1", "Ingredient 2", "Ingredient 3"].map((text, index) => (
-                    <ListItem button key={text}>
-                    <ListItemIcon>
-                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                    </ListItem>
-                ))}
-                </List>
-            </Drawer>
-            <main className={classes.content}>
-                <div className={classes.toolbar} />
-                <AppBar className={classes.searchBar}>
-                <Toolbar>
-                <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                    <SearchIcon />
-                    </div>
-                    <InputBase
-                    placeholder="Search for recipes ..."
-                    classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
+                <AppBar position="static">
+                </AppBar>
+                <Button 
+                    key={"clear"} 
+                    onClick={this.handleCheckReset} 
+                    className={classes.clearBtn}>Clear
+                </Button>
+                <FormGroup>
+                {this.state.ingredient_list.map((text, index) => (
+                    <FormControlLabel
+                        key={index} control={<Checkbox checked={this.state.ingredient_checked[index]} onChange={this.handleCheckChange} name={text} value={index} color="primary" />}
+                        label={text}
                     />
-                </div>
-                </Toolbar>
-            </AppBar>
-                
-            </main> */}
+                ))}
+                </FormGroup>
+            </Drawer>
             </div>
         );
     }

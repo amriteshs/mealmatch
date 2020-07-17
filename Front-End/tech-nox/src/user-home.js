@@ -147,15 +147,7 @@ class UserHomePage extends React.Component {
     }
 
     handleCheckChange(event) {
-        var idx = 0;
-
-        for (const ingredient of this.state.ingredient_list) {
-            if (ingredient === event.target.value) {
-                this.state.ingredient_checked[idx] = event.target.checked;
-            }
-
-            idx += 1;
-        }
+        this.state.ingredient_checked[event.target.value] = event.target.checked;
         
         this.setState({
             ingredient_checked: this.state.ingredient_checked
@@ -216,7 +208,7 @@ class UserHomePage extends React.Component {
                 <FormGroup>
                 {this.state.ingredient_list.map((text, idx) => (
                     <FormControlLabel
-                        key={idx} control={<Checkbox checked={this.state.ingredient_checked[idx]} onChange={this.handleCheckChange} name={text} value={text} color="primary" />}
+                        key={idx} control={<Checkbox checked={this.state.ingredient_checked[idx]} onChange={this.handleCheckChange} name={text} value={idx} color="primary" />}
                         label={text}
                     />
                 ))}
