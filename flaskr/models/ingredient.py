@@ -18,14 +18,26 @@ class Ingredient(Resource):
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row[0] for row in c.execute('SELECT name FROM Ingredient ORDER BY name')]
-
+        query = list(c.execute('SELECT id, name FROM Ingredient ORDER BY name'))
+        
         conn.close()
+        
+        if query:
+            data = []
+            for row in query:
+                data.append({
+                    'ingredient_id': row[0],
+                    'ingredient_name': row[1]
+                })
+
+            return json.loads(json.dumps({
+                'count': len(data),
+                'ingredients': data
+            })), 200
 
         return json.loads(json.dumps({
-            'count': len(query),
-            'ingredients': query
-        })), 200
+            'message': 'No ingredients exist'
+        })), 404
 
     @api.response(200, 'OK')
     @api.doc(description='Retrieve the searched ingredient')
@@ -37,17 +49,22 @@ class Ingredient(Resource):
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row[0] for row in c.execute(f'SELECT name FROM Ingredient WHERE name LIKE ? ORDER BY name', (ingredient + '%',))]
-
-        if query:
-            conn.close()
-
-            return json.loads(json.dumps({
-                'ingredients': query
-            })), 200
+        query = list(c.execute(f'SELECT id, name FROM Ingredient WHERE name LIKE ? ORDER BY name', (ingredient + '%',)))
 
         conn.close()
 
+        if query:
+            data = []
+            for row in query:
+                data.append({
+                    'ingredient_id': row[0],
+                    'ingredient_name': row[1]
+                })
+
+            return json.loads(json.dumps({
+                'ingredients': data
+            })), 200
+
         return json.loads(json.dumps({
             'message': 'Ingredient does not exist'
-        })), 200
+        })), 404
