@@ -164,9 +164,17 @@ class ContributePage extends React.Component {
 
         if (event.target.checked) {
             ingrSelect.push(this.state.ingredient_list[event.target.value]);
-            ingrSelect.sort();
+            ingrSelect.sort(function(x, y) {
+                if (x.ingredient_name < y.ingredient_name) { 
+                    return -1; 
+                }
+                if (x.ingredient_name > y.ingredient_name) { 
+                    return 1; 
+                }
+                return 0;
+            });
         } else {
-            ingrSelect = ingrSelect.filter(x => x !== event.target.name);
+            ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.name);
         }
 
         this.setState({
@@ -182,16 +190,16 @@ class ContributePage extends React.Component {
         });
     }
 
-    deleteIngredient(text) {
+    deleteIngredient(obj) {
         let ingrCheck = [...this.state.ingredient_checked];
         let ingrSelect = [...this.state.selected_ingredients];
 
-        let index = this.state.ingredient_list.findIndex(x => x === text);
+        let index = this.state.ingredient_list.findIndex(x => x.ingredient_name === obj.ingredient_name);
         if (index !== -1) {
             ingrCheck[index] = false;
         }
 
-        ingrSelect = ingrSelect.filter(x => x !== text);
+        ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj.ingredient_name);
 
         this.setState({
             ingredient_checked: ingrCheck,
@@ -230,20 +238,20 @@ class ContributePage extends React.Component {
                     className={classes.clearBtn}>Clear
                 </Button></div>
                 <Grid container direction="row" justify="center" alignItems="center">
-                {this.state.selected_ingredients.map((text, index) => (
+                {this.state.selected_ingredients.map((obj, index) => (
                     <React.Fragment key={index}>
                         <Grid item xs={3}>
                             <IconButton 
-                                name={text} value={index} 
+                                name={obj.ingredient_name} value={index} 
                                 aria-label="delete" color="secondary" 
-                                onClick={this.deleteIngredient.bind(this, text)}
+                                onClick={this.deleteIngredient.bind(this, obj)}
                             >
                                 <DeleteIcon />
                             </IconButton>
                         </Grid>
                         <Grid item xs={9}>
                             {/* <Typography> */}
-                                {text}
+                                {obj.ingredient_name}
                             {/* </Typography> */}
                         </Grid>
                     </React.Fragment>
@@ -269,11 +277,11 @@ class ContributePage extends React.Component {
                     </Toolbar>
                 </div> */}
                 <FormGroup>
-                {this.state.ingredient_list.map((text, index) => (
+                {this.state.ingredient_list.map((obj, index) => (
                     <FormControlLabel
                         key={index} control={<Checkbox checked={this.state.ingredient_checked[index]} 
-                        onChange={this.handleCheckChange} name={text} value={index} color="primary" />}
-                        label={text}
+                        onChange={this.handleCheckChange} name={obj.ingredient_name} value={index} color="primary" />}
+                        label={obj.ingredient_name}
                     />
                 ))}
                 </FormGroup>
