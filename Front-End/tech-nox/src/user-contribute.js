@@ -21,6 +21,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 import axios from 'axios';
 
@@ -110,8 +114,12 @@ const useStyles = theme => ({
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(3)
     },
-    gridTypo: {
-        padding: theme.spacing(2)
+    ingrSelectedDiv: {
+        height:'32%',
+        overflow:'auto'
+    },
+    ingrSelectionDiv: {
+        overflow:'auto'
     }
 });
 
@@ -125,12 +133,14 @@ class ContributePage extends React.Component {
             ingredient_list: [],
             ingredient_checked: [],
             category_list: [],
-            selected_ingredients: []
+            selected_ingredients: [],
+            selected_category: ''
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
         this.handleCheckReset = this.handleCheckReset.bind(this);
-        this.deleteIngredient = this.deleteIngredient.bind(this);
+        this.handleIngredientDelete = this.handleIngredientDelete.bind(this);
+        this.handleCategorySelect = this.handleCategorySelect.bind(this);
     }
 
     componentDidMount() {
@@ -190,7 +200,7 @@ class ContributePage extends React.Component {
         });
     }
 
-    deleteIngredient(obj) {
+    handleIngredientDelete(obj) {
         let ingrCheck = [...this.state.ingredient_checked];
         let ingrSelect = [...this.state.selected_ingredients];
 
@@ -205,6 +215,10 @@ class ContributePage extends React.Component {
             ingredient_checked: ingrCheck,
             selected_ingredients: ingrSelect
         });
+    }
+
+    handleCategorySelect(event) {
+
     }
 
     render() {
@@ -233,58 +247,78 @@ class ContributePage extends React.Component {
             >
                 {/* <div className={classes.toolbar} /> */}
                 {/* <Divider /> */}
-                <div><Button
-                    onClick={this.handleCheckReset.bind(this)} 
-                    className={classes.clearBtn}>Clear
-                </Button></div>
-                <Grid container direction="row" justify="center" alignItems="center">
-                {this.state.selected_ingredients.map((obj, index) => (
-                    <React.Fragment key={index}>
-                        <Grid item xs={3}>
-                            <IconButton 
-                                name={obj.ingredient_name} value={index} 
-                                aria-label="delete" color="secondary" 
-                                onClick={this.deleteIngredient.bind(this, obj)}
-                            >
-                                <DeleteIcon />
-                            </IconButton>
-                        </Grid>
-                        <Grid item xs={9}>
-                            {/* <Typography> */}
-                                {obj.ingredient_name}
-                            {/* </Typography> */}
-                        </Grid>
-                    </React.Fragment>
-                ))}
-                </Grid>
+                <div className={classes.ingrSelectedDiv}>
+                    {!this.state.selected_ingredients.length ?
+                        (
+                            <Typography>You have not selected any ingredients.</Typography>
+                        ) : (
+                        <>
+                            <Grid container direction="row" justify="center" alignItems="center">
+                                <Grid item xs={4}>
+                                    <Button
+                                        onClick={this.handleCheckReset.bind(this)} 
+                                        className={classes.clearBtn}>Clear
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    {this.state.selected_ingredients.length === 1 ?
+                                        (
+                                            <Typography>1 ingredient selected.</Typography>
+                                        ) : (
+                                            <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
+                                        )
+                                    }
+                                </Grid>
+                            {this.state.selected_ingredients.map((obj, index) => (
+                                <React.Fragment key={index}>
+                                    <Grid item xs={3}>
+                                        <IconButton 
+                                            name={obj.ingredient_name} value={index} 
+                                            aria-label="delete" color="secondary" 
+                                            onClick={this.handleIngredientDelete.bind(this, obj)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        {/* <Typography> */}
+                                            {obj.ingredient_name}
+                                        {/* </Typography> */}
+                                    </Grid>
+                                </React.Fragment>
+                            ))}
+                            </Grid>
+                        </>
+                    )}
+                </div>
                 <Divider />
-                {/* <div className={classes.searchBar}>
-                    <Toolbar>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                        <SearchIcon />
-                        </div>
-                        <InputBase
-                        placeholder="Search for recipes ..."
-                        classes={{
-                            root: classes.inputRoot,
-                            input: classes.inputInput,
-                        }}
-                        inputProps={{ 'aria-label': 'search' }}
+                <FormControl className={classes.formControl}>
+                    <InputLabel id="select-category">Select a category</InputLabel>
+                    <Select
+                        labelId="select-category"
+                        id="select-category"
+                        value={this.state.selected_category}
+                        onChange={this.handleCategorySelect}
+                    >
+                        <MenuItem value="">
+                            <em>None</em>
+                        </MenuItem>
+                        {this.state.category_list.map((obj, index) => (
+                            <MenuItem value={obj.category}>{obj.category}</MenuItem>
+                        ))};
+                    </Select>
+                </FormControl>
+                <div className={classes.ingrSelectionDiv}>
+                    <FormGroup>
+                    {this.state.ingredient_list.map((obj, index) => (
+                        <FormControlLabel
+                            key={index} control={<Checkbox checked={this.state.ingredient_checked[index]} 
+                            onChange={this.handleCheckChange} name={obj.ingredient_name} value={index} color="primary" />}
+                            label={obj.ingredient_name}
                         />
-                    </div>
-                    <Button className={classes.searchBtn}>Search</Button>
-                    </Toolbar>
-                </div> */}
-                <FormGroup>
-                {this.state.ingredient_list.map((obj, index) => (
-                    <FormControlLabel
-                        key={index} control={<Checkbox checked={this.state.ingredient_checked[index]} 
-                        onChange={this.handleCheckChange} name={obj.ingredient_name} value={index} color="primary" />}
-                        label={obj.ingredient_name}
-                    />
-                ))}
-                </FormGroup>
+                    ))}
+                    </FormGroup>
+                </div>
             </Drawer>
             </div>
         );
