@@ -37,16 +37,16 @@ const useStyles = theme => ({
         backgroundColor:'black'
     },
     searchBar:{
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        marginTop:'25rem',
-        backgroundColor:'black'
+        backgroundColor: 'black',
+        height: '4rem',
+        borderRadius: '5px',
+        marginTop: '1rem'
     },
     title: {
         flexGrow: 1,
     },
     inputRoot: {
-        color: 'inherit',
+        color: 'white',
     },
     search: {
         position: 'relative',
@@ -59,7 +59,7 @@ const useStyles = theme => ({
         marginLeft: 0,
         width: '20rem',
         [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
+        marginLeft: theme.spacing(1),
         width: 'auto',
         },
     },
@@ -70,7 +70,7 @@ const useStyles = theme => ({
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-        width: '100ch',
+        width: '50ch',
         },
     },
     searchIcon: {
@@ -81,6 +81,19 @@ const useStyles = theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        color:'white'
+    },
+    searchBtn:{
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange',
+    },
+    clearBtn:{
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange',
     },
     drawer: {
         width: drawerWidth,
@@ -212,6 +225,10 @@ class ContributePage extends React.Component {
             >
                 {/* <div className={classes.toolbar} /> */}
                 {/* <Divider /> */}
+                <div><Button
+                    onClick={this.handleCheckReset.bind(this)} 
+                    className={classes.clearBtn}>Clear
+                </Button></div>
                 <Grid container direction="row" justify="center" alignItems="center">
                 {this.state.selected_ingredients.map((text, index) => (
                     <React.Fragment key={index}>
@@ -233,12 +250,24 @@ class ContributePage extends React.Component {
                 ))}
                 </Grid>
                 <Divider />
-                {/* <AppBar position="static">
-                </AppBar> */}
-                <div><Button
-                    onClick={this.handleCheckReset.bind(this)} 
-                    className={classes.clearBtn}>Clear
-                </Button></div>
+                {/* <div className={classes.searchBar}>
+                    <Toolbar>
+                    <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                        <SearchIcon />
+                        </div>
+                        <InputBase
+                        placeholder="Search for recipes ..."
+                        classes={{
+                            root: classes.inputRoot,
+                            input: classes.inputInput,
+                        }}
+                        inputProps={{ 'aria-label': 'search' }}
+                        />
+                    </div>
+                    <Button className={classes.searchBtn}>Search</Button>
+                    </Toolbar>
+                </div> */}
                 <FormGroup>
                 {this.state.ingredient_list.map((text, index) => (
                     <FormControlLabel
