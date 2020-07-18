@@ -18,7 +18,9 @@ import InputBase from '@material-ui/core/InputBase';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 
 import axios from 'axios';
 
@@ -94,6 +96,9 @@ const useStyles = theme => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(3)
+    },
+    gridTypo: {
+        padding: theme.spacing(2)
     }
 });
 
@@ -112,6 +117,7 @@ class ContributePage extends React.Component {
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
         this.handleCheckReset = this.handleCheckReset.bind(this);
+        this.deleteIngredient = this.deleteIngredient.bind(this);
     }
 
     componentDidMount() {
@@ -138,8 +144,8 @@ class ContributePage extends React.Component {
     }
 
     handleCheckChange(event) {
-        var ingrCheck = [...this.state.ingredient_checked];
-        var ingrSelect = [...this.state.selected_ingredients];
+        let ingrCheck = [...this.state.ingredient_checked];
+        let ingrSelect = [...this.state.selected_ingredients];
 
         ingrCheck[event.target.value] = event.target.checked;
 
@@ -147,23 +153,36 @@ class ContributePage extends React.Component {
             ingrSelect.push(this.state.ingredient_list[event.target.value]);
             ingrSelect.sort();
         } else {
-            var index = ingrSelect.indexOf(event.target.name);
-            if (index !== -1) {
-                ingrSelect.splice(index, 1);
-            }
+            ingrSelect = ingrSelect.filter(x => x !== event.target.name);
         }
 
         this.setState({
             ingredient_checked: ingrCheck,
             selected_ingredients: ingrSelect
         });
-
-        console.log(this.state.selected_ingredients);
     }
 
     handleCheckReset() {
         this.setState({
-            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false)
+            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
+            selected_ingredients: []
+        });
+    }
+
+    deleteIngredient(text) {
+        let ingrCheck = [...this.state.ingredient_checked];
+        let ingrSelect = [...this.state.selected_ingredients];
+
+        let index = this.state.ingredient_list.findIndex(x => x === text);
+        if (index !== -1) {
+            ingrCheck[index] = false;
+        }
+
+        ingrSelect = ingrSelect.filter(x => x !== text);
+
+        this.setState({
+            ingredient_checked: ingrCheck,
+            selected_ingredients: ingrSelect
         });
     }
 
@@ -193,28 +212,38 @@ class ContributePage extends React.Component {
             >
                 {/* <div className={classes.toolbar} /> */}
                 {/* <Divider /> */}
-                <List>
+                <Grid container direction="row" justify="center" alignItems="center">
                 {this.state.selected_ingredients.map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                        </ListItemIcon>
-                        <ListItemText primary={text} />
-                    </ListItem>
+                    <React.Fragment key={index}>
+                        <Grid item xs={3}>
+                            <IconButton 
+                                name={text} value={index} 
+                                aria-label="delete" color="secondary" 
+                                onClick={this.deleteIngredient.bind(this, text)}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Grid>
+                        <Grid item xs={9}>
+                            {/* <Typography> */}
+                                {text}
+                            {/* </Typography> */}
+                        </Grid>
+                    </React.Fragment>
                 ))}
-                </List>
+                </Grid>
                 <Divider />
-                <AppBar position="static">
-                </AppBar>
-                <Button 
-                    key={"clear"} 
-                    onClick={this.handleCheckReset} 
+                {/* <AppBar position="static">
+                </AppBar> */}
+                <div><Button
+                    onClick={this.handleCheckReset.bind(this)} 
                     className={classes.clearBtn}>Clear
-                </Button>
+                </Button></div>
                 <FormGroup>
                 {this.state.ingredient_list.map((text, index) => (
                     <FormControlLabel
-                        key={index} control={<Checkbox checked={this.state.ingredient_checked[index]} onChange={this.handleCheckChange} name={text} value={index} color="primary" />}
+                        key={index} control={<Checkbox checked={this.state.ingredient_checked[index]} 
+                        onChange={this.handleCheckChange} name={text} value={index} color="primary" />}
                         label={text}
                     />
                 ))}
