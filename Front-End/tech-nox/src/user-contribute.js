@@ -413,6 +413,7 @@ class ContributePage extends React.Component {
                             <TextField
                                 className={classes.recipeTextField}
                                 style={{fontSize:12}}
+                                inputProps={{maxLength:100}}
                                 autoFocus
                                 margin="dense"
                                 id="recipeName"
@@ -427,6 +428,7 @@ class ContributePage extends React.Component {
                                 className={classes.recipeTextField}
                                 multiline
                                 rows={4}
+                                inputProps={{maxLength:500}}
                                 margin="dense"
                                 id="recipeDescription"
                                 label="Description"
@@ -449,6 +451,7 @@ class ContributePage extends React.Component {
                                         <Typography align="left" className={classes.recipeIngredientTypo}>{obj.ingredient_name}</Typography>
                                         <TextField
                                             className={classes.recipeIngredientTextField}
+                                            inputProps={{maxLength:25}}
                                             autoFocus
                                             margin="dense"
                                             label=""
@@ -502,6 +505,7 @@ class ContributePage extends React.Component {
                             <Typography><b>Other Information</b></Typography>
                             <TextField
                                 className={classes.recipeTextField}
+                                inputProps={{maxLength:25}}
                                 autoFocus
                                 margin="dense"
                                 id="prepTime"
@@ -523,8 +527,8 @@ class ContributePage extends React.Component {
                                     onChange={this.handleVisiblitySelect}
                                     TransitionComponent={Fade}
                                 >
-                                    <MenuItem value="public">Public</MenuItem>
-                                    <MenuItem value="private">Private</MenuItem>
+                                    <MenuItem value="Public">Public</MenuItem>
+                                    <MenuItem value="Private">Private</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>
