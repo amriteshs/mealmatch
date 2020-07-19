@@ -4,17 +4,9 @@ import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import Button from '@material-ui/core/Button';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -25,7 +17,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Container from '@material-ui/core/Container';
+import TextField from '@material-ui/core/TextField';
 
+import 'fontsource-roboto';
 import axios from 'axios';
 
 const drawerWidth = 240;
@@ -33,7 +28,12 @@ const topAppBarWidth = 64;
 
 const useStyles = theme => ({
     root: {
-        display: "flex"
+        display: "flex",
+        fontFamily: 'Roboto'
+    },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 200,
     },
     appBar: {
         // width: `calc(100% - ${drawerWidth}px)`,
@@ -87,13 +87,13 @@ const useStyles = theme => ({
         justifyContent: 'center',
         color:'white'
     },
-    searchBtn:{
+    searchBtn: {
         color:'orange',
         backgroundColor:'black',
         borderColor:'orange',
         border:'1px solid orange',
     },
-    clearBtn:{
+    clearBtn: {
         color:'orange',
         backgroundColor:'black',
         borderColor:'orange',
@@ -115,11 +115,58 @@ const useStyles = theme => ({
         padding: theme.spacing(3)
     },
     ingrSelectedDiv: {
-        height:'32%',
-        overflow:'auto'
+        height: '32%',
+        overflow: 'auto',
+        padding: theme.spacing(1)
     },
     ingrSelectionDiv: {
-        overflow:'auto'
+        overflow: 'auto',
+        padding: theme.spacing(1)
+    },
+    mainContainer: {
+        height: '100vh',
+        margin: theme.spacing(0),
+        backgroundColor: 'white',
+        border: '0.1px solid grey',
+        borderRadius: '5px',
+        padding: theme.spacing(2),
+        overflow: 'auto'
+    },
+    addStepBtn: {
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange',
+    },
+    addStepBtn1: {
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange',
+        marginTop: theme.spacing(3)
+    },
+    addRecipeDetailsDiv: {
+        float: 'left',
+        width: '70%'
+    },
+    addRecipeImageDiv: {
+        float: 'right'
+    },
+    recipeTextField: {
+        marginTop: theme.spacing(5)
+    },
+    recipeIngredientTextField: {
+        marginTop: theme.spacing(2)
+    },
+    addRecipeStepsSection: {
+        marginTop: theme.spacing(5)
+    },
+    addRecipeIngredientQtySection: {
+        marginTop: theme.spacing(5)
+    },
+    dividerStyle: {
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3)
     }
 });
 
@@ -133,14 +180,22 @@ class ContributePage extends React.Component {
             ingredient_list: [],
             ingredient_checked: [],
             category_list: [],
+            mealtype_list: [],
             selected_ingredients: [],
-            selected_category: ''
+            selected_category: '',
+            selected_mealtype: '',
+            selected_mealtypes: [],
+            recipe_visibility: 'public'
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
         this.handleCheckReset = this.handleCheckReset.bind(this);
         this.handleIngredientDelete = this.handleIngredientDelete.bind(this);
         this.handleCategorySelect = this.handleCategorySelect.bind(this);
+        this.handleRecipeStepAdd = this.handleRecipeStepAdd.bind(this);
+        this.handleRecipeImageUpload = this.handleRecipeImageUpload.bind(this);
+        this.handleMealtypeSelect = this.handleMealtypeSelect.bind(this);
+        this.handleVisibilitySelect = this.handleVisibilitySelect.bind(this);
     }
 
     componentDidMount() {
@@ -174,13 +229,16 @@ class ContributePage extends React.Component {
 
         if (event.target.checked) {
             ingrSelect.push(this.state.ingredient_list[event.target.value]);
+            
             ingrSelect.sort(function(x, y) {
                 if (x.ingredient_name < y.ingredient_name) { 
                     return -1; 
                 }
+
                 if (x.ingredient_name > y.ingredient_name) { 
                     return 1; 
                 }
+                
                 return 0;
             });
         } else {
@@ -218,6 +276,24 @@ class ContributePage extends React.Component {
     }
 
     handleCategorySelect(event) {
+        this.setState({
+            selected_category: event.target.value
+        });
+    }
+
+    handleRecipeStepAdd(event) {
+        
+    }
+
+    handleRecipeImageUpload(event) {
+
+    }
+
+    handleMealtypeSelect(event) {
+
+    }
+
+    handleVisibilitySelect(event) {
 
     }
 
@@ -245,8 +321,6 @@ class ContributePage extends React.Component {
                 }}
                 anchor="left"
             >
-                {/* <div className={classes.toolbar} /> */}
-                {/* <Divider /> */}
                 <div className={classes.ingrSelectedDiv}>
                     {!this.state.selected_ingredients.length ?
                         (
@@ -256,7 +330,7 @@ class ContributePage extends React.Component {
                             <Grid container direction="row" justify="center" alignItems="center">
                                 <Grid item xs={4}>
                                     <Button
-                                        onClick={this.handleCheckReset.bind(this)} 
+                                        onClick={this.handleCheckReset} 
                                         className={classes.clearBtn}>Clear
                                     </Button>
                                 </Grid>
@@ -304,7 +378,7 @@ class ContributePage extends React.Component {
                             <em>None</em>
                         </MenuItem>
                         {this.state.category_list.map((obj, index) => (
-                            <MenuItem value={obj.category}>{obj.category}</MenuItem>
+                            <MenuItem key={index} value={obj.category}>{obj.category}</MenuItem>
                         ))};
                     </Select>
                 </FormControl>
@@ -320,6 +394,128 @@ class ContributePage extends React.Component {
                     </FormGroup>
                 </div>
             </Drawer>
+            <main className={classes.content}>
+                <div className={classes.toolbar} />
+                    <Container className={classes.mainContainer}>
+                    <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>ENTER THE RECIPE DETAILS</b></Typography>
+                        <div className={classes.addRecipeDetailsDiv}>
+                            <br/>
+                            <Divider className={classes.dividerStyle}/>
+                            <Typography><b>Basic Information</b></Typography>
+                            <TextField
+                                className={classes.recipeTextField}
+                                style={{fontSize:12}}
+                                autoFocus
+                                margin="dense"
+                                id="recipeName"
+                                label="Name"
+                                fullWidth
+                                name="recipeName"
+                                required
+                                variant="outlined"
+                                helperText="Enter the name of the recipe (max. 100 characters)"
+                            />
+                            <TextField
+                                className={classes.recipeTextField}
+                                multiline
+                                rows={4}
+                                margin="dense"
+                                id="recipeDescription"
+                                label="Description"
+                                fullWidth
+                                name="recipeDescription"
+                                required
+                                variant="outlined"
+                                helperText="Write a description for the recipe (max. 500 characters)"
+                            />
+                            <Divider className={classes.dividerStyle}/>
+                            <Typography><b>Ingredients</b></Typography>
+                            {!this.state.selected_ingredients.length ? 
+                            (
+                                <Typography style={{fontSize:14, marginTop:10}}>You have not selected any ingredients.</Typography>
+                            ) : (
+                                <>
+                                {this.state.selected_ingredients.map((obj, index) => (
+                                    <>
+                                    <Typography>{obj.ingredient_name}</Typography>
+                                    <TextField
+                                        className={classes.recipeIngredientTextField}
+                                        autoFocus
+                                        margin="dense"
+                                        label="Enter quantity"
+                                        fullWidth
+                                        name={obj.ingredient_name}
+                                        required
+                                        variant="outlined"
+                                    />
+                                    </>
+                                ))}
+                                </>
+                            )}
+                            <Divider className={classes.dividerStyle}/>
+                            <Typography><b>Steps</b></Typography>
+                            <Button
+                                onClick={this.handleRecipeStepAdd} 
+                                className={classes.addStepBtn1}
+                            >
+                                Add Step
+                            </Button>
+                            <Divider className={classes.dividerStyle}/>
+                            <Typography><b>Other Information</b></Typography>
+                            <TextField
+                                className={classes.recipeTextField}
+                                autoFocus
+                                margin="dense"
+                                id="prepTime"
+                                label="Preparation time"
+                                fullWidth
+                                name="prepTime"
+                                variant="outlined"
+                                defaultValue=""
+                                helperText="Enter an approximate time for recipe preparation (for example: 30-45 minutes)"
+                            />
+                            <Typography className={classes.recipeTextField} style={{fontSize:16}}>Meal types</Typography>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="select-mealtype">Add a meal type</InputLabel>
+                                <Select
+                                    labelId="select-mealtype"
+                                    id="select-mealtype"
+                                    value={this.state.selected_mealtype}
+                                    onChange={this.handleMealtypeSelect}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {this.state.mealtype_list.map((obj, index) => (
+                                        <MenuItem key={index} value={obj.mealtype}>{obj.mealtype}</MenuItem>
+                                    ))};
+                                </Select>
+                            </FormControl>
+                            <br/>
+                            <Typography className={classes.recipeTextField} style={{fontSize:16}}>Visibility</Typography>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="select-visibility">Select visibility</InputLabel>
+                                <Select
+                                    labelId="select-visibility"
+                                    id="select-visibility"
+                                    value={this.state.recipe_visibility}
+                                    onChange={this.handleVisiblitySelect}
+                                >
+                                    <MenuItem value="public">Public</MenuItem>
+                                    <MenuItem value="private">Private</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
+                        <div className={classes.addRecipeImageDiv}>
+                            <Button
+                                onClick={this.handleRecipeImageUpload} 
+                                className={classes.addStepBtn}
+                            >
+                                Upload Image
+                            </Button>
+                        </div>
+                    </Container>
+            </main>
             </div>
         );
     }

@@ -21,23 +21,18 @@ class Ingredient(Resource):
         query = list(c.execute('SELECT id, name FROM Ingredient ORDER BY name'))
         
         conn.close()
-        
-        if query:
-            data = []
-            for row in query:
-                data.append({
-                    'ingredient_id': row[0],
-                    'ingredient_name': row[1]
-                })
 
-            return json.loads(json.dumps({
-                'count': len(data),
-                'ingredients': data
-            })), 200
+        data = []
+        for row in query:
+            data.append({
+                'ingredient_id': row[0],
+                'ingredient_name': row[1]
+            })
 
         return json.loads(json.dumps({
-            'message': 'No ingredients exist'
-        })), 404
+            'count': len(data),
+            'ingredients': data
+        })), 200
 
     @api.response(200, 'OK')
     @api.doc(description='Retrieve the searched ingredient')
@@ -53,18 +48,13 @@ class Ingredient(Resource):
 
         conn.close()
 
-        if query:
-            data = []
-            for row in query:
-                data.append({
-                    'ingredient_id': row[0],
-                    'ingredient_name': row[1]
-                })
-
-            return json.loads(json.dumps({
-                'ingredients': data
-            })), 200
+        data = []
+        for row in query:
+            data.append({
+                'ingredient_id': row[0],
+                'ingredient_name': row[1]
+            })
 
         return json.loads(json.dumps({
-            'message': 'Ingredient does not exist'
-        })), 404
+            'ingredients': data
+        })), 200
