@@ -19,6 +19,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
+import Fade from '@material-ui/core/Fade';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -156,6 +157,7 @@ const useStyles = theme => ({
         marginTop: theme.spacing(5)
     },
     recipeIngredientTextField: {
+        width: '70%',
         marginTop: theme.spacing(2)
     },
     addRecipeStepsSection: {
@@ -167,6 +169,12 @@ const useStyles = theme => ({
     dividerStyle: {
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3)
+    },
+    recipeIngredientTypo: {
+        width: '25%',
+        margin: 'auto',
+        float: 'left',
+        marginRight: theme.spacing(2)
     }
 });
 
@@ -437,17 +445,18 @@ class ContributePage extends React.Component {
                                 <>
                                 {this.state.selected_ingredients.map((obj, index) => (
                                     <>
-                                    <Typography>{obj.ingredient_name}</Typography>
-                                    <TextField
-                                        className={classes.recipeIngredientTextField}
-                                        autoFocus
-                                        margin="dense"
-                                        label="Enter quantity"
-                                        fullWidth
-                                        name={obj.ingredient_name}
-                                        required
-                                        variant="outlined"
-                                    />
+                                    <div style={{display:'flex'}}>
+                                        <Typography align="left" className={classes.recipeIngredientTypo}>{obj.ingredient_name}</Typography>
+                                        <TextField
+                                            className={classes.recipeIngredientTextField}
+                                            autoFocus
+                                            margin="dense"
+                                            label=""
+                                            name={obj.ingredient_name}
+                                            variant="outlined"
+                                            helperText="Enter the ingredient quantity (for example: x2, 2 tblspoons)"
+                                        />
+                                    </div>
                                     </>
                                 ))}
                                 </>
@@ -460,6 +469,35 @@ class ContributePage extends React.Component {
                             >
                                 Add Step
                             </Button>
+                            <Divider className={classes.dividerStyle}/>
+                            <Typography><b>Meal types</b></Typography>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="select-mealtype">Add a meal type</InputLabel>
+                                <Select
+                                    labelId="select-mealtype"
+                                    id="select-mealtype"
+                                    value={this.state.selected_mealtype}
+                                    onChange={this.handleMealtypeSelect}
+                                >
+                                    {/* <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem> */}
+                                    {this.state.mealtype_list.map((obj, index) => (
+                                        <MenuItem key={index} value={obj.mealtype}>{obj.mealtype}</MenuItem>
+                                    ))};
+                                </Select>
+                            </FormControl>
+                            {!this.state.selected_mealtypes.length ? 
+                            (
+                                <Typography style={{fontSize:14, marginTop:10}}>You have not tagged any meal types for the recipe.</Typography>
+                            ) : (
+                                <>
+                                {this.state.selected_mealtypes.map((obj, index) => (
+                                    <>
+                                    </>
+                                ))}
+                                </>
+                            )}
                             <Divider className={classes.dividerStyle}/>
                             <Typography><b>Other Information</b></Typography>
                             <TextField
@@ -474,32 +512,16 @@ class ContributePage extends React.Component {
                                 defaultValue=""
                                 helperText="Enter an approximate time for recipe preparation (for example: 30-45 minutes)"
                             />
-                            <Typography className={classes.recipeTextField} style={{fontSize:16}}>Meal types</Typography>
-                            <FormControl className={classes.formControl}>
-                                <InputLabel id="select-mealtype">Add a meal type</InputLabel>
-                                <Select
-                                    labelId="select-mealtype"
-                                    id="select-mealtype"
-                                    value={this.state.selected_mealtype}
-                                    onChange={this.handleMealtypeSelect}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {this.state.mealtype_list.map((obj, index) => (
-                                        <MenuItem key={index} value={obj.mealtype}>{obj.mealtype}</MenuItem>
-                                    ))};
-                                </Select>
-                            </FormControl>
                             <br/>
                             <Typography className={classes.recipeTextField} style={{fontSize:16}}>Visibility</Typography>
                             <FormControl className={classes.formControl}>
-                                <InputLabel id="select-visibility">Select visibility</InputLabel>
+                                <InputLabel id="select-visibility">Select visibility of recipe</InputLabel>
                                 <Select
                                     labelId="select-visibility"
                                     id="select-visibility"
                                     value={this.state.recipe_visibility}
                                     onChange={this.handleVisiblitySelect}
+                                    TransitionComponent={Fade}
                                 >
                                     <MenuItem value="public">Public</MenuItem>
                                     <MenuItem value="private">Private</MenuItem>
