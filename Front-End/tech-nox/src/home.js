@@ -18,6 +18,10 @@ import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import { fade, makeStyles } from '@material-ui/core/styles';
+import { useState } from 'react';
+import Axios from "axios";
+import RecipeReviewCard from './recipeCards'
+import Grid from '@material-ui/core/Grid';
 
 
 const drawerWidth = 240;
@@ -84,6 +88,9 @@ const useStyles = makeStyles(theme => ({
     borderColor:'orange',
     border:'1px solid orange',
   },
+  cardsContaioner:{
+    marginTop:'1rem'
+  },
   drawer: {
     width: drawerWidth,
     flexShrink: 0
@@ -102,6 +109,29 @@ const useStyles = makeStyles(theme => ({
 
 export default function PermanentDrawerLeft() {
   const classes = useStyles();
+
+  const [recipeList,setRecipeList] = useState([]);
+
+  const [recipeName, setRecipeName] = useState('');
+
+  const setRecipeNameValue = (event) => {
+    setRecipeName(event.target.value)
+    console.log(event.target.value)
+  }
+
+  const getRecipe = () => {
+    // all recipes are fetched here 
+    const API_KEY= 'c972685406f94d8cac65c8c6c48febeb'
+    const URL = 'https://api.spoonacular.com/recipes/search?apiKey='+ API_KEY +'&number=10&query=' + recipeName
+
+    Axios.get(URL).then((response)=>{
+      console.log(response.data.results)
+      setRecipeList(response.data.results)
+    })
+    
+  }
+
+  // set the recipe name form the input box on Keyup event
 
   return (
     <div className={classes.root}>
@@ -177,10 +207,16 @@ export default function PermanentDrawerLeft() {
                 input: classes.inputInput,
               }}
               inputProps={{ 'aria-label': 'search' }}
+              onBlur={setRecipeNameValue}
             />
           </div>
-          <Button className={classes.searchBtn}>Search</Button>
+          <Button className={classes.searchBtn} onClick={getRecipe}>Search</Button>
         </Toolbar>
+        <div className={classes.cardsContaioner}>
+            <Grid container spacing={1}>
+              {recipeList.map((recipe) => <Grid item><RecipeReviewCard title={recipe.title} /></Grid>)}
+            </Grid>
+        </div>
         </div>
         
       </main>
