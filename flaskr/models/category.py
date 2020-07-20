@@ -12,105 +12,120 @@ category_model = api.model('category', {
 @api.route('/category')
 class Category(Resource):
     @api.response(200, 'OK')
-    @api.doc(description='Retrieve all ingredients from all categories')
+    @api.doc(description='Retrieve list of ingredients for all categories')
     def get(self):
-        '''Retrieve all ingredients from all categories'''
+        '''Retrieve list of ingredients for all categories'''
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row for row in c.execute(
-            'SELECT IC.category_name, Ingredient.name                                                                                       '
-            'FROM                                                                                                                           '
-            '   (                                                                                                                           '
-  	        '       SELECT Category.id as category_id, Category.name as category_name, Ingredient_Category.ingredient_id AS ingredient_id   '
-            '       FROM Category                                                                                                           '
-            '       LEFT JOIN Ingredient_Category                                                                                           '
-  	        '       ON Category.id = Ingredient_Category.category_id                                                                        '
-            '   ) as IC                                                                                                                     '
-            'LEFT JOIN Ingredient                                                                                                           '
-            'ON Ingredient.id = IC.ingredient_id                                                                                            '
-            'ORDER BY IC.category_name, Ingredient.name                                                                                     '
-        )]
+        query = list(c.execute(
+            '''
+                SELECT IC.category_id, IC.category_name, Ingredient.id, Ingredient.name
+                FROM
+                    (
+  	                    SELECT Category.id AS category_id, Category.name AS category_name, Ingredient_Category.ingredient_id AS ingredient_id
+                        FROM Category
+                        LEFT JOIN Ingredient_Category
+  	                    ON Category.id = Ingredient_Category.category_id
+                    ) AS IC
+                LEFT JOIN Ingredient
+                ON Ingredient.id = IC.ingredient_id
+                ORDER BY IC.category_name, Ingredient.name
+            '''
+        ))
 
         conn.close()
 
-        if query:
-            data = {
-                'categories': []
-            }
+        data = {
+            'count': 0,
+            'categories': []
+        }
 
-            visited = []
+        visited = []
+        for row in query:
+            if row[2] is None:
+                visited.append(row[1])
 
-            for q in query:
-                if q[1] is None:
-                    visited.append(q[0])
+                temp = {
+                    'category_id': row[0],
+                    'category_name': row[1],
+                    'ingredients': []
+                }
+
+                data['categories'].append(temp)
+            else:
+                if row[1] not in visited:
+                    visited.append(row[1])
 
                     temp = {
-                        'category': q[0],
-                        'ingredients': []
+                        'category_id': row[0],
+                        'category_name': row[1],
+                        'ingredients': [{
+                            'ingredient_id': row[2],
+                            'ingredient_name': row[3]
+                        }]
                     }
 
                     data['categories'].append(temp)
                 else:
-                    if q[0] not in visited:
-                        visited.append(q[0])
+                    data['categories'][-1]['ingredients'].append({
+                            'ingredient_id': row[2],
+                            'ingredient_name': row[3]
+                        })
 
-                        temp = {
-                            'category': q[0],
-                            'ingredients': [q[1]]
-                        }
+        data['count'] = len(data['categories'])
 
-                        data['categories'].append(temp)
-                    else:
-                        data['categories'][-1]['ingredients'].append(q[1])
-
-            return json.loads(json.dumps(data)), 200
-
-        return json.loads(json.dumps({
-            'message': 'No categories exist'
-        })), 200
+        return json.loads(json.dumps(data)), 200
 
     @api.response(200, 'OK')
-    @api.doc(description='Retrieve all ingredients in a specific category')
+    @api.doc(description='Retrieve list of ingredients for a specific category')
     @api.expect(category_model)
     def post(self):
-        '''Retrieve all ingredients in a specific category'''
+        '''Retrieve list of ingredients for a specific category'''
         category = api.payload['category']
 
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row for row in c.execute(
-            'SELECT IC.category_name, Ingredient.name                                                                                       '
-            'FROM                                                                                                                           '
-            '   (                                                                                                                           '
-  	        '       SELECT Category.id as category_id, Category.name as category_name, Ingredient_Category.ingredient_id AS ingredient_id   '
-            '       FROM Category                                                                                                           '
-            '       LEFT JOIN Ingredient_Category                                                                                           '
-  	        '       ON Category.id = Ingredient_Category.category_id                                                                        '
-            '   ) as IC                                                                                                                     '
-            'LEFT JOIN Ingredient                                                                                                           '
-            'ON Ingredient.id = IC.ingredient_id                                                                                            '
-            'WHERE IC.category_name LIKE ?                                                                                                  '
-            'ORDER BY IC.category_name, Ingredient.name                                                                                     '
+        query = list(c.execute(
+            f'''
+                SELECT IC.category_id, IC.category_name, Ingredient.id, Ingredient.name
+                FROM
+                    (
+  	                    SELECT Category.id AS category_id, Category.name AS category_name, Ingredient_Category.ingredient_id AS ingredient_id
+                        FROM Category
+                        LEFT JOIN Ingredient_Category
+  	                    ON Category.id = Ingredient_Category.category_id
+                        WHERE Category.name LIKE ?
+                    ) AS IC
+                LEFT JOIN Ingredient
+                ON Ingredient.id = IC.ingredient_id
+                ORDER BY IC.category_name, Ingredient.name
+            '''
             , (category,)
-        )]
+        ))
 
         conn.close()
 
         if query:
             data = {
-                category: []
+                'category_id': query[0][0],
+                'category_name': query[0][1],
+                'ingredients': []
             }
 
-            for q in query:
-                if q[1] is None:
+            for row in query:
+                if row[2] is None:
                     break
 
-                data[category].append(q[1])
+                data['ingredients'].append({
+                    'ingredient_id': row[2],
+                    'ingredient_name': row[3]
+                })
 
             return json.loads(json.dumps(data)), 200
 
         return json.loads(json.dumps({
             'message': 'Category does not exist'
         })), 200
+        

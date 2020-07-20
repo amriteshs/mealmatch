@@ -27,7 +27,7 @@ class Ingredient(Resource):
                         FROM Ingredient
                         LEFT JOIN Ingredient_Category
   	                    ON Ingredient.id = Ingredient_Category.ingredient_id
-                    ) as IC
+                    ) AS IC
                 LEFT JOIN Category
                 ON Category.id = IC.category_id
                 ORDER BY IC.ingredient_name, Category.name
@@ -70,12 +70,13 @@ class Ingredient(Resource):
                         LEFT JOIN Ingredient_Category
   	                    ON Ingredient.id = Ingredient_Category.ingredient_id
                         WHERE Ingredient.name LIKE ?
-                    ) as IC
+                    ) AS IC
                 LEFT JOIN Category
                 ON Category.id = IC.category_id
                 ORDER BY IC.ingredient_name, Category.name
             '''
-        , (ingredient + '%',)))
+            , (ingredient + '%',)
+        ))
 
         conn.close()
 

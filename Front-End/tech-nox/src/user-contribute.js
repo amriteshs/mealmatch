@@ -457,7 +457,7 @@ class ContributePage extends React.Component {
                                             label=""
                                             name={obj.ingredient_name}
                                             variant="outlined"
-                                            helperText="Enter the ingredient quantity (for example: x2, 2 tblspoons)"
+                                            helperText="Enter the ingredient quantity (example: 2; 2 tblspoons)"
                                         />
                                     </div>
                                     </>
@@ -514,7 +514,7 @@ class ContributePage extends React.Component {
                                 name="prepTime"
                                 variant="outlined"
                                 defaultValue=""
-                                helperText="Enter an approximate time for recipe preparation (for example: 30-45 minutes)"
+                                helperText="Enter an approximate time for recipe preparation (example: 30-45 minutes)"
                             />
                             <br/>
                             <Typography className={classes.recipeTextField} style={{fontSize:16}}>Visibility</Typography>
