@@ -4,7 +4,6 @@ from flask_restplus import Resource, fields
 from flaskr import api, db_file
 from flaskr.db import db_connect
 
-print_flag = True
 
 recipe_model = api.model('recipe_id', {
     'recipe_id': fields.Integer(example=1)
@@ -302,3 +301,121 @@ class Recipe(Resource):
         return json.loads(json.dumps({
             'message': 'Recipe id does not exist'
         })), 200
+
+
+@api.route('/user-recipe')
+class UserRecipe(Resource):
+    @api.response(200, 'OK')
+    @api.doc(description='Retrieve list of recipes for a specific user')
+    def get(self):
+        '''Retrieve list of recipes for a specific user'''
+        username = api.payload['username']
+
+        conn = db_connect(db_file)
+        c = conn.cursor()
+
+        query = list(c.execute(
+            '''
+                SELECT a.recipe_id, a.visibility
+                FROM User_Recipe a
+                INNER JOIN User b ON a.user_id = b.id
+                WHERE b.username LIKE ?
+                ORDER BY a.recipe_id
+            '''
+            , (username,)
+        ))
+
+        data = {
+            'username': username,
+            'count': len(query),
+            'recipes': []
+        }
+
+        if query:
+            for row in query:
+                recipe_data = {
+                    'recipe_id': row[0],
+                    'recipe_name': None,
+                    'recipe_description': None,
+                    'preparation_time': None,
+                    'visibility': row[1],
+                    'mealtypes': [],
+                    'ingredients': [],
+                    'steps': []
+                }
+
+                # Retrieve basic recipe information
+                query1 = list(c.execute(
+                    '''
+                        SELECT a.name, a.description, a.prep_time
+                        FROM Recipe a
+                        WHERE a.id LIKE ?
+                    '''
+                    , (row[0],)
+                ))
+
+                if query1:
+                    recipe_data['recipe_name'] = query1[0]
+                    recipe_data['recipe_description'] = query1[1]
+                    recipe_data['preparation_time'] = query1[2]
+
+                # Retrieve all ingredients and their quantities
+                query2 = list(c.execute(
+                    '''
+                        SELECT b.id, b.name, a.ingredient_qty
+                        FROM Recipe_Ingredient a
+                        LEFT JOIN Ingredient b ON a.ingredient_id = b.id
+                        WHERE a.id LIKE ?
+                        ORDER BY b.name
+                    '''
+                    , (row[0],)
+                ))
+
+                if query2:
+                    for q in query2:
+                        recipe_data['ingredients'].append({
+                            'ingredient_id': q[0],
+                            'ingredient_name': q[1],
+                            'ingredient_qty': q[2]
+                        })
+
+                #  Retrieve all steps
+                query3 = list(c.execute(
+                    '''
+                        SELECT a.step_no, a.step_description
+                        FROM Recipe_Step a
+                        WHERE a.recipe_id LIKE ?
+                        ORDER BY a.step_no
+                    '''
+                    , (row[0],)
+                ))
+
+                if query3:
+                    for q in query3:
+                        recipe_data['steps'].append({
+                            'step_no': q[0],
+                            'step_description': q[1]
+                        })
+
+                # Retrieve mealtype information
+                query4 = list(c.execute(
+                    '''
+                        SELECT a.mealtype_id, b.name
+                        FROM MealType_Recipe a
+                        LEFT JOIN MealType b on a.mealtype_id = b.id
+                        WHERE a.recipe_id LIKE ?
+                        ORDER BY b.name
+                    '''
+                    , (row[0],)
+                ))
+
+                if query4:
+                    for q in query4:
+                        recipe_data['mealtypes'].append({
+                            'mealtype_id': q[0],
+                            'mealtype_name': q[1]
+                        })
+
+        conn.close()
+
+        return json.loads(json.dumps(data)), 200
