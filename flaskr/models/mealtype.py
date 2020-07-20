@@ -4,7 +4,6 @@ from flask_restplus import Resource, fields
 from flaskr import api, db_file
 from flaskr.db import db_connect
 
-print_flag = True
 
 mealtype_model = api.model('mealtype', {
     'mealtype': fields.String(example='Lunch')
@@ -13,97 +12,108 @@ mealtype_model = api.model('mealtype', {
 @api.route('/mealtype')
 class Mealtype(Resource):
     @api.response(200, 'OK')
-    @api.doc(description='Retrieve all recipes from all mealtypes')
+    @api.doc(description='Retrieve list of recipes for all meal types')
     def get(self):
-        '''Retrieve all recipes from all mealtypes'''
+        '''Retrieve list of recipes for all meal types'''
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row for row in c.execute(
-         '''SELECT a.name as meal_name,  c.name as recipe_name
-            FROM  MealType a
-            LEFT JOIN MealType_Recipe b on a.id = b.mealtype_id
-            LEFT JOIN Recipe c on b.recipe_id = c.id
-            ORDER BY a.name, c.name'''
-        )]
+        query = list(c.execute(
+            '''
+                SELECT a.id AS mealtype_id, a.name AS mealtype_name, c.id AS recipe_id, c.name AS recipe_name
+                FROM  MealType a
+                LEFT JOIN MealType_Recipe b ON a.id = b.mealtype_id
+                LEFT JOIN Recipe c ON b.recipe_id = c.id
+                ORDER BY a.name, c.name
+            '''
+        ))
 
         conn.close()
 
-        if query:
-            data = {
-                'mealtypes': []
-            }
+        data = {
+            'count': 0,
+            'mealtypes': []
+        }
 
-            visited = []
+        visited = []
+        for row in query:
+            if row[2] is None:
+                visited.append(row[1])
 
-            for q in query:
-                if q[1] is None:
-                    visited.append(q[0])
+                temp = {
+                    'mealtype_id': row[0],
+                    'mealtype_name': row[1],
+                    'recipes': []
+                }
+
+                data['mealtypes'].append(temp)
+            else:
+                if row[1] not in visited:
+                    visited.append(row[1])
 
                     temp = {
-                        'mealtype': q[0],
-                        'recipes': []
+                        'mealtype_id': row[0],
+                        'mealtype_name': row[1],
+                        'recipes': [{
+                            'recipe_id': row[2],
+                            'recipe_name': row[3]
+                        }]
                     }
 
                     data['mealtypes'].append(temp)
                 else:
-                    if q[0] not in visited:
-                        visited.append(q[0])
+                    data['mealtypes'][-1]['recipes'].append({
+                        'recipe_id': row[2],
+                        'recipe_name': row[3]
+                    })
 
-                        temp = {
-                            'mealtype': q[0],
-                            'recipes': [q[1]]
-                        }
+        data['count'] = len(data['mealtypes'])
 
-                        data['mealtypes'].append(temp)
-                    else:
-                        data['mealtypes'][-1]['recipes'].append(q[1])
-            if  print_flag:
-                print(query)
-                print(data)
-
-            return json.loads(json.dumps(data)), 200
-
-        return json.loads(json.dumps({
-            'message': 'No mealtypes exist'
-        })), 200
+        return json.loads(json.dumps(data)), 200
 
 
     @api.response(200, 'OK')
-    @api.doc(description='Retrieve all recipes in a specific mealtype')
+    @api.doc(description='Retrieve list of recipes for a specific meal type')
     @api.expect(mealtype_model)
     def post(self):
-        '''Retrieve all recipes in a specific mealtype'''
+        '''Retrieve list of recipes for a specific meal type'''
         mealtype = api.payload['mealtype']
 
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row for row in c.execute(
-         '''SELECT a.name as meal_name,  c.name as recipe_name
-            FROM  MealType a
-            LEFT JOIN MealType_Recipe b on a.id = b.mealtype_id
-            LEFT JOIN Recipe c on b.recipe_id = c.id
-            WHERE a.name LIKE ?
-            ORDER BY a.name, c.name''',
-            (mealtype,)
-        )]
+        query = list(c.execute(
+            '''
+                SELECT a.id AS mealtype_id, a.name AS mealtype_name, c.id AS recipe_id, c.name AS recipe_name
+                FROM  MealType a
+                LEFT JOIN MealType_Recipe b ON a.id = b.mealtype_id
+                LEFT JOIN Recipe c ON b.recipe_id = c.id
+                WHERE a.name LIKE ?
+                ORDER BY a.name, c.name
+            '''
+            , (mealtype,)
+        ))
 
         conn.close()
 
         if query:
             data = {
-                mealtype : []
+                'mealtype_id': query[0][0],
+                'meatype_name': query[0][1],
+                'recipes': []
             }
 
-            for q in query:
-                if q[1] is None:
+            for row in query:
+                if row[2] is None:
                     break
 
-                data[mealtype].append(q[1])
+                data['recipes'].append({
+                    'recipe_id': row[2],
+                    'recipe_name': row[3]
+                })
 
             return json.loads(json.dumps(data)), 200
 
         return json.loads(json.dumps({
-            'message': 'Mealtype does not exist'
+            'message': 'Meal type does not exist'
         })), 200

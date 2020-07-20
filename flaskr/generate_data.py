@@ -71,37 +71,12 @@ c = conn.cursor()
 
 # # test query
 query = [row for row in c.execute(
-            '''
-                SELECT IC.category_id, IC.category_name, Ingredient.id, Ingredient.name
-                FROM
-                   (
-  	                   SELECT Category.id as category_id, Category.name as category_name, Ingredient_Category.ingredient_id AS ingredient_id
-                       FROM Category
-                       LEFT JOIN Ingredient_Category
-  	                   ON Category.id = Ingredient_Category.category_id
-                   ) as IC
-                LEFT JOIN Ingredient
-                ON Ingredient.id = IC.ingredient_id
-                ORDER BY Ingredient.name, IC.category_name
-            '''
+         '''SELECT a.id AS mealtype_id, a.name AS mealtype_name, c.id AS recipe_id, c.name AS recipe_name
+            FROM  MealType a
+            LEFT JOIN MealType_Recipe b on a.id = b.mealtype_id
+            LEFT JOIN Recipe c on b.recipe_id = c.id
+            ORDER BY a.name, c.name'''
         )]
-
-ingredient='app'
-query = list(c.execute(
-            f'''
-                SELECT IC.category_id, IC.category_name, Ingredient.id, Ingredient.name
-                FROM
-                    (
-  	                    SELECT Category.id AS category_id, Category.name AS category_name, Ingredient_Category.ingredient_id AS ingredient_id
-                        FROM Category
-                        LEFT JOIN Ingredient_Category
-  	                    ON Category.id = Ingredient_Category.category_id
-                    ) AS IC
-                LEFT JOIN Ingredient
-                ON Ingredient.id = IC.ingredient_id
-                ORDER BY IC.category_name, Ingredient.name
-            '''
-        ))
 
 for q in query:
     print(q)
