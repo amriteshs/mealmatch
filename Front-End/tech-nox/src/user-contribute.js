@@ -200,6 +200,7 @@ class ContributePage extends React.Component {
             recipe_description_input: '',
             recipe_prep_time_input: '',
             selected_ingredients_qty_input: [],
+            recipe_steps_input: [],
             user_recipes: [],
             contributed_recipe: {
                 recipe_name: '',
@@ -217,6 +218,7 @@ class ContributePage extends React.Component {
         this.handleIngredientDelete = this.handleIngredientDelete.bind(this);
         this.handleCategorySelect = this.handleCategorySelect.bind(this);
         this.handleRecipeStepAdd = this.handleRecipeStepAdd.bind(this);
+        this.handleRecipeStepDelete = this.handleRecipeStepDelete.bind(this);
         this.handleRecipeImageUpload = this.handleRecipeImageUpload.bind(this);
         this.handleMealtypeSelect = this.handleMealtypeSelect.bind(this);
         this.handleVisibilitySelect = this.handleVisibilitySelect.bind(this);
@@ -226,6 +228,7 @@ class ContributePage extends React.Component {
         this.handleOnBlurRecipeDescription = this.handleOnBlurRecipeDescription.bind(this);
         this.handleOnBlurRecipePrepTime = this.handleOnBlurRecipePrepTime.bind(this);
         this.handleOnBlurIngredientQty = this.handleOnBlurIngredientQty.bind(this);
+        this.handleOnBlurRecipeSteps = this.handleOnBlurRecipeSteps.bind(this);
     }
 
     componentDidMount() {
@@ -269,17 +272,17 @@ class ContributePage extends React.Component {
         ingrCheck[event.target.value] = event.target.checked;
 
         if (event.target.checked) {
-            ingrSelect.push(this.state.ingredient_list[event.target.value]);
-            
+            let ingredient_details = this.state.ingredient_list[event.target.value];
+            ingredient_details.ingredient_qty = '';
+            ingrSelect.push(ingredient_details);
+
             ingrSelect.sort(function(x, y) {
                 if (x.ingredient_name < y.ingredient_name) { 
-                    return -1; 
+                    return -1;
                 }
-
                 if (x.ingredient_name > y.ingredient_name) { 
-                    return 1; 
+                    return 1;
                 }
-                
                 return 0;
             });
         } else {
@@ -320,14 +323,6 @@ class ContributePage extends React.Component {
         this.setState({
             selected_category: event.target.value
         });
-    }
-
-    handleRecipeStepAdd(event) {
-        
-    }
-
-    handleRecipeImageUpload(event) {
-
     }
 
     handleMealtypeSelect(event) {
@@ -378,21 +373,68 @@ class ContributePage extends React.Component {
         })
     }
 
-    handleOnBlurIngredientQty(event) {
-        let contribRecipe = {...this.state.contributed_recipe};
-        contribRecipe.ingredients[event.target.idx] = event.target.value;
+    handleOnBlurIngredientQty = obj => event => {
+        let ingrSelect = [...this.state.selected_ingredients];
+        
+        let index = ingrSelect.findIndex(x => x.ingredient_name === obj.ingredient_name);
+        if (index !== -1) {
+            ingrSelect[index].ingredient_qty = event.target.value;
+        }
+
+        console.log(ingrSelect);
 
         this.setState({
-            contributed_recipe: contribRecipe
-        })
+            selected_ingredients: ingrSelect
+        });
+    }
+
+    handleRecipeStepAdd(event) {
+        let recipeSteps = [...this.state.recipe_steps_input];
+        recipeSteps.push('');
+
+        this.setState({
+            recipe_steps_input: recipeSteps
+        });
+    }
+
+    handleRecipeStepDelete(index) {
+        let recipeSteps = [...this.state.recipe_steps_input];
+        recipeSteps.splice(index, 1);
+
+        this.setState({
+            recipe_steps_input: recipeSteps
+        });
+    }
+
+    handleOnBlurRecipeSteps = index => event => {
+        let recipeSteps = [...this.state.recipe_steps_input];
+        recipeSteps[index] = event.target.value;
+
+        this.setState({
+            recipe_steps_input: recipeSteps
+        });
+    }
+
+    handleRecipeImageUpload(event) {
+
     }
 
     handleSaveRecipe(event) {
-        console.log(this.state.recipe_name_input);
-        console.log(this.state.recipe_description_input);
-        console.log(this.state.recipe_prep_time_input);
-        console.log(this.state.selected_mealtypes);
-        console.log(this.state.selected_visibility);
+        var contribRecipe = {...this.state.contributed_recipe};
+
+        contribRecipe.recipe_name = this.state.recipe_name_input;
+        contribRecipe.recipe_description = this.state.recipe_description_input;
+        contribRecipe.preparation_time = this.state.recipe_prep_time_input;
+        contribRecipe.mealtypes = this.state.selected_mealtypes;
+        contribRecipe.visibility = this.state.selected_visibility;
+        contribRecipe.ingredients = this.state.selected_ingredients;
+        contribRecipe.steps = this.state.recipe_steps_input;
+
+        console.log(contribRecipe);
+
+        this.setState({
+            contributed_recipe: contribRecipe
+        });
     }
 
     render() {
@@ -552,7 +594,7 @@ class ContributePage extends React.Component {
                                                 label=""
                                                 name={obj.ingredient_name}
                                                 variant="outlined"
-                                                onBlur = {this.handleOnBlurIngredientQty.bind(this, obj, index)}
+                                                onBlur={this.handleOnBlurIngredientQty(obj)}
                                                 helperText="Enter the ingredient quantity (example: 2; 2 tblspoons)"
                                             />
                                         </Grid>
@@ -563,6 +605,41 @@ class ContributePage extends React.Component {
                             )}
                             <Divider className={classes.dividerStyle}/>
                             <Typography><b>Steps</b></Typography>
+                            {!this.state.recipe_steps_input.length ? 
+                            (
+                                <Typography style={{fontSize:14, marginTop:15}}>You have not added any steps to prepare the recipe.</Typography>
+                            ) : (
+                                <>
+                                <Grid container direction="row" justify="center" alignItems="center">
+                                {this.state.recipe_steps_input.map((obj, index) => (
+                                    <React.Fragment key={index}>
+                                        <Grid item xs={1}>
+                                            <IconButton 
+                                                name={"" + index} value={index} 
+                                                aria-label="delete" color="secondary" 
+                                                onClick={this.handleRecipeStepDelete.bind(this, index)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Grid>
+                                        <Grid item xs={11}>
+                                            <TextField
+                                                className={classes.recipeIngredientTextField}
+                                                inputProps={{maxLength:1500}}
+                                                autoFocus
+                                                margin="dense"
+                                                label=""
+                                                name={"" + index}
+                                                variant="outlined"
+                                                onBlur={this.handleOnBlurRecipeSteps(index)}
+                                                helperText={"Step " + (index + 1) + " for the recipe"}
+                                            />
+                                        </Grid>
+                                    </React.Fragment>
+                                ))}
+                                </Grid>
+                                </>
+                            )}
                             <Button
                                 onClick={this.handleRecipeStepAdd} 
                                 className={classes.addStepBtn1}
@@ -577,7 +654,7 @@ class ContributePage extends React.Component {
                                     labelId="select-mealtype"
                                     id="select-mealtype"
                                     value={this.state.selected_mealtype}
-                                    onChange={this.handleMealtypeSelect}
+                                    onChange={this.handleMealtypeSelect.bind(this)}
                                 >
                                     {/* <MenuItem value="">
                                         <em>None</em>
@@ -630,7 +707,6 @@ class ContributePage extends React.Component {
                                 onBlur = {this.handleOnBlurRecipePrepTime.bind(this)}
                                 helperText="Enter an approximate time for recipe preparation (example: 30-45 minutes)"
                             />
-                            <br/>
                             <Typography className={classes.recipeTextField} style={{fontSize:16}}>Visibility</Typography>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="select-visibility">Select visibility of recipe</InputLabel>
@@ -638,9 +714,9 @@ class ContributePage extends React.Component {
                                     labelId="select-visibility"
                                     id="select-visibility"
                                     value={this.state.selected_visibility}
-                                    onChange={this.handleVisibilitySelect}
+                                    onChange={this.handleVisibilitySelect.bind(this)}
                                 >
-                                    <MenuItem default value="Public">Public</MenuItem>
+                                    <MenuItem value="Public">Public</MenuItem>
                                     <MenuItem value="Private">Private</MenuItem>
                                 </Select>
                             </FormControl>
