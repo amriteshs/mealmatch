@@ -416,6 +416,8 @@ class UserRecipe(Resource):
                             'mealtype_name': q[1]
                         })
 
+                data['recipes'].append(recipe_data)
+
         conn.close()
 
         return json.loads(json.dumps(data)), 200

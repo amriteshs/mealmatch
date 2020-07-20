@@ -1,5 +1,5 @@
 import React from "react";
-import { fade, withStyles } from "@material-ui/core/styles";
+import { fade, withStyles, ThemeProvider } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
@@ -19,7 +19,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
-import Fade from '@material-ui/core/Fade';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -146,6 +145,13 @@ const useStyles = theme => ({
         border:'1px solid orange',
         marginTop: theme.spacing(3)
     },
+    saveRecipeBtn: {
+        marginLeft: theme.spacing(35),
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange',
+    },
     addRecipeDetailsDiv: {
         float: 'left',
         width: '70%'
@@ -157,7 +163,7 @@ const useStyles = theme => ({
         marginTop: theme.spacing(5)
     },
     recipeIngredientTextField: {
-        width: '70%',
+        width: '100%',
         marginTop: theme.spacing(2)
     },
     addRecipeStepsSection: {
@@ -169,12 +175,6 @@ const useStyles = theme => ({
     dividerStyle: {
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3)
-    },
-    recipeIngredientTypo: {
-        width: '25%',
-        margin: 'auto',
-        float: 'left',
-        marginRight: theme.spacing(2)
     }
 });
 
@@ -185,6 +185,8 @@ class ContributePage extends React.Component {
         this.state = {
             username: this.props.match.params.username,
             ingredient_count: 0,
+            category_count: 0,
+            mealtype_count: 0,
             ingredient_list: [],
             ingredient_checked: [],
             category_list: [],
@@ -193,7 +195,21 @@ class ContributePage extends React.Component {
             selected_category: '',
             selected_mealtype: '',
             selected_mealtypes: [],
-            recipe_visibility: 'public'
+            selected_visibility: 'Public',
+            recipe_name_input: '',
+            recipe_description_input: '',
+            recipe_prep_time_input: '',
+            selected_ingredients_qty_input: [],
+            user_recipes: [],
+            contributed_recipe: {
+                recipe_name: '',
+                recipe_description: '',
+                preparation_time: '',
+                visibility: 'Public',
+                mealtypes: [],
+                ingredients: [],
+                steps: []
+            }
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
@@ -204,11 +220,18 @@ class ContributePage extends React.Component {
         this.handleRecipeImageUpload = this.handleRecipeImageUpload.bind(this);
         this.handleMealtypeSelect = this.handleMealtypeSelect.bind(this);
         this.handleVisibilitySelect = this.handleVisibilitySelect.bind(this);
+        this.handleSaveRecipe = this.handleSaveRecipe.bind(this);
+        this.handleMealtypeDelete = this.handleMealtypeDelete.bind(this);
+        this.handleOnBlurRecipeName = this.handleOnBlurRecipeName.bind(this);
+        this.handleOnBlurRecipeDescription = this.handleOnBlurRecipeDescription.bind(this);
+        this.handleOnBlurRecipePrepTime = this.handleOnBlurRecipePrepTime.bind(this);
+        this.handleOnBlurIngredientQty = this.handleOnBlurIngredientQty.bind(this);
     }
 
     componentDidMount() {
         this.getIngredients();
         this.getCategories();
+        this.getMealtypes();
     }
 
     async getIngredients() {
@@ -225,7 +248,17 @@ class ContributePage extends React.Component {
         let response = await axios.get('/category');
 
         this.setState({
+            category_count: response.data.count,
             category_list: response.data.categories
+        });
+    }
+
+    async getMealtypes() {
+        let response = await axios.get('/mealtype');
+
+        this.setState({
+            mealtype_count: response.data.count,
+            mealtype_list: response.data.mealtypes
         });
     }
 
@@ -279,7 +312,7 @@ class ContributePage extends React.Component {
 
         this.setState({
             ingredient_checked: ingrCheck,
-            selected_ingredients: ingrSelect
+            selected_ingredients: ingrSelect,
         });
     }
 
@@ -298,11 +331,68 @@ class ContributePage extends React.Component {
     }
 
     handleMealtypeSelect(event) {
+        let mtSelect = [...this.state.selected_mealtypes];
 
+        let index = mtSelect.findIndex(x => x === event.target.value);
+        if (index === -1) {
+            mtSelect.push(event.target.value);
+            mtSelect.sort();
+        }
+
+        this.setState({
+            selected_mealtype: '',
+            selected_mealtypes: mtSelect
+        });
+    }
+
+    handleMealtypeDelete(obj) {
+        let mtSelect = [...this.state.selected_mealtypes];
+        mtSelect = mtSelect.filter(x => x !== obj);
+
+        this.setState({
+            selected_mealtypes: mtSelect
+        });
     }
 
     handleVisibilitySelect(event) {
+        this.setState({
+            selected_visibility: event.target.value
+        })
+    }
 
+    handleOnBlurRecipeName(event) {
+        this.setState({
+            recipe_name_input: event.target.value
+        })
+    }
+
+    handleOnBlurRecipeDescription(event) {
+        this.setState({
+            recipe_description_input: event.target.value
+        })
+    }
+
+    handleOnBlurRecipePrepTime(event) {
+        this.setState({
+            recipe_prep_time_input: event.target.value
+        })
+    }
+
+    handleOnBlurIngredientQty(event) {
+        let contribRecipe = {...this.state.contributed_recipe};
+        contribRecipe.ingredients[event.target.idx] = event.target.value;
+
+        this.setState({
+            contributed_recipe: contribRecipe
+        })
+    }
+
+    handleSaveRecipe(event) {
+        console.log(this.state.recipe_name_input);
+        console.log(this.state.recipe_description_input);
+        console.log(this.state.recipe_prep_time_input);
+        console.log(this.state.selected_mealtypes);
+        console.log(this.state.selected_visibility);
     }
 
     render() {
@@ -386,8 +476,8 @@ class ContributePage extends React.Component {
                             <em>None</em>
                         </MenuItem>
                         {this.state.category_list.map((obj, index) => (
-                            <MenuItem key={index} value={obj.category}>{obj.category}</MenuItem>
-                        ))};
+                            <MenuItem key={index} value={obj.category_name}>{obj.category_name}</MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
                 <div className={classes.ingrSelectionDiv}>
@@ -419,9 +509,10 @@ class ContributePage extends React.Component {
                                 id="recipeName"
                                 label="Name"
                                 fullWidth
-                                name="recipeName"
+                                name="recipe_name"
                                 required
                                 variant="outlined"
+                                onBlur = {this.handleOnBlurRecipeName.bind(this)}
                                 helperText="Enter the name of the recipe (max. 100 characters)"
                             />
                             <TextField
@@ -433,9 +524,10 @@ class ContributePage extends React.Component {
                                 id="recipeDescription"
                                 label="Description"
                                 fullWidth
-                                name="recipeDescription"
+                                name="recipe_description"
                                 required
                                 variant="outlined"
+                                onBlur = {this.handleOnBlurRecipeDescription.bind(this)}
                                 helperText="Write a description for the recipe (max. 500 characters)"
                             />
                             <Divider className={classes.dividerStyle}/>
@@ -445,23 +537,28 @@ class ContributePage extends React.Component {
                                 <Typography style={{fontSize:14, marginTop:10}}>You have not selected any ingredients.</Typography>
                             ) : (
                                 <>
+                                <Grid container direction="row" justify="center" alignItems="center">
                                 {this.state.selected_ingredients.map((obj, index) => (
-                                    <>
-                                    <div style={{display:'flex'}}>
-                                        <Typography align="left" className={classes.recipeIngredientTypo}>{obj.ingredient_name}</Typography>
-                                        <TextField
-                                            className={classes.recipeIngredientTextField}
-                                            inputProps={{maxLength:25}}
-                                            autoFocus
-                                            margin="dense"
-                                            label=""
-                                            name={obj.ingredient_name}
-                                            variant="outlined"
-                                            helperText="Enter the ingredient quantity (example: 2; 2 tblspoons)"
-                                        />
-                                    </div>
-                                    </>
+                                    <React.Fragment key={index}>
+                                        <Grid item xs={5}>
+                                            <Typography align="left">{obj.ingredient_name}</Typography>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <TextField
+                                                className={classes.recipeIngredientTextField}
+                                                inputProps={{maxLength:25}}
+                                                autoFocus
+                                                margin="dense"
+                                                label=""
+                                                name={obj.ingredient_name}
+                                                variant="outlined"
+                                                onBlur = {this.handleOnBlurIngredientQty.bind(this, obj, index)}
+                                                helperText="Enter the ingredient quantity (example: 2; 2 tblspoons)"
+                                            />
+                                        </Grid>
+                                    </React.Fragment>
                                 ))}
+                                </Grid>
                                 </>
                             )}
                             <Divider className={classes.dividerStyle}/>
@@ -486,7 +583,7 @@ class ContributePage extends React.Component {
                                         <em>None</em>
                                     </MenuItem> */}
                                     {this.state.mealtype_list.map((obj, index) => (
-                                        <MenuItem key={index} value={obj.mealtype}>{obj.mealtype}</MenuItem>
+                                        <MenuItem key={index} value={obj.mealtype_name}>{obj.mealtype_name}</MenuItem>
                                     ))};
                                 </Select>
                             </FormControl>
@@ -495,10 +592,26 @@ class ContributePage extends React.Component {
                                 <Typography style={{fontSize:14, marginTop:10}}>You have not tagged any meal types for the recipe.</Typography>
                             ) : (
                                 <>
+                                <Grid container direction="row" justify="center" alignItems="center">
                                 {this.state.selected_mealtypes.map((obj, index) => (
-                                    <>
-                                    </>
+                                    <React.Fragment key={index}>
+                                        <Grid item xs={1}>
+                                            <IconButton 
+                                                name={obj} value={index} 
+                                                aria-label="delete" color="secondary" 
+                                                onClick={this.handleMealtypeDelete.bind(this, obj)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Grid>
+                                        <Grid item xs={11}>
+                                            {/* <Typography> */}
+                                                {obj}
+                                            {/* </Typography> */}
+                                        </Grid>
+                                    </React.Fragment>
                                 ))}
+                                </Grid>
                                 </>
                             )}
                             <Divider className={classes.dividerStyle}/>
@@ -511,9 +624,10 @@ class ContributePage extends React.Component {
                                 id="prepTime"
                                 label="Preparation time"
                                 fullWidth
-                                name="prepTime"
+                                name="preparation_time"
                                 variant="outlined"
                                 defaultValue=""
+                                onBlur = {this.handleOnBlurRecipePrepTime.bind(this)}
                                 helperText="Enter an approximate time for recipe preparation (example: 30-45 minutes)"
                             />
                             <br/>
@@ -523,14 +637,21 @@ class ContributePage extends React.Component {
                                 <Select
                                     labelId="select-visibility"
                                     id="select-visibility"
-                                    value={this.state.recipe_visibility}
-                                    onChange={this.handleVisiblitySelect}
-                                    TransitionComponent={Fade}
+                                    value={this.state.selected_visibility}
+                                    onChange={this.handleVisibilitySelect}
                                 >
-                                    <MenuItem value="Public">Public</MenuItem>
+                                    <MenuItem default value="Public">Public</MenuItem>
                                     <MenuItem value="Private">Private</MenuItem>
                                 </Select>
                             </FormControl>
+                            <br/>
+                            <Divider className={classes.dividerStyle}/>
+                            <Button
+                                onClick={this.handleSaveRecipe}
+                                className={classes.saveRecipeBtn}
+                            >
+                                Save Recipe
+                            </Button>
                         </div>
                         <div className={classes.addRecipeImageDiv}>
                             <Button
