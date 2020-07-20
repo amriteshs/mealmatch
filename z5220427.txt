@@ -53,3 +53,13 @@ Week 4
  - Planned tasks for upcoming week with scrum master (Malay).
  - Did minor design tweaks for better User experience.
 
+ Week 7
+ - implementated recipe search view.
+ - added recipe card component and details.
+ - conducted git workflow workshop for fellow teamates.
+ - assisted fellow temmate to debug code issues and helped in implementation of delete ingredient feature.
+ - Collaborated with fellow temmate to implement 'Ingredient Category' component.
+ - conducted code review for fellow teammates.
+ - designed novel feature with fellow teammates.
+ - added design improvements to project.
+

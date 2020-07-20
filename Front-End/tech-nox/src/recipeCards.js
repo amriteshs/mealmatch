@@ -31,6 +31,15 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.shortest,
     }),
   },
+  titleSize:{
+    fontSize:"1rem",
+    fontWeight:"bold",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    width:"14rem",
+    textOverflow:"ellipsis",
+    textTransform:"capitalize"
+  },
   expandOpen: {
     transform: 'rotate(180deg)',
   },
@@ -50,28 +59,17 @@ export default function RecipeReviewCard(props) {
   return (
     <Card className={classes.root}>
       <CardHeader
-        avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={props.title}
-        subheader="September 14, 2016"
+        title={<div title={props.title} className={classes.titleSize}>{props.title}</div>}
       />
       <CardMedia
         className={classes.media}
-        image="/static/images/cards/paella.jpg"
-        title="Paella dish"
+        image={props.imageUrl}
+        title={props.title}
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook together with your
-          guests. Add 1 cup of frozen peas along with the mussels, if you like.
+            <div>Time to Prepare the dish : {props.time} minutes </div>
+            <div>Serves people : {props.serves}</div>
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
