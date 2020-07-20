@@ -89,6 +89,7 @@ class LoginPage extends React.Component {
                             fullWidth
                             name='userName'
                             required
+                            inputProps={{maxLength:30}}
                             onBlur = {this.HandleOnBlur.bind(this)}
                         />
                         <TextField
@@ -99,6 +100,7 @@ class LoginPage extends React.Component {
                             fullWidth
                             name='password'
                             required
+                            inputProps={{maxLength:50}}
                             onBlur = {this.HandleOnBlur.bind(this)}
                         />
                     </DialogContent>
