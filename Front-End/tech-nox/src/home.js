@@ -13,26 +13,27 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import Button from '@material-ui/core/Button';
-
-// for search bar
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import { fade, makeStyles } from '@material-ui/core/styles';
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Axios from "axios";
-import RecipeReviewCard from './recipeCards'
+import RecipeReviewCard from './recipeCards';
 import Grid from '@material-ui/core/Grid';
 
+import 'fontsource-roboto';
 
+const topAppBarWidth = 64;
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: "flex"
+    display: "flex",
+    fontFamily: 'Roboto'
   },
   appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
+    // width: `calc(100% - ${drawerWidth}px)`,
+    // marginLeft: drawerWidth,
     backgroundColor:'black'
   },
   searchBar:{
@@ -96,6 +97,7 @@ const useStyles = makeStyles(theme => ({
     flexShrink: 0
   },
   drawerPaper: {
+    marginTop: topAppBarWidth,
     width: drawerWidth
   },
   // necessary for content to be below app bar
@@ -106,8 +108,6 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3)
   }
 }));
-
-
 
 export default function PermanentDrawerLeft() {
   const classes = useStyles();
@@ -150,7 +150,7 @@ export default function PermanentDrawerLeft() {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap className={classes.title}>
-            Meal Match
+            mealmatch
           </Typography>
           <Button color="inherit" href='/login'>Login</Button>
         </Toolbar>

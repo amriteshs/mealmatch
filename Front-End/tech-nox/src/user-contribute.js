@@ -124,11 +124,10 @@ const useStyles = theme => ({
         padding: theme.spacing(1)
     },
     mainContainer: {
-        height: '100vh',
+        height: '100%',
         margin: theme.spacing(0),
         backgroundColor: 'white',
-        border: '0.1px solid grey',
-        borderRadius: '5px',
+        border: '1px solid grey',
         padding: theme.spacing(2),
         overflow: 'auto'
     },
@@ -175,6 +174,9 @@ const useStyles = theme => ({
     dividerStyle: {
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3)
+    },
+    ingrCheckBox: {
+        marginTop: 0
     }
 });
 
@@ -201,7 +203,7 @@ class ContributePage extends React.Component {
             recipe_prep_time_input: '',
             selected_ingredients_qty_input: [],
             recipe_steps_input: [],
-            user_recipes: [],
+            user_recipes: []
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
@@ -476,7 +478,7 @@ class ContributePage extends React.Component {
                             <Typography>You have not selected any ingredients.</Typography>
                         ) : (
                         <>
-                            <Grid container direction="row" justify="center" alignItems="center">
+                            <Grid container spacing={0} direction="row" justify="center" alignItems="center">
                                 <Grid item xs={4}>
                                     <Button
                                         onClick={this.handleCheckReset} 
@@ -535,7 +537,7 @@ class ContributePage extends React.Component {
                     <FormGroup>
                     {this.state.ingredient_list.map((obj, index) => (
                         <FormControlLabel
-                            key={index} control={<Checkbox checked={this.state.ingredient_checked[index]} 
+                            key={index} className={classes.ingrCheckBox} control={<Checkbox checked={this.state.ingredient_checked[index]} 
                             onChange={this.handleCheckChange} name={obj.ingredient_name} value={index} color="primary" />}
                             label={obj.ingredient_name}
                         />
@@ -585,9 +587,14 @@ class ContributePage extends React.Component {
                             <Typography><b>Ingredients</b></Typography>
                             {!this.state.selected_ingredients.length ? 
                             (
-                                <Typography style={{fontSize:14, marginTop:10}}>You have not selected any ingredients.</Typography>
+                                <Typography style={{fontSize:14, marginTop:10}}>You have not selected any ingredients for the recipe.</Typography>
                             ) : (
                                 <>
+                                {this.state.selected_ingredients.length === 1 ? (
+                                    <Typography style={{fontSize:14, marginTop:10}}>You have selected 1 ingredient to prepare the recipe.</Typography>
+                                ) : (
+                                    <Typography style={{fontSize:14, marginTop:10}}>You have selected {this.state.selected_ingredients.length} ingredients to prepare the recipe.</Typography>
+                                )}
                                 <Grid container direction="row" justify="center" alignItems="center">
                                 {this.state.selected_ingredients.map((obj, index) => (
                                     <React.Fragment key={index}>
@@ -618,6 +625,11 @@ class ContributePage extends React.Component {
                                 <Typography style={{fontSize:14, marginTop:15}}>You have not added any steps to prepare the recipe.</Typography>
                             ) : (
                                 <>
+                                {this.state.recipe_steps_input.length === 1 ? (
+                                    <Typography style={{fontSize:14, marginTop:10}}>You have added 1 step to prepare the recipe.</Typography>
+                                ) : (
+                                    <Typography style={{fontSize:14, marginTop:10}}>You have added {this.state.recipe_steps_input.length} steps to prepare the recipe.</Typography>
+                                )}
                                 <Grid container direction="row" justify="center" alignItems="center">
                                 {this.state.recipe_steps_input.map((obj, index) => (
                                     <React.Fragment key={index}>
@@ -680,6 +692,11 @@ class ContributePage extends React.Component {
                                 <Typography style={{fontSize:14, marginTop:10}}>You have not tagged any meal types for the recipe.</Typography>
                             ) : (
                                 <>
+                                {this.state.selected_mealtypes.length === 1 ? (
+                                    <Typography style={{fontSize:14, marginTop:10}}>You have tagged 1 meal type for the recipe.</Typography>
+                                ) : (
+                                    <Typography style={{fontSize:14, marginTop:10}}>You have tagged {this.state.selected_mealtypes.length} meal types for the recipe.</Typography>
+                                )}
                                 <Grid container direction="row" justify="center" alignItems="center">
                                 {this.state.selected_mealtypes.map((obj, index) => (
                                     <React.Fragment key={index}>
@@ -713,6 +730,7 @@ class ContributePage extends React.Component {
                                 fullWidth
                                 name="preparation_time"
                                 variant="outlined"
+                                required
                                 defaultValue=""
                                 onBlur = {this.handleOnBlurRecipePrepTime.bind(this)}
                                 helperText="Enter an approximate time for recipe preparation (example: 30-45 minutes)"
