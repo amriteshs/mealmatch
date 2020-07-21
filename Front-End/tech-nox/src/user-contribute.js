@@ -21,6 +21,9 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import AddIcon from '@material-ui/icons/Add';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -137,7 +140,7 @@ const useStyles = theme => ({
         color:'orange',
         backgroundColor:'black',
         borderColor:'orange',
-        border:'1px solid orange',
+        border:'1px solid orange'
     },
     addStepBtn1: {
         color:'orange',
@@ -154,13 +157,21 @@ const useStyles = theme => ({
         marginTop: theme.spacing(3),
         marginLeft: theme.spacing(2)
     },
-    saveRecipeBtn: {
-        marginLeft: theme.spacing(35),
-        marginBottom: theme.spacing(3),
+    backBtn: {
         color:'orange',
         backgroundColor:'black',
         borderColor:'orange',
         border:'1px solid orange',
+        marginBottom: theme.spacing(1),
+        float: 'right'
+    },
+    saveRecipeBtn: {
+        marginLeft: theme.spacing(50),
+        marginBottom: theme.spacing(3),
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange'
     },
     addRecipeDetailsDiv: {
         float: 'left',
@@ -219,32 +230,35 @@ class ContributePage extends React.Component {
             recipe_people_served_input: 1,
             selected_ingredients_qty_input: [],
             recipe_steps_input: [],
-            user_recipes: []
+            user_recipes: [],
+            isAddingRecipe: false,
+            isUpdatingRecipe: false
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
         this.handleCheckReset = this.handleCheckReset.bind(this);
         this.handleIngredientDelete = this.handleIngredientDelete.bind(this);
         this.handleCategorySelect = this.handleCategorySelect.bind(this);
-        this.handleRecipeStepAdd = this.handleRecipeStepAdd.bind(this);
-        this.handleRecipeStepDelete = this.handleRecipeStepDelete.bind(this);
-        this.handleRecipeImageUpload = this.handleRecipeImageUpload.bind(this);
         this.handleMealtypeSelect = this.handleMealtypeSelect.bind(this);
-        this.handleVisibilitySelect = this.handleVisibilitySelect.bind(this);
-        this.handleSaveRecipe = this.handleSaveRecipe.bind(this);
         this.handleMealtypeDelete = this.handleMealtypeDelete.bind(this);
+        this.handleMealTypeReset = this.handleMealTypeReset.bind(this);
         this.handleOnBlurRecipeName = this.handleOnBlurRecipeName.bind(this);
         this.handleOnBlurRecipeDescription = this.handleOnBlurRecipeDescription.bind(this);
         this.handleOnBlurRecipePrepTime = this.handleOnBlurRecipePrepTime.bind(this);
+        this.handleOnBlurRecipePeopleServed = this.handleOnBlurRecipePeopleServed.bind(this);
         this.handleOnBlurIngredientQty = this.handleOnBlurIngredientQty.bind(this);
         this.handleOnChangeIngredientQty = this.handleOnChangeIngredientQty.bind(this);
         this.handleOnBlurRecipeSteps = this.handleOnBlurRecipeSteps.bind(this);
         this.handleOnChangeRecipeSteps = this.handleOnChangeRecipeSteps.bind(this);
-        this.handleOnBlurRecipePeopleServed = this.handleOnBlurRecipePeopleServed.bind(this);
+        this.handleRecipeStepAdd = this.handleRecipeStepAdd.bind(this);
+        this.handleRecipeStepDelete = this.handleRecipeStepDelete.bind(this);
         this.handleRecipeStepReset = this.handleRecipeStepReset.bind(this);
         this.handleRecipeStepMoveUp = this.handleRecipeStepMoveUp.bind(this);
         this.handleRecipeStepMoveDown = this.handleRecipeStepMoveDown.bind(this);
-        this.handleMealTypeReset = this.handleMealTypeReset.bind(this);
+        this.handleRecipeImageUpload = this.handleRecipeImageUpload.bind(this);
+        this.handleVisibilitySelect = this.handleVisibilitySelect.bind(this);
+        this.handleSaveRecipe = this.handleSaveRecipe.bind(this);
+        this.handleContributeFormBack = this.handleContributeFormBack.bind(this);
     }
 
     componentDidMount() {
@@ -529,9 +543,32 @@ class ContributePage extends React.Component {
             'ingredients': this.state.selected_ingredients,
             'steps': this.state.recipe_steps_input,
         })
+
+        // this.setState({
+        //     isAddingRecipe: false,
+        //     isUpdatingRecipe: false
+        // });
         
         console.log(response);
     }
+
+    handleContributeFormBack() {
+        this.setState({
+            isAddingRecipe: false
+        });
+    }
+
+    // handleContributeViewAdd() {
+    //     this.setState({
+    //         isAddingRecipe: true
+    //     });
+    // }
+
+    // handleContributeViewUpdate(event) {
+    //     this.setState({
+    //         isUpdatingRecipe: true
+    //     });
+    // }
 
     render() {
         const { classes } = this.props;
@@ -567,7 +604,8 @@ class ContributePage extends React.Component {
                                 <Grid item xs={4}>
                                     <Button
                                         onClick={this.handleCheckReset} 
-                                        className={classes.clearBtn}>Clear
+                                        className={classes.clearBtn}>
+                                    Clear
                                     </Button>
                                 </Grid>
                                 <Grid item xs={8}>
@@ -631,6 +669,13 @@ class ContributePage extends React.Component {
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
+                    <Button
+                        onClick={this.handleContributeFormBack} 
+                        className={classes.backBtn}
+                        startIcon={<ArrowBackIosIcon />}
+                    >
+                        Back
+                    </Button>
                     <Container className={classes.mainContainer}>
                     <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>ENTER THE RECIPE DETAILS</b></Typography>
                         <div className={classes.addRecipeDetailsDiv}>
@@ -788,6 +833,7 @@ class ContributePage extends React.Component {
                             <Button
                                 onClick={this.handleRecipeStepAdd} 
                                 className={classes.addStepBtn1}
+                                startIcon={<AddIcon />}
                             >
                                 Add Step
                             </Button>
@@ -848,9 +894,7 @@ class ContributePage extends React.Component {
                                             </IconButton>
                                         </Grid>
                                         <Grid item xs={11}>
-                                            {/* <Typography> */}
-                                                {obj}
-                                            {/* </Typography> */}
+                                            {obj}
                                         </Grid>
                                     </React.Fragment>
                                 ))}
@@ -878,7 +922,7 @@ class ContributePage extends React.Component {
                                 inputProps={{maxLength:2}}
                                 margin="dense"
                                 id="peopleServed"
-                                label="People Served"
+                                label="People served"
                                 fullWidth
                                 name="people_served"
                                 variant="outlined"
@@ -918,6 +962,7 @@ class ContributePage extends React.Component {
                             <Button
                                 onClick={this.handleRecipeImageUpload} 
                                 className={classes.addStepBtn}
+                                startIcon={<CloudUploadIcon />}
                             >
                                 Upload Image
                             </Button>

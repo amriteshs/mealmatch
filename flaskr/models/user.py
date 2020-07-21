@@ -21,9 +21,10 @@ signup_model = api.model('signup', {
 class Login(Resource):
     @api.response(200, 'Login successful')
     @api.response(404, 'Login failed')
-    @api.doc(description='User Login')
+    @api.doc(description='User login')
     @api.expect(login_model, validate=True)
     def post(self):
+        '''User login'''
         username = api.payload['username']
         password = api.payload['password']
 
@@ -49,9 +50,10 @@ class Login(Resource):
 class Signup(Resource):
     @api.response(201, 'Signup successful')
     @api.response(404, 'Signup failed')
-    @api.doc(description='User Signup')
+    @api.doc(description='User signup')
     @api.expect(signup_model, validate=True)
     def post(self):
+        '''User signup'''
         username = api.payload['username']
         password = api.payload['password']
         first_name = api.payload['first_name']
