@@ -19,6 +19,11 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -146,6 +151,7 @@ const useStyles = theme => ({
     },
     saveRecipeBtn: {
         marginLeft: theme.spacing(35),
+        marginBottom: theme.spacing(3),
         color:'orange',
         backgroundColor:'black',
         borderColor:'orange',
@@ -154,9 +160,6 @@ const useStyles = theme => ({
     addRecipeDetailsDiv: {
         float: 'left',
         width: '70%'
-    },
-    addRecipeImageDiv: {
-        float: 'right'
     },
     recipeTextField: {
         marginTop: theme.spacing(5)
@@ -177,7 +180,23 @@ const useStyles = theme => ({
     },
     ingrCheckBox: {
         marginTop: 0
-    }
+    },
+    addRecipeImageDiv: {
+        marginTop: theme.spacing(8),
+        textAlign: 'center'
+    },
+    imageUpload: {
+        marginBottom: theme.spacing(0),
+        width:180,
+        height:180,
+        display:'inline-block'
+    },
+    addStepBtn2: {
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange',
+    },
 });
 
 class ContributePage extends React.Component {
@@ -758,9 +777,14 @@ class ContributePage extends React.Component {
                             </Button>
                         </div>
                         <div className={classes.addRecipeImageDiv}>
+                            <img 
+                                src={require('./static/images/recipe_placeholder.jpg')}
+                                className={classes.imageUpload}
+                            />
+                            <br/>
                             <Button
                                 onClick={this.handleRecipeImageUpload} 
-                                className={classes.addStepBtn}
+                                className={classes.addStepBtn2}
                             >
                                 Upload Image
                             </Button>

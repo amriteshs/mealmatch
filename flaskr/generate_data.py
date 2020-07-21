@@ -69,11 +69,11 @@ c = conn.cursor()
 # conn.commit()
 
 # # test query
-query = list(c.execute(
+query = c.execute(
             '''
-                SELECT * FROM Recipe_Ingredient
+                SELECT * FROM Ingredient
             '''
-        ))
+        )
 
 for q in query:
     print(q)
