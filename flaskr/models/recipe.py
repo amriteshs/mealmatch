@@ -9,6 +9,17 @@ recipe_model = api.model('recipe_id', {
     'recipe_id': fields.Integer(example=1)
 })
 
+contributed_recipe_model = api.model('contributed_recipe', {
+    'username': fields.String,
+    'recipe_name': fields.String,
+    'recipe_description': fields.String,
+    'preparation_time': fields.String,
+    'visibility': fields.String,
+    'mealtypes': fields.List(fields.String),
+    'ingredients': fields.Raw,
+    'steps': fields.List(fields.String)
+})
+
 @api.route('/recipe')
 class Recipe(Resource):
     @api.response(200, 'OK')
@@ -303,7 +314,7 @@ class Recipe(Resource):
         })), 200
 
 
-@api.route('/user-recipe')
+@api.route('/user_recipe')
 class UserRecipe(Resource):
     @api.response(200, 'OK')
     @api.doc(description='Retrieve list of recipes for a specific user')
@@ -421,3 +432,65 @@ class UserRecipe(Resource):
         conn.close()
 
         return json.loads(json.dumps(data)), 200
+
+    @api.response(200, 'OK')
+    @api.doc(description='Import a recipe contributed by a user')
+    @api.expect(contributed_recipe_model)
+    def post(self):
+        '''Import a recipe contributed by a user'''
+        username = api.payload['username']
+        recipe_name = api.payload['recipe_name']
+        recipe_description = api.payload['recipe_description']
+        preparation_time = api.payload['preparation_time']
+        visibility = api.payload['visibility']
+        mealtypes = api.payload['mealtypes']
+        ingredients = api.payload['ingredients']
+        steps = api.payload['steps']
+
+        conn = db_connect(db_file)
+        c = conn.cursor()
+
+        c.execute('INSERT INTO Recipe VALUES(null,?,?,?)', (recipe_name, recipe_description, preparation_time))
+
+        recipe_id = list(c.execute(
+            '''
+                SELECT MAX(a.id)
+                from Recipe a
+            '''
+        ))[0][0]
+
+        user_id = list(c.execute(
+            '''
+                SELECT a.id
+                from User a
+                WHERE a.username LIKE ?
+            ''',
+            (username,)
+        ))[0][0]
+
+        c.execute('INSERT INTO User_Recipe VALUES(null,?,?,?)', (user_id, recipe_id, visibility))
+        
+        for s in range(len(steps)):
+            c.execute('INSERT INTO Recipe_Step VALUES(null,?,?,?)', (recipe_id, s + 1, steps[s]))
+        
+        for i in ingredients:
+            c.execute('INSERT INTO Recipe_Ingredient VALUES(null,?,?,?)', (recipe_id, i['ingredient_id'], i['ingredient_qty']))
+
+        for m in mealtypes:
+            m_id = list(c.execute(
+                '''
+                    SELECT a.id
+                    FROM Mealtype a
+                    WHERE a.name LIKE ?
+                '''
+                , (m,)
+            ))[0][0]
+
+            c.execute('INSERT INTO Mealtype_Recipe VALUES(null,?,?)', (m_id, recipe_id))
+
+        conn.commit()
+        conn.close()
+
+        return json.loads(json.dumps({
+            'message': 'Recipe contributed successfully'
+        })), 200

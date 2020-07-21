@@ -70,13 +70,11 @@ c = conn.cursor()
 # conn.commit()
 
 # # test query
-query = [row for row in c.execute(
-         '''SELECT a.id AS mealtype_id, a.name AS mealtype_name, c.id AS recipe_id, c.name AS recipe_name
-            FROM  MealType a
-            LEFT JOIN MealType_Recipe b on a.id = b.mealtype_id
-            LEFT JOIN Recipe c on b.recipe_id = c.id
-            ORDER BY a.name, c.name'''
-        )]
+query = list(c.execute(
+            '''
+                SELECT * FROM Recipe_Step
+            '''
+        ))
 
 for q in query:
     print(q)

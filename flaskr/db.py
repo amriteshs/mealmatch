@@ -68,7 +68,6 @@ def db_init(db_file):
                     user_id         INTEGER         NOT NULL,
                     recipe_id       INTEGER         NOT NULL,
                     visibility      VARCHAR(10)     NOT NULL,
-                    version         INTEGER         NOT NULL    DEFAULT 1,
                     PRIMARY KEY(id),
                     FOREIGN KEY(user_id) REFERENCES User(id),
                     FOREIGN KEY(recipe_id) REFERENCES Recipe(id)

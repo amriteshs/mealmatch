@@ -202,15 +202,6 @@ class ContributePage extends React.Component {
             selected_ingredients_qty_input: [],
             recipe_steps_input: [],
             user_recipes: [],
-            contributed_recipe: {
-                recipe_name: '',
-                recipe_description: '',
-                preparation_time: '',
-                visibility: 'Public',
-                mealtypes: [],
-                ingredients: [],
-                steps: []
-            }
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
@@ -238,30 +229,42 @@ class ContributePage extends React.Component {
     }
 
     async getIngredients() {
-        let response = await axios.get('/ingredient');
-        
-        this.setState({
-            ingredient_count: response.data.count,
-            ingredient_list: response.data.ingredients,
-            ingredient_checked: new Array(response.data.count).fill().map((item, idx) => item = false)
+        await axios.get('/ingredient')
+        .then(response => {
+            this.setState({
+                ingredient_count: response.data.count,
+                ingredient_list: response.data.ingredients,
+                ingredient_checked: new Array(response.data.count).fill().map((item, idx) => item = false)
+            })
+        })
+        .catch(error => {
+            console.log(error)
         });
     }
 
     async getCategories() {
-        let response = await axios.get('/category');
-
-        this.setState({
-            category_count: response.data.count,
-            category_list: response.data.categories
+        await axios.get('/category')
+        .then(response => {
+            this.setState({
+                category_count: response.data.count,
+                category_list: response.data.categories
+            })
+        })
+        .catch(error => {
+            console.log(error)
         });
     }
 
     async getMealtypes() {
-        let response = await axios.get('/mealtype');
-
-        this.setState({
-            mealtype_count: response.data.count,
-            mealtype_list: response.data.mealtypes
+        await axios.get('/mealtype')
+        .then(response => {
+            this.setState({
+                mealtype_count: response.data.count,
+                mealtype_list: response.data.mealtypes
+            })
+        })
+        .catch(error => {
+            console.log(error)
         });
     }
 
@@ -404,6 +407,8 @@ class ContributePage extends React.Component {
         this.setState({
             recipe_steps_input: recipeSteps
         });
+
+        // this.forceUpdate();
     }
 
     handleOnBlurRecipeSteps = index => event => {
@@ -415,26 +420,36 @@ class ContributePage extends React.Component {
         });
     }
 
+    handleOnChangeRecipeSteps = index => event => {
+        // let recipeSteps = [...this.state.recipe_steps_input];
+        // recipeSteps[index] = event.target.value;
+
+        // this.setState({
+        //     recipe_steps_input: recipeSteps
+        // });
+    }
+
     handleRecipeImageUpload(event) {
 
     }
 
-    handleSaveRecipe(event) {
-        var contribRecipe = {...this.state.contributed_recipe};
+    async handleSaveRecipe() {
+        let response = await axios.post('/user_recipe', {
+            'username': this.state.username,
+            'recipe_name': this.state.recipe_name_input,
+            'recipe_description': this.state.recipe_description_input,
+            'preparation_time': this.state.recipe_prep_time_input,
+            'visibility': this.state.selected_visibility,
+            'mealtypes': this.state.selected_mealtypes,
+            'ingredients': this.state.selected_ingredients,
+            'steps': this.state.recipe_steps_input
+        })
+        
+        console.log(response);
 
-        contribRecipe.recipe_name = this.state.recipe_name_input;
-        contribRecipe.recipe_description = this.state.recipe_description_input;
-        contribRecipe.preparation_time = this.state.recipe_prep_time_input;
-        contribRecipe.mealtypes = this.state.selected_mealtypes;
-        contribRecipe.visibility = this.state.selected_visibility;
-        contribRecipe.ingredients = this.state.selected_ingredients;
-        contribRecipe.steps = this.state.recipe_steps_input;
-
-        console.log(contribRecipe);
-
-        this.setState({
-            contributed_recipe: contribRecipe
-        });
+        // this.setState({
+        //     contributed_recipe: contribRecipe
+        // });
     }
 
     render() {
@@ -616,7 +631,7 @@ class ContributePage extends React.Component {
                                         <Grid item xs={1}>
                                             <IconButton 
                                                 name={"" + index} value={index} 
-                                                aria-label="delete" color="secondary" 
+                                                aria-label="delete" color="secondary"
                                                 onClick={this.handleRecipeStepDelete.bind(this, index)}
                                             >
                                                 <DeleteIcon />
@@ -626,13 +641,17 @@ class ContributePage extends React.Component {
                                             <TextField
                                                 className={classes.recipeIngredientTextField}
                                                 inputProps={{maxLength:1500}}
+                                                multiline
+                                                rows={3}
                                                 autoFocus
                                                 margin="dense"
                                                 label=""
                                                 name={"" + index}
                                                 variant="outlined"
+                                                onChange={this.handleOnChangeRecipeSteps(index)}
                                                 onBlur={this.handleOnBlurRecipeSteps(index)}
-                                                helperText={"Step " + (index + 1) + " for the recipe"}
+                                                // onBlur={() => this.props.actions.updateInput(this.state.recipe_steps_input[index])} 
+                                                helperText={"Step " + (index + 1) + " to prepare the recipe"}
                                             />
                                         </Grid>
                                     </React.Fragment>
