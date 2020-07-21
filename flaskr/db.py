@@ -36,6 +36,7 @@ def db_init(db_file):
                     name            VARCHAR(100)    NOT NULL,
                     description     VARCHAR(500),
                     prep_time       VARCHAR(25),
+                    people_served   INTEGER,
                     PRIMARY KEY(id)
                 )
             '''

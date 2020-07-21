@@ -178,9 +178,6 @@ const useStyles = theme => ({
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3)
     },
-    ingrCheckBox: {
-        marginTop: 0
-    },
     addRecipeImageDiv: {
         marginTop: theme.spacing(8),
         textAlign: 'center'
@@ -190,13 +187,7 @@ const useStyles = theme => ({
         width:180,
         height:180,
         display:'inline-block'
-    },
-    addStepBtn2: {
-        color:'orange',
-        backgroundColor:'black',
-        borderColor:'orange',
-        border:'1px solid orange',
-    },
+    }
 });
 
 class ContributePage extends React.Component {
@@ -220,6 +211,7 @@ class ContributePage extends React.Component {
             recipe_name_input: '',
             recipe_description_input: '',
             recipe_prep_time_input: '',
+            recipe_people_served_input: 1,
             selected_ingredients_qty_input: [],
             recipe_steps_input: [],
             user_recipes: []
@@ -241,6 +233,7 @@ class ContributePage extends React.Component {
         this.handleOnBlurRecipePrepTime = this.handleOnBlurRecipePrepTime.bind(this);
         this.handleOnBlurIngredientQty = this.handleOnBlurIngredientQty.bind(this);
         this.handleOnBlurRecipeSteps = this.handleOnBlurRecipeSteps.bind(this);
+        this.handleOnBlurRecipePeopleServed = this.handleOnBlurRecipePeopleServed.bind(this);
     }
 
     componentDidMount() {
@@ -376,25 +369,37 @@ class ContributePage extends React.Component {
     handleVisibilitySelect(event) {
         this.setState({
             selected_visibility: event.target.value
-        })
+        });
     }
 
     handleOnBlurRecipeName(event) {
         this.setState({
             recipe_name_input: event.target.value
-        })
+        });
     }
 
     handleOnBlurRecipeDescription(event) {
         this.setState({
             recipe_description_input: event.target.value
-        })
+        });
     }
 
     handleOnBlurRecipePrepTime(event) {
         this.setState({
             recipe_prep_time_input: event.target.value
-        })
+        });
+    }
+
+    handleOnBlurRecipePeopleServed(event) {
+        const parsedVal = Number(event.target.value);
+
+        if (parsedVal) {
+            if (parsedVal > 0) {
+                this.setState({
+                    recipe_people_served_input: parsedVal
+                });
+            }
+        }
     }
 
     handleOnBlurIngredientQty = obj => event => {
@@ -458,10 +463,11 @@ class ContributePage extends React.Component {
             'recipe_name': this.state.recipe_name_input,
             'recipe_description': this.state.recipe_description_input,
             'preparation_time': this.state.recipe_prep_time_input,
+            'people_served': this.state.recipe_people_served_input,
             'visibility': this.state.selected_visibility,
             'mealtypes': this.state.selected_mealtypes,
             'ingredients': this.state.selected_ingredients,
-            'steps': this.state.recipe_steps_input
+            'steps': this.state.recipe_steps_input,
         })
         
         console.log(response);
@@ -525,9 +531,7 @@ class ContributePage extends React.Component {
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
-                                        {/* <Typography> */}
-                                            {obj.ingredient_name}
-                                        {/* </Typography> */}
+                                        {obj.ingredient_name}
                                     </Grid>
                                 </React.Fragment>
                             ))}
@@ -555,8 +559,9 @@ class ContributePage extends React.Component {
                 <div className={classes.ingrSelectionDiv}>
                     <FormGroup>
                     {this.state.ingredient_list.map((obj, index) => (
+                        ((this.state.selected_category === '') || (this.state.selected_category === obj.category_name)) &&
                         <FormControlLabel
-                            key={index} className={classes.ingrCheckBox} control={<Checkbox checked={this.state.ingredient_checked[index]} 
+                            key={index} control={<Checkbox checked={this.state.ingredient_checked[index]} 
                             onChange={this.handleCheckChange} name={obj.ingredient_name} value={index} color="primary" />}
                             label={obj.ingredient_name}
                         />
@@ -754,6 +759,20 @@ class ContributePage extends React.Component {
                                 onBlur = {this.handleOnBlurRecipePrepTime.bind(this)}
                                 helperText="Enter an approximate time for recipe preparation (example: 30-45 minutes)"
                             />
+                            <TextField
+                                className={classes.recipeTextField}
+                                inputProps={{maxLength:2}}
+                                margin="dense"
+                                id="peopleServed"
+                                label="People Served"
+                                fullWidth
+                                name="people_served"
+                                variant="outlined"
+                                required
+                                defaultValue=""
+                                onBlur = {this.handleOnBlurRecipePeopleServed.bind(this)}
+                                helperText="Enter the number of people that can be served by the prepared dish (defaults to 1)"
+                            />
                             <Typography className={classes.recipeTextField} style={{fontSize:16}}>Visibility</Typography>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="select-visibility">Select visibility of recipe</InputLabel>
@@ -784,7 +803,7 @@ class ContributePage extends React.Component {
                             <br/>
                             <Button
                                 onClick={this.handleRecipeImageUpload} 
-                                className={classes.addStepBtn2}
+                                className={classes.addStepBtn}
                             >
                                 Upload Image
                             </Button>

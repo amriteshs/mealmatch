@@ -4,31 +4,31 @@ import sqlite3
 conn = sqlite3.connect('data.db')
 c = conn.cursor()
 
-# ingredients = ['apple', 'mango', 'peas', 'carrot', 'eggplant']
-# categories = ['Dairy', 'Fruits', 'Vegetables']
-# mealtypes = ['Breakfast', 'Lunch', 'Snacks', 'Dinner', 'Desserts']
-# recipes = ['Blueberry Milk Shake', 'Omelette', 'Butter Chicken', 'Kale Juice', 'Potato Salad',
-# 'Bread Toast', 'Ricotta Spinach', 'Apple Pie', 'Chocolate Pancake', 'Beef Noodles', 'Pad Thai',
-# 'Fruit Salad']
+ingredients = ['apple', 'mango', 'peas', 'carrot', 'eggplant']
+categories = ['Dairy', 'Fruits', 'Vegetables']
+mealtypes = ['Breakfast', 'Lunch', 'Snacks', 'Dinner', 'Desserts']
+recipes = ['Blueberry Milk Shake', 'Omelette', 'Butter Chicken', 'Kale Juice', 'Potato Salad',
+'Bread Toast', 'Ricotta Spinach', 'Apple Pie', 'Chocolate Pancake', 'Beef Noodles', 'Pad Thai',
+'Fruit Salad']
 
-# # enter ingredients
-# for i in range(len(ingredients)):
-#     c.execute('INSERT INTO Ingredient VALUES(null,?)', (ingredients[i],))
+# enter ingredients
+for i in range(len(ingredients)):
+    c.execute('INSERT INTO Ingredient VALUES(null,?)', (ingredients[i],))
 
-# # enter categories
-# for i in range(len(categories)):
-#     c.execute('INSERT INTO Category VALUES(null,?)', (categories[i],))
+# enter categories
+for i in range(len(categories)):
+    c.execute('INSERT INTO Category VALUES(null,?)', (categories[i],))
 
-# # enter mealtypes
-# for i in range(len(mealtypes)):
-#     c.execute('INSERT INTO MealType VALUES(null,?)', (mealtypes[i],))
+# enter mealtypes
+for i in range(len(mealtypes)):
+    c.execute('INSERT INTO MealType VALUES(null,?)', (mealtypes[i],))
 
-# # specify category for each ingredient
-# c.execute('INSERT INTO Ingredient_Category VALUES(null,2,1)')
-# c.execute('INSERT INTO Ingredient_Category VALUES(null,2,2)')
-# c.execute('INSERT INTO Ingredient_Category VALUES(null,3,3)')
-# c.execute('INSERT INTO Ingredient_Category VALUES(null,3,4)')
-# c.execute('INSERT INTO Ingredient_Category VALUES(null,3,5)')
+# specify category for each ingredient
+c.execute('INSERT INTO Ingredient_Category VALUES(null,2,1)')
+c.execute('INSERT INTO Ingredient_Category VALUES(null,2,2)')
+c.execute('INSERT INTO Ingredient_Category VALUES(null,3,3)')
+c.execute('INSERT INTO Ingredient_Category VALUES(null,3,4)')
+c.execute('INSERT INTO Ingredient_Category VALUES(null,3,5)')
 
 # # enter recipes
 # for i in range(len(recipes)):
@@ -66,12 +66,12 @@ c = conn.cursor()
 # # c.execute('INSERT INTO User_Recipe VALUES(null,1,1)')
 # # c.execute('INSERT INTO User_Recipe VALUES(null,2,2)')
 
-# conn.commit()
+conn.commit()
 
 # # test query
 query = c.execute(
             '''
-                SELECT * FROM Ingredient
+                SELECT * FROM User
             '''
         )
 

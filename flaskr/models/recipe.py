@@ -13,6 +13,7 @@ recipe_details_model = api.model('recipe_create_details', {
     'recipe_name': fields.String,
     'recipe_description': fields.String,
     'preparation_time': fields.String,
+    'people_served': fields.String,
     'visibility': fields.String,
     'mealtypes': fields.List(fields.String),
     'ingredients': fields.Raw,
@@ -357,6 +358,7 @@ class UserRecipe(Resource):
                     'recipe_name': None,
                     'recipe_description': None,
                     'preparation_time': None,
+                    'people_served': None,
                     'visibility': row[1],
                     'mealtypes': [],
                     'ingredients': [],
@@ -366,7 +368,7 @@ class UserRecipe(Resource):
                 # Retrieve basic recipe information
                 query1 = list(c.execute(
                     '''
-                        SELECT a.name, a.description, a.prep_time
+                        SELECT a.name, a.description, a.prep_time, a.people_served
                         FROM Recipe a
                         WHERE a.id LIKE ?
                     '''
@@ -377,6 +379,7 @@ class UserRecipe(Resource):
                     recipe_data['recipe_name'] = query1[0][0]
                     recipe_data['recipe_description'] = query1[0][1]
                     recipe_data['preparation_time'] = query1[0][2]
+                    recipe_data['people_served'] = query1[0][3]
 
                 # Retrieve all ingredients and their quantities
                 query2 = list(c.execute(
@@ -449,6 +452,7 @@ class UserRecipe(Resource):
         recipe_name = api.payload['recipe_name']
         recipe_description = api.payload['recipe_description']
         preparation_time = api.payload['preparation_time']
+        people_served = api.payload['people_served']
         visibility = api.payload['visibility']
         mealtypes = api.payload['mealtypes']
         ingredients = api.payload['ingredients']
@@ -457,7 +461,7 @@ class UserRecipe(Resource):
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        c.execute('INSERT INTO Recipe VALUES(null,?,?,?)', (recipe_name, recipe_description, preparation_time))
+        c.execute('INSERT INTO Recipe VALUES(null,?,?,?,?)', (recipe_name, recipe_description, preparation_time, people_served))
 
         recipe_id = list(c.execute(
             '''
@@ -511,6 +515,7 @@ class UserRecipe(Resource):
         recipe_name = api.payload['recipe_name']
         recipe_description = api.payload['recipe_description']
         preparation_time = api.payload['preparation_time']
+        people_served = api.payload['people_served']
         visibility = api.payload['visibility']
         mealtypes = api.payload['mealtypes']
         ingredients = api.payload['ingredients']
@@ -525,10 +530,11 @@ class UserRecipe(Resource):
                 SET
                     name = ?,
                     description = ?,
-                    prep_time = ?
+                    prep_time = ?,
+                    people_served = ?
                 WHERE id = ?
             '''
-            , (recipe_name, recipe_description, preparation_time, recipe_id)
+            , (recipe_name, recipe_description, preparation_time, people_served, recipe_id)
         )
 
         c.execute(
