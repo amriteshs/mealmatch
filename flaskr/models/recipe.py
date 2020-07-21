@@ -9,8 +9,18 @@ recipe_id_model = api.model('recipe_id', {
     'recipe_id': fields.Integer(example=1)
 })
 
-contributed_recipe_model = api.model('contributed_recipe', {
-    'username': fields.String,
+recipe_details_model = api.model('recipe_create_details', {
+    'recipe_name': fields.String,
+    'recipe_description': fields.String,
+    'preparation_time': fields.String,
+    'visibility': fields.String,
+    'mealtypes': fields.List(fields.String),
+    'ingredients': fields.Raw,
+    'steps': fields.List(fields.String)
+})
+
+recipe_details_model_v2 = api.model('recipe_update_details', {
+    'recipe_id': fields.Integer,
     'recipe_name': fields.String,
     'recipe_description': fields.String,
     'preparation_time': fields.String,
@@ -433,7 +443,7 @@ class UserRecipe(Resource):
 
     @api.response(200, 'OK')
     @api.doc(description='Import a recipe contributed by a user')
-    @api.expect(contributed_recipe_model)
+    @api.expect(recipe_details_model)
     def post(self, username):
         '''Import a recipe contributed by a user'''
         recipe_name = api.payload['recipe_name']
@@ -490,6 +500,97 @@ class UserRecipe(Resource):
 
         return json.loads(json.dumps({
             'message': 'Recipe contributed successfully'
+        })), 200
+
+    @api.response(200, 'OK')
+    @api.doc(description='Update a recipe contributed by a user')
+    @api.expect(recipe_details_model_v2)
+    def put(self, username):
+        '''Update a recipe contributed by a user'''
+        recipe_id = api.payload['recipe_id']
+        recipe_name = api.payload['recipe_name']
+        recipe_description = api.payload['recipe_description']
+        preparation_time = api.payload['preparation_time']
+        visibility = api.payload['visibility']
+        mealtypes = api.payload['mealtypes']
+        ingredients = api.payload['ingredients']
+        steps = api.payload['steps']
+
+        conn = db_connect(db_file)
+        c = conn.cursor()
+
+        c.execute(
+            '''
+                UPDATE Recipe
+                SET
+                    name = ?,
+                    description = ?,
+                    prep_time = ?
+                WHERE id = ?
+            '''
+            , (recipe_name, recipe_description, preparation_time, recipe_id)
+        )
+
+        c.execute(
+            '''
+                UPDATE User_Recipe
+                SET 
+                    visibility = ?
+                WHERE recipe_id = ?
+            '''
+            , (visibility, recipe_id)
+        )
+
+        c.execute(
+            '''
+                DELETE
+                FROM Recipe_Step
+                WHERE recipe_id = ?
+            '''
+            , (recipe_id,)
+        )
+
+        for s in range(len(steps)):
+            c.execute('INSERT INTO Recipe_Step VALUES(null,?,?,?)', (recipe_id, s + 1, steps[s]))
+
+        c.execute(
+            '''
+                DELETE
+                FROM Recipe_Ingredient
+                WHERE recipe_id = ?
+            '''
+            , (recipe_id,)
+        )
+
+        for i in ingredients:
+            c.execute('INSERT INTO Recipe_Ingredient VALUES(null,?,?,?)', (recipe_id, i['ingredient_id'], i['ingredient_qty']))
+
+        c.execute(
+            '''
+                DELETE
+                FROM Mealtype_Recipe
+                WHERE recipe_id = ?
+            '''
+            , (recipe_id,)
+        )
+        
+        for m in mealtypes:
+            m_id = list(c.execute(
+                '''
+                    SELECT a.id
+                    FROM Mealtype a
+                    WHERE a.name LIKE ?
+                '''
+                , (m,)
+            ))[0][0]
+
+            c.execute('INSERT INTO Mealtype_Recipe VALUES(null,?,?)', (m_id, recipe_id))
+
+        conn.commit()
+        conn.close()
+
+        return json.loads(json.dumps({
+            'message': 'Recipe updated successfully'
         })), 200
 
     @api.response(200, 'OK')
