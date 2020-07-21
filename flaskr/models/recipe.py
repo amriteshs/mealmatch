@@ -364,9 +364,9 @@ class UserRecipe(Resource):
                 ))
 
                 if query1:
-                    recipe_data['recipe_name'] = query1[0]
-                    recipe_data['recipe_description'] = query1[1]
-                    recipe_data['preparation_time'] = query1[2]
+                    recipe_data['recipe_name'] = query1[0][0]
+                    recipe_data['recipe_description'] = query1[0][1]
+                    recipe_data['preparation_time'] = query1[0][2]
 
                 # Retrieve all ingredients and their quantities
                 query2 = list(c.execute(
@@ -374,7 +374,7 @@ class UserRecipe(Resource):
                         SELECT b.id, b.name, a.ingredient_qty
                         FROM Recipe_Ingredient a
                         LEFT JOIN Ingredient b ON a.ingredient_id = b.id
-                        WHERE a.id LIKE ?
+                        WHERE a.recipe_id LIKE ?
                         ORDER BY b.name
                     '''
                     , (row[0],)
