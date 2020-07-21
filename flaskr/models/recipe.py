@@ -5,7 +5,7 @@ from flaskr import api, db_file
 from flaskr.db import db_connect
 
 
-recipe_model = api.model('recipe_id', {
+recipe_id_model = api.model('recipe_id', {
     'recipe_id': fields.Integer(example=1)
 })
 
@@ -175,7 +175,7 @@ class Recipe(Resource):
 
     @api.response(200, 'OK')
     @api.doc(description='Retrieve all information for a specific recipe')
-    @api.expect(recipe_model)
+    @api.expect(recipe_id_model)
     def post(self):
         '''Retrieve all information for a specific recipe'''
         recipe_id = api.payload['recipe_id']
@@ -314,14 +314,12 @@ class Recipe(Resource):
         })), 200
 
 
-@api.route('/user_recipe')
+@api.route('/recipe/<string:username>')
 class UserRecipe(Resource):
     @api.response(200, 'OK')
     @api.doc(description='Retrieve list of recipes for a specific user')
-    def get(self):
+    def get(self, username):
         '''Retrieve list of recipes for a specific user'''
-        username = api.payload['username']
-
         conn = db_connect(db_file)
         c = conn.cursor()
 
@@ -436,9 +434,8 @@ class UserRecipe(Resource):
     @api.response(200, 'OK')
     @api.doc(description='Import a recipe contributed by a user')
     @api.expect(contributed_recipe_model)
-    def post(self):
+    def post(self, username):
         '''Import a recipe contributed by a user'''
-        username = api.payload['username']
         recipe_name = api.payload['recipe_name']
         recipe_description = api.payload['recipe_description']
         preparation_time = api.payload['preparation_time']
@@ -493,4 +490,66 @@ class UserRecipe(Resource):
 
         return json.loads(json.dumps({
             'message': 'Recipe contributed successfully'
+        })), 200
+
+    @api.response(200, 'OK')
+    @api.doc(description='Delete a recipe contributed by a user')
+    @api.expect(recipe_id_model)
+    def delete(self, username):
+        '''Delete a recipe contributed by a user'''
+        recipe_id = api.payload['recipe_id']
+
+        conn = db_connect(db_file)
+        c = conn.cursor()
+
+        c.execute(
+            '''
+                DELETE
+                FROM Recipe
+                WHERE id = ?
+            '''
+            , (recipe_id,)
+        )
+
+        c.execute(
+            '''
+                DELETE
+                FROM User_Recipe
+                WHERE recipe_id = ?
+            '''
+            , (recipe_id,)
+        )
+
+        c.execute(
+            '''
+                DELETE
+                FROM Recipe_Step
+                WHERE recipe_id = ?
+            '''
+            , (recipe_id,)
+        )
+
+        c.execute(
+            '''
+                DELETE
+                FROM Recipe_Ingredient
+                WHERE recipe_id = ?
+            '''
+            , (recipe_id,)
+        )
+
+        c.execute(
+            '''
+                DELETE
+                FROM Mealtype_Recipe
+                WHERE recipe_id = ?
+            '''
+            , (recipe_id,)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return json.loads(json.dumps({
+            'message': 'Recipe deleted successfully'
         })), 200

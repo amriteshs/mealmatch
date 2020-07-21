@@ -384,8 +384,6 @@ class ContributePage extends React.Component {
             ingrSelect[index].ingredient_qty = event.target.value;
         }
 
-        console.log(ingrSelect);
-
         this.setState({
             selected_ingredients: ingrSelect
         });
@@ -407,8 +405,6 @@ class ContributePage extends React.Component {
         this.setState({
             recipe_steps_input: recipeSteps
         });
-
-        // this.forceUpdate();
     }
 
     handleOnBlurRecipeSteps = index => event => {
@@ -434,7 +430,9 @@ class ContributePage extends React.Component {
     }
 
     async handleSaveRecipe() {
-        let response = await axios.post('/user_recipe', {
+        const endpoint = '/recipe/' + this.state.username;
+
+        let response = await axios.post(endpoint, {
             'username': this.state.username,
             'recipe_name': this.state.recipe_name_input,
             'recipe_description': this.state.recipe_description_input,
@@ -446,10 +444,6 @@ class ContributePage extends React.Component {
         })
         
         console.log(response);
-
-        // this.setState({
-        //     contributed_recipe: contribRecipe
-        // });
     }
 
     render() {
@@ -604,7 +598,6 @@ class ContributePage extends React.Component {
                                             <TextField
                                                 className={classes.recipeIngredientTextField}
                                                 inputProps={{maxLength:25}}
-                                                autoFocus
                                                 margin="dense"
                                                 label=""
                                                 name={obj.ingredient_name}
@@ -643,7 +636,6 @@ class ContributePage extends React.Component {
                                                 inputProps={{maxLength:1500}}
                                                 multiline
                                                 rows={3}
-                                                autoFocus
                                                 margin="dense"
                                                 label=""
                                                 name={"" + index}
@@ -715,7 +707,6 @@ class ContributePage extends React.Component {
                             <TextField
                                 className={classes.recipeTextField}
                                 inputProps={{maxLength:25}}
-                                autoFocus
                                 margin="dense"
                                 id="prepTime"
                                 label="Preparation time"
