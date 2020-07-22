@@ -6,7 +6,7 @@ from flaskr.db import db_connect
 
 
 ingredient_model = api.model('ingredient', {
-    'ingredient': fields.String(example='eggs')
+    'ingredient': fields.String(example='egg')
 })
 
 @api.route('/ingredient')
@@ -18,36 +18,78 @@ class Ingredient(Resource):
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row[0] for row in c.execute('SELECT name FROM Ingredient ORDER BY name')]
-
+        query = list(c.execute(
+            '''
+                SELECT IC.ingredient_id, IC.ingredient_name, Category.id, Category.name
+                FROM
+                    (
+  	                    SELECT Ingredient.id AS ingredient_id, Ingredient.name AS ingredient_name, Ingredient_Category.category_id AS category_id
+                        FROM Ingredient
+                        LEFT JOIN Ingredient_Category
+  	                    ON Ingredient.id = Ingredient_Category.ingredient_id
+                    ) AS IC
+                LEFT JOIN Category
+                ON Category.id = IC.category_id
+                ORDER BY IC.ingredient_name, Category.name
+            '''
+        ))
+        
         conn.close()
 
+        data = []
+        for row in query:
+            data.append({
+                'ingredient_id': row[0],
+                'ingredient_name': row[1],
+                'category_id': row[2],
+                'category_name': row[3]
+            })
+
         return json.loads(json.dumps({
-            'count': len(query),
-            'ingredients': query
+            'count': len(data),
+            'ingredients': data
         })), 200
 
     @api.response(200, 'OK')
-    @api.doc(description='Retrieve the searched ingredient')
+    @api.doc(description='Retrieve list of searched ingredients')
     @api.expect(ingredient_model, validate=True)
     def post(self):
-        '''Retrieve the searched ingredient'''
+        '''Retrieve list of searched ingredients'''
         ingredient = api.payload['ingredient']
 
         conn = db_connect(db_file)
         c = conn.cursor()
 
-        query = [row[0] for row in c.execute(f'SELECT name FROM Ingredient WHERE name LIKE ? ORDER BY name', (ingredient + '%',))]
-
-        if query:
-            conn.close()
-
-            return json.loads(json.dumps({
-                'ingredients': query
-            })), 200
+        query = list(c.execute(
+            f'''
+                SELECT IC.ingredient_id, IC.ingredient_name, Category.id, Category.name
+                FROM
+                    (
+  	                    SELECT Ingredient.id AS ingredient_id, Ingredient.name AS ingredient_name, Ingredient_Category.category_id AS category_id
+                        FROM Ingredient
+                        LEFT JOIN Ingredient_Category
+  	                    ON Ingredient.id = Ingredient_Category.ingredient_id
+                        WHERE Ingredient.name LIKE ?
+                    ) AS IC
+                LEFT JOIN Category
+                ON Category.id = IC.category_id
+                ORDER BY IC.ingredient_name, Category.name
+            '''
+            , (ingredient + '%',)
+        ))
 
         conn.close()
 
+        data = []
+        for row in query:
+            data.append({
+                'ingredient_id': row[0],
+                'ingredient_name': row[1],
+                'category_id': row[2],
+                'category_name': row[3]
+            })
+
         return json.loads(json.dumps({
-            'message': 'Ingredient does not exist'
+            'count': len(data),
+            'ingredients': data
         })), 200

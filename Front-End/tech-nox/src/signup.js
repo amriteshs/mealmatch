@@ -75,6 +75,8 @@ class SignUpPage extends React.Component {
                             label="First Name"
                             type="email"
                             fullWidth
+                            variant="outlined"
+                            inputProps={{maxLength:30}}
                             onBlur={this.setFirstName.bind(this)}
                         />
                         <TextField
@@ -83,6 +85,8 @@ class SignUpPage extends React.Component {
                             label="Last Name"
                             type="email"
                             fullWidth
+                            variant="outlined"
+                            inputProps={{maxLength:50}}
                             onBlur={this.setLastName.bind(this)}
                         />
                         <TextField
@@ -91,6 +95,8 @@ class SignUpPage extends React.Component {
                             label="User Name"
                             type="email"
                             fullWidth
+                            variant="outlined"
+                            inputProps={{maxLength:30}}
                             onBlur={this.setUserName.bind(this)}
                         />
                         <TextField
@@ -99,6 +105,8 @@ class SignUpPage extends React.Component {
                             label="Password"
                             type="password"
                             fullWidth
+                            variant="outlined"
+                            inputProps={{maxLength:50}}
                             onBlur={this.setPassword.bind(this)}
                         />
                     </DialogContent>
