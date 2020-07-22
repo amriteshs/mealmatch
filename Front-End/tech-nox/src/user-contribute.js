@@ -31,7 +31,6 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import AddIcon from '@material-ui/icons/Add';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
@@ -95,7 +94,7 @@ const useStyles = theme => ({
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-        width: '50ch',
+            width: '50ch',
         },
     },
     searchIcon: {
@@ -269,6 +268,7 @@ class ContributePage extends React.Component {
             selected_mealtype: '',
             selected_mealtypes: [],
             selected_visibility: 'Public',
+            selected_recipe_id: -1,
             recipe_name_input: '',
             recipe_description_input: '',
             recipe_prep_time_input: '',
@@ -277,6 +277,7 @@ class ContributePage extends React.Component {
             recipe_steps_input: [],
             user_recipes: [],
             isAddingRecipe: false,
+            isUpdatingRecipe: false,
             isCardExpanded: false
         };
 
@@ -306,6 +307,8 @@ class ContributePage extends React.Component {
         this.handleContributeFormBack = this.handleContributeFormBack.bind(this);
         this.handleContributeViewAdd = this.handleContributeViewAdd.bind(this);
         this.handleCardExpandClick = this.handleCardExpandClick.bind(this);
+        this.handleRecipeUpdate = this.handleRecipeUpdate.bind(this);
+        this.handleRecipeDelete = this.handleRecipeDelete.bind(this);
     }
 
     componentDidMount() {
@@ -594,73 +597,120 @@ class ContributePage extends React.Component {
     async handleSaveRecipe() {
         const endpoint = '/recipe/' + this.state.username;
 
-        let response = await axios.post(endpoint, {
-            'username': this.state.username,
-            'recipe_name': this.state.recipe_name_input,
-            'recipe_description': this.state.recipe_description_input,
-            'preparation_time': this.state.recipe_prep_time_input,
-            'people_served': this.state.recipe_people_served_input,
-            'visibility': this.state.selected_visibility,
-            'mealtypes': this.state.selected_mealtypes,
-            'ingredients': this.state.selected_ingredients,
-            'steps': this.state.recipe_steps_input,
-        })
+        if (this.state.isAddingRecipe) {
+            let response = await axios.post(endpoint, {
+                'username': this.state.username,
+                'recipe_name': this.state.recipe_name_input,
+                'recipe_description': this.state.recipe_description_input,
+                'preparation_time': this.state.recipe_prep_time_input,
+                'people_served': this.state.recipe_people_served_input,
+                'visibility': this.state.selected_visibility,
+                'mealtypes': this.state.selected_mealtypes,
+                'ingredients': this.state.selected_ingredients,
+                'steps': this.state.recipe_steps_input,
+            });
+
+            console.log(response);
+        } else if (this.state.isUpdatingRecipe) {
+            let response = await axios.put(endpoint, {
+                'username': this.state.username,
+                'recipe_id': this.state.selected_recipe_id,
+                'recipe_name': this.state.recipe_name_input,
+                'recipe_description': this.state.recipe_description_input,
+                'preparation_time': this.state.recipe_prep_time_input,
+                'people_served': this.state.recipe_people_served_input,
+                'visibility': this.state.selected_visibility,
+                'mealtypes': this.state.selected_mealtypes,
+                'ingredients': this.state.selected_ingredients,
+                'steps': this.state.recipe_steps_input,
+            });
+        
+            console.log(response);
+        }
 
         this.setState({
             isAddingRecipe: false,
+            isUpdatingRecipe: false,
+            selected_recipe_id: -1,
             recipe_name_input: '',
             recipe_description_input: '',
             recipe_prep_time_input: '',
             recipe_people_served_input: 1,
             selected_mealtypes: [],
+            selected_ingredients: [],
             selected_visibility: 'Public',
-            selected_ingredients_qty_input: [],
-            recipe_steps_input: []
+            recipe_steps_input: [],
+            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
         });
-        
-        console.log(response);
+
+        this.getUserRecipes();
     }
 
     handleContributeFormBack() {
         this.setState({
             isAddingRecipe: false,
+            isUpdatingRecipe: false,
+            selected_recipe_id: -1,
             recipe_name_input: '',
             recipe_description_input: '',
             recipe_prep_time_input: '',
             recipe_people_served_input: 1,
             selected_mealtypes: [],
             selected_visibility: 'Public',
-            selected_ingredients_qty_input: [],
-            recipe_steps_input: []
+            selected_ingredients: [],
+            recipe_steps_input: [],
+            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
         });
     }
 
     handleContributeViewAdd() {
         this.setState({
             isAddingRecipe: true,
+            selected_recipe_id: -1,
             recipe_name_input: '',
             recipe_description_input: '',
             recipe_prep_time_input: '',
             recipe_people_served_input: 1,
             selected_mealtypes: [],
             selected_visibility: 'Public',
-            selected_ingredients_qty_input: [],
-            recipe_steps_input: []
+            selected_ingredients: [],
+            recipe_steps_input: [],
+            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
         });
     }
 
     handleRecipeUpdate = obj => event => {
+        let temp_mealtypes = [];
+        let temp_steps = [];
+
+        for(var i = 0; i < obj.mealtypes.length; i++) {
+            temp_mealtypes.push(obj.mealtypes[i].mealtype_name);
+        }
+
+        for(var i = 0; i < obj.steps.length; i++) {
+            temp_steps.push(obj.steps[i].step_description);
+        }
+
+        console.log(obj);
+        console.log(temp_mealtypes);
+        console.log(temp_steps);
+
         this.setState({
-            isAddingRecipe: true,
-            recipe_name_input: '',
-            recipe_description_input: '',
-            recipe_prep_time_input: '',
-            recipe_people_served_input: 1,
-            selected_mealtypes: [],
-            selected_visibility: 'Public',
-            selected_ingredients_qty_input: [],
-            recipe_steps_input: []
+            isUpdatingRecipe: true,
+            selected_recipe_id: obj.recipe_id,
+            recipe_name_input: obj.recipe_name,
+            recipe_description_input: obj.recipe_description,
+            recipe_prep_time_input: obj.preparation_time,
+            recipe_people_served_input: obj.people_served,
+            selected_visibility: obj.visibility,
+            selected_mealtypes: temp_mealtypes,
+            selected_ingredients: obj.ingredients,
+            recipe_steps_input: temp_steps
         });
+    }
+
+    handleRecipeDelete = obj => event => {
+        
     }
 
     handleCardExpandClick() {
@@ -768,14 +818,13 @@ class ContributePage extends React.Component {
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
-                    {!this.state.isAddingRecipe ? (
+                    {(!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) ? (
                         <>
                         <Button
                             onClick={this.handleContributeViewAdd} 
                             className={classes.backBtn}
-                            startIcon={<AddIcon />}
                         >
-                            Add Recipe
+                            + Add Recipe
                         </Button>
                         <Container className={classes.mainContainer}>
                             {!this.state.user_recipes.length ? (
@@ -802,8 +851,8 @@ class ContributePage extends React.Component {
                                                 />
                                                 <CardContent>
                                                     <Typography variant="body2" color="textSecondary" component="p">
-                                                        <div>Time to prepare the dish: {recipe.preparation_time}</div>
-                                                        <div>Serves people: {recipe.people_served}</div>
+                                                        Time to prepare the dish: {recipe.preparation_time}<br/>
+                                                        Serves people: {recipe.people_served}
                                                     </Typography>
                                                 </CardContent>
                                                 <CardActions disableSpacing>
@@ -817,10 +866,16 @@ class ContributePage extends React.Component {
                                                             <VisibilityOffIcon />
                                                         )}
                                                     </IconButton>
-                                                    <IconButton aria-label="edit">
+                                                    <IconButton 
+                                                        aria-label="edit"
+                                                        onClick={this.handleRecipeUpdate(recipe)}
+                                                    >
                                                         <EditIcon />
                                                     </IconButton>
-                                                    <IconButton aria-label="delete">
+                                                    <IconButton 
+                                                        aria-label="delete"
+                                                        onClick={this.handleRecipeDelete(recipe)}
+                                                    >
                                                         <DeleteIcon />
                                                     </IconButton>
                                                     <IconButton
@@ -890,7 +945,11 @@ class ContributePage extends React.Component {
                             Back
                         </Button>
                         <Container className={classes.mainContainer}>
-                        <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>ENTER THE RECIPE DETAILS</b></Typography>
+                        {this.state.isAddingRecipe ? (
+                            <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>ENTER THE RECIPE DETAILS</b></Typography>
+                        ) : (
+                            <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>EDIT THE RECIPE DETAILS</b></Typography>
+                        )}
                             <div className={classes.addRecipeDetailsDiv}>
                                 <br/>
                                 <Divider className={classes.dividerStyle}/>
@@ -907,7 +966,9 @@ class ContributePage extends React.Component {
                                     name="recipe_name"
                                     required
                                     variant="outlined"
-                                    onBlur = {this.handleOnBlurRecipeName.bind(this)}
+                                    value={this.state.recipe_name_input}
+                                    onChange={this.handleOnBlurRecipeName.bind(this)}
+                                    onBlur={this.handleOnBlurRecipeName.bind(this)}
                                     helperText="Enter the name of the recipe (max. 100 characters)"
                                 />
                                 <TextField
@@ -922,6 +983,8 @@ class ContributePage extends React.Component {
                                     name="recipe_description"
                                     required
                                     variant="outlined"
+                                    value={this.state.recipe_description_input}
+                                    onChange={this.handleOnBlurRecipeDescription.bind(this)}
                                     onBlur = {this.handleOnBlurRecipeDescription.bind(this)}
                                     helperText="Write a description for the recipe (max. 500 characters)"
                                 />
@@ -952,8 +1015,8 @@ class ContributePage extends React.Component {
                                                     name={obj.ingredient_name}
                                                     variant="outlined"
                                                     value={obj.ingredient_qty}
-                                                    onChange={this.handleOnChangeIngredientQty(obj)}
-                                                    onBlur={this.handleOnBlurIngredientQty(obj)}
+                                                    onChange={this.handleOnChangeIngredientQty.bind(this, obj)}
+                                                    onBlur={this.handleOnBlurIngredientQty.bind(this, obj)}
                                                     helperText="Enter the ingredient quantity (example: 2; 2 tblspoons)"
                                                 />
                                             </Grid>
@@ -997,8 +1060,8 @@ class ContributePage extends React.Component {
                                                     name={"" + index}
                                                     variant="outlined"
                                                     value={obj}
-                                                    onChange={this.handleOnChangeRecipeSteps(index)}
-                                                    onBlur={this.handleOnBlurRecipeSteps(index)}
+                                                    onChange={this.handleOnChangeRecipeSteps.bind(this, index)}
+                                                    onBlur={this.handleOnBlurRecipeSteps.bind(this, index)}
                                                     helperText={"Step " + (index + 1) + " to prepare the recipe (max. 1500 characters)"}
                                                 />
                                             </Grid>
@@ -1046,9 +1109,8 @@ class ContributePage extends React.Component {
                                 <Button
                                     onClick={this.handleRecipeStepAdd} 
                                     className={classes.addStepBtn1}
-                                    startIcon={<AddIcon />}
                                 >
-                                    Add Step
+                                    + Add Step
                                 </Button>
                                 {this.state.recipe_steps_input.length ? (
                                     <Button
@@ -1124,7 +1186,9 @@ class ContributePage extends React.Component {
                                     variant="outlined"
                                     required
                                     defaultValue=""
-                                    onBlur = {this.handleOnBlurRecipePrepTime.bind(this)}
+                                    value={this.state.recipe_prep_time_input}
+                                    onChange={this.handleOnBlurRecipePrepTime.bind(this)}
+                                    onBlur={this.handleOnBlurRecipePrepTime.bind(this)}
                                     helperText="Enter an approximate time for recipe preparation (example: 30-45 minutes)"
                                 />
                                 <TextField
@@ -1136,9 +1200,10 @@ class ContributePage extends React.Component {
                                     fullWidth
                                     name="people_served"
                                     variant="outlined"
-                                    required
                                     defaultValue=""
-                                    onBlur = {this.handleOnBlurRecipePeopleServed.bind(this)}
+                                    value={this.state.recipe_people_served_input}
+                                    onChange={this.handleOnBlurRecipePeopleServed.bind(this)}
+                                    onBlur={this.handleOnBlurRecipePeopleServed.bind(this)}
                                     helperText="Enter the number of people that can be served by the prepared dish (defaults to 1)"
                                 />
                                 <Typography className={classes.recipeTextField} style={{fontSize:16}}>Visibility</Typography>

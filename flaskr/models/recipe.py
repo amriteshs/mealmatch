@@ -384,9 +384,11 @@ class UserRecipe(Resource):
                 # Retrieve all ingredients and their quantities
                 query2 = list(c.execute(
                     '''
-                        SELECT b.id, b.name, a.ingredient_qty
+                        SELECT b.id, b.name, a.ingredient_qty, d.id, d.name
                         FROM Recipe_Ingredient a
                         LEFT JOIN Ingredient b ON a.ingredient_id = b.id
+                        LEFT JOIN Ingredient_Category c ON b.id = c.ingredient_id
+                        LEFT JOIN Category d ON c.category_id = d.id
                         WHERE a.recipe_id LIKE ?
                         ORDER BY b.name
                     '''
@@ -398,7 +400,9 @@ class UserRecipe(Resource):
                         recipe_data['ingredients'].append({
                             'ingredient_id': q[0],
                             'ingredient_name': q[1],
-                            'ingredient_qty': q[2]
+                            'ingredient_qty': q[2],
+                            'category_id': q[3],
+                            'category_name': q[4]
                         })
 
                 #  Retrieve all steps
