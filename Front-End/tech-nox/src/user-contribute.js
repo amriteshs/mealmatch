@@ -308,6 +308,7 @@ class ContributePage extends React.Component {
         this.handleCardExpandClick = this.handleCardExpandClick.bind(this);
         this.handleRecipeUpdate = this.handleRecipeUpdate.bind(this);
         this.handleRecipeDelete = this.handleRecipeDelete.bind(this);
+        this.handleVisibilityUpdate = this.handleVisibilityUpdate.bind(this);
     }
 
     componentDidMount() {
@@ -726,6 +727,53 @@ class ContributePage extends React.Component {
         this.getUserRecipes();
     }
 
+    async handleVisibilityUpdate(obj) {
+        const endpoint = '/recipe/' + this.state.username;
+        let temp_mealtypes = [];
+        let temp_steps = [];
+
+        obj.mealtypes.forEach(mealtype => {
+            temp_mealtypes.push(mealtype.mealtype_name);
+        });
+
+        obj.steps.forEach(step => {
+            temp_steps.push(step.step_description);
+        });
+
+        if (obj.visibility === 'Public') {
+            let response = await axios.put(endpoint, {
+                'username': this.state.username,
+                'recipe_id': obj.recipe_id,
+                'recipe_name': obj.recipe_name,
+                'recipe_description': obj.recipe_description,
+                'preparation_time': obj.preparation_time,
+                'people_served': obj.people_served,
+                'visibility': 'Private',
+                'mealtypes': temp_mealtypes,
+                'ingredients': obj.ingredients,
+                'steps': temp_steps,
+            });
+        } else {
+            let response = await axios.put(endpoint, {
+                'username': this.state.username,
+                'recipe_id': obj.recipe_id,
+                'recipe_name': obj.recipe_name,
+                'recipe_description': obj.recipe_description,
+                'preparation_time': obj.preparation_time,
+                'people_served': obj.people_served,
+                'visibility': 'Public',
+                'mealtypes': temp_mealtypes,
+                'ingredients': obj.ingredients,
+                'steps': temp_steps,
+            });
+        }
+
+        this.getUserRecipes();
+        // this.setState({
+        //     selected_visibility: 'Public'
+        // });
+    }
+
     handleCardExpandClick() {
         this.setState({
             isCardExpanded: !this.state.isCardExpanded
@@ -871,10 +919,10 @@ class ContributePage extends React.Component {
                                                     </Typography>
                                                 </CardContent>
                                                 <CardActions disableSpacing>
-                                                    {/* <IconButton aria-label="add to favorites">
-                                                        <FavoriteIcon />
-                                                    </IconButton> */}
-                                                    <IconButton aria-label="visibility">
+                                                    <IconButton 
+                                                        aria-label="visibility"
+                                                        onClick={this.handleVisibilityUpdate.bind(this, recipe)}
+                                                    >
                                                         {recipe.visibility === 'Public' ? (
                                                             <VisibilityIcon />
                                                         ) : (
