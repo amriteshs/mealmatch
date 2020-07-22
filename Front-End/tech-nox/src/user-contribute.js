@@ -180,8 +180,7 @@ const useStyles = theme => ({
         float: 'right'
     },
     saveRecipeBtn: {
-        marginLeft: theme.spacing(50),
-        marginBottom: theme.spacing(3),
+        marginLeft: theme.spacing(30),
         color:'orange',
         backgroundColor:'black',
         borderColor:'orange',
@@ -889,116 +888,125 @@ class ContributePage extends React.Component {
                             + Add Recipe
                         </Button>
                         <Container className={classes.mainContainer}>
-                            {!this.state.user_recipes.length ? (
-                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have not contributed any recipes yet.</Typography>
-                            ) : (
-                                <div className={classes.cardsContainer}>
-                                    <Grid container spacing={1}>
-                                    {this.state.user_recipes.map((recipe, index) => 
-                                        <Grid item sm={4} key={index}>
-                                            <Card className={classes.root1}>
-                                                <CardHeader
-                                                    title=
-                                                        {<div
-                                                            title={recipe.recipe_name}
-                                                            className={classes.titleSize}
-                                                        >
-                                                            {recipe.recipe_name}
-                                                        </div>}
-                                                />
-                                                <CardMedia
-                                                    className={classes.media}
-                                                    // image={this.props.imageUrl}
-                                                    image={require('./static/images/recipe_placeholder.jpg')}
-                                                    alt="no image"
-                                                    title={recipe.recipe_name}
-                                                />
+                        {!this.state.user_recipes.length ? (
+                            <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed any recipes yet.</Typography>
+                        ) : (
+                            this.state.user_recipes.length === 1 ? 
+                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed 1 recipe.</Typography>
+                            :
+                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed {this.state.user_recipes.length} recipes.</Typography>
+                        )}
+                        <Divider className={classes.dividerStyle}/>
+                        {!this.state.user_recipes.length ? (
+                            <Typography></Typography>
+                        ) : (
+                            <div className={classes.cardsContainer}>
+                                <Grid container spacing={1}>
+                                {this.state.user_recipes.map((recipe, index) => 
+                                    <Grid item sm={4} key={index}>
+                                        <Card className={classes.root1}>
+                                            <CardHeader
+                                                title=
+                                                    {<div
+                                                        title={recipe.recipe_name}
+                                                        className={classes.titleSize}
+                                                    >
+                                                        {recipe.recipe_name}
+                                                    </div>}
+                                            />
+                                            <CardMedia
+                                                className={classes.media}
+                                                // image={this.props.imageUrl}
+                                                image={require('./static/images/recipe_placeholder.jpg')}
+                                                alt="no image"
+                                                title={recipe.recipe_name}
+                                            />
+                                            <CardContent>
+                                                <Typography variant="body2" color="textSecondary" component="p">
+                                                    Time to prepare the dish: {recipe.preparation_time}<br/>
+                                                    Serves people: {recipe.people_served}
+                                                </Typography>
+                                            </CardContent>
+                                            <CardActions disableSpacing>
+                                                <IconButton 
+                                                    aria-label="visibility"
+                                                    onClick={this.handleVisibilityUpdate.bind(this, recipe)}
+                                                >
+                                                    {recipe.visibility === 'Public' ? (
+                                                        <VisibilityIcon />
+                                                    ) : (
+                                                        <VisibilityOffIcon />
+                                                    )}
+                                                </IconButton>
+                                                <IconButton 
+                                                    aria-label="edit"
+                                                    onClick={this.handleRecipeUpdate(recipe)}
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton 
+                                                    aria-label="delete"
+                                                    onClick={this.handleRecipeDelete.bind(this, recipe.recipe_id)}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    className={clsx(classes.expand, {
+                                                        [classes.expandOpen]: this.state.isCardExpanded[index],
+                                                    })}
+                                                    onClick={this.handleCardExpandClick(index)}
+                                                    aria-expanded={this.state.isCardExpanded[index]}
+                                                    aria-label="show more"
+                                                >
+                                                    <ExpandMoreIcon />
+                                                </IconButton>
+                                            </CardActions>
+                                            <Collapse in={this.state.isCardExpanded[index]} timeout="auto" unmountOnExit>
                                                 <CardContent>
-                                                    <Typography variant="body2" color="textSecondary" component="p">
-                                                        Time to prepare the dish: {recipe.preparation_time}<br/>
-                                                        Serves people: {recipe.people_served}
+                                                    <Typography paragraph>
+                                                        {recipe.recipe_description}
+                                                    </Typography>
+                                                    <Typography paragraph>
+                                                        <b>Ingredients used</b><br/>
+                                                        {recipe.ingredients.map((ingr, index) => 
+                                                            <React.Fragment key={index}>
+                                                                <em>{ingr.ingredient_qty}</em> {ingr.ingredient_name}<br/>    
+                                                            </React.Fragment>
+                                                        )}
+                                                    </Typography>
+                                                    <Typography paragraph>
+                                                        <b>Preparation steps</b><br/>
+                                                        <Grid container spacing={0}>
+                                                        {recipe.steps.map((step, index) =>
+                                                            <React.Fragment key={index}>
+                                                                <Grid item xs={1}>{step.step_no}.</Grid>
+                                                                <Grid item xs={11}>{step.step_description}</Grid>
+                                                            </React.Fragment>
+                                                        )}
+                                                        </Grid>
+                                                    </Typography>
+                                                    <Typography paragraph>
+                                                        <b>Meal type</b><br/>
+                                                        {recipe.mealtypes.map((mt, index) =>
+                                                            (index === recipe.mealtypes.length - 1) ? (
+                                                                <React.Fragment key={index}>
+                                                                    {mt.mealtype_name}
+                                                                </React.Fragment>
+                                                            ) : (
+                                                                <React.Fragment key={index}>
+                                                                    {mt.mealtype_name},{' '}
+                                                                </React.Fragment>
+                                                            )
+                                                        )}
                                                     </Typography>
                                                 </CardContent>
-                                                <CardActions disableSpacing>
-                                                    <IconButton 
-                                                        aria-label="visibility"
-                                                        onClick={this.handleVisibilityUpdate.bind(this, recipe)}
-                                                    >
-                                                        {recipe.visibility === 'Public' ? (
-                                                            <VisibilityIcon />
-                                                        ) : (
-                                                            <VisibilityOffIcon />
-                                                        )}
-                                                    </IconButton>
-                                                    <IconButton 
-                                                        aria-label="edit"
-                                                        onClick={this.handleRecipeUpdate(recipe)}
-                                                    >
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                    <IconButton 
-                                                        aria-label="delete"
-                                                        onClick={this.handleRecipeDelete.bind(this, recipe.recipe_id)}
-                                                    >
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                    <IconButton
-                                                        className={clsx(classes.expand, {
-                                                            [classes.expandOpen]: this.state.isCardExpanded[index],
-                                                        })}
-                                                        onClick={this.handleCardExpandClick(index)}
-                                                        aria-expanded={this.state.isCardExpanded[index]}
-                                                        aria-label="show more"
-                                                    >
-                                                        <ExpandMoreIcon />
-                                                    </IconButton>
-                                                </CardActions>
-                                                <Collapse in={this.state.isCardExpanded[index]} timeout="auto" unmountOnExit>
-                                                    <CardContent>
-                                                        <Typography paragraph>
-                                                            {recipe.recipe_description}
-                                                        </Typography>
-                                                        <Typography paragraph>
-                                                            <b>Ingredients used</b><br/>
-                                                            {recipe.ingredients.map((ingr, index) => 
-                                                                <React.Fragment key={index}>
-                                                                    <em>{ingr.ingredient_qty}</em> {ingr.ingredient_name}<br/>    
-                                                                </React.Fragment>
-                                                            )}
-                                                        </Typography>
-                                                        <Typography paragraph>
-                                                            <b>Preparation steps</b><br/>
-                                                            <Grid container spacing={0}>
-                                                            {recipe.steps.map((step, index) =>
-                                                                <React.Fragment key={index}>
-                                                                    <Grid item xs={1}>{step.step_no}.</Grid>
-                                                                    <Grid item xs={11}>{step.step_description}</Grid>
-                                                                </React.Fragment>
-                                                            )}
-                                                            </Grid>
-                                                        </Typography>
-                                                        <Typography paragraph>
-                                                            <b>Meal type</b><br/>
-                                                            {recipe.mealtypes.map((mt, index) =>
-                                                                (index === recipe.mealtypes.length - 1) ? (
-                                                                    <React.Fragment key={index}>
-                                                                        {mt.mealtype_name}
-                                                                    </React.Fragment>
-                                                                ) : (
-                                                                    <React.Fragment key={index}>
-                                                                        {mt.mealtype_name},{' '}
-                                                                    </React.Fragment>
-                                                                )
-                                                            )}
-                                                        </Typography>
-                                                    </CardContent>
-                                                </Collapse>
-                                                </Card>
-                                        </Grid>
-                                    )}
+                                            </Collapse>
+                                            </Card>
                                     </Grid>
-                                </div>
-                            )}
+                                )}
+                                </Grid>
+                            </div>
+                        )}
                         </Container>
                         </>
                     ) : (

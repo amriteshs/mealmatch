@@ -20,6 +20,7 @@ class LoginPage extends React.Component {
             userData: {
                 userName: '',
                 password: '',
+                errorMessage: ''
             },
             alertOpen: false,
             redirectToHome: false
@@ -33,7 +34,6 @@ class LoginPage extends React.Component {
                 'password': this.state.userData.password
             })
             .then(response => {
-                console.log(response)
                 this.setState({
                     userData: {
                         username: response.data.username,
@@ -43,7 +43,9 @@ class LoginPage extends React.Component {
                 })
             })
             .catch(error => {
-                console.log(error)
+                this.setState({
+                    errorMessage: error.response.data.message
+                })
             });
     }
 
@@ -89,6 +91,7 @@ class LoginPage extends React.Component {
                             fullWidth
                             name='userName'
                             required
+                            variant="outlined"
                             inputProps={{maxLength:30}}
                             onBlur = {this.HandleOnBlur.bind(this)}
                         />
@@ -100,6 +103,7 @@ class LoginPage extends React.Component {
                             fullWidth
                             name='password'
                             required
+                            variant="outlined"
                             inputProps={{maxLength:50}}
                             onBlur = {this.HandleOnBlur.bind(this)}
                         />
