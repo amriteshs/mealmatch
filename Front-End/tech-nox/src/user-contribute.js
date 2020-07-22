@@ -277,7 +277,7 @@ class ContributePage extends React.Component {
             user_recipes: [],
             isAddingRecipe: false,
             isUpdatingRecipe: false,
-            isCardExpanded: false
+            isCardExpanded: []
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
@@ -364,7 +364,8 @@ class ContributePage extends React.Component {
         await axios.get(endpoint)
             .then(response => {
                 this.setState({
-                    user_recipes: response.data.recipes
+                    user_recipes: response.data.recipes,
+                    isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
                 });
             })
             .catch(error => {
@@ -769,14 +770,14 @@ class ContributePage extends React.Component {
         }
 
         this.getUserRecipes();
-        // this.setState({
-        //     selected_visibility: 'Public'
-        // });
     }
 
-    handleCardExpandClick() {
+    handleCardExpandClick = index => event => {
+        let cdExpand = [...this.state.isCardExpanded];
+        cdExpand[index] = !cdExpand[index];
+
         this.setState({
-            isCardExpanded: !this.state.isCardExpanded
+            isCardExpanded: cdExpand
         });
     }
 
@@ -943,16 +944,16 @@ class ContributePage extends React.Component {
                                                     </IconButton>
                                                     <IconButton
                                                         className={clsx(classes.expand, {
-                                                            [classes.expandOpen]: this.state.isCardExpanded,
+                                                            [classes.expandOpen]: this.state.isCardExpanded[index],
                                                         })}
-                                                        onClick={this.handleCardExpandClick}
-                                                        aria-expanded={this.state.isCardExpanded}
+                                                        onClick={this.handleCardExpandClick(index)}
+                                                        aria-expanded={this.state.isCardExpanded[index]}
                                                         aria-label="show more"
                                                     >
                                                         <ExpandMoreIcon />
                                                     </IconButton>
                                                 </CardActions>
-                                                <Collapse in={this.state.isCardExpanded} timeout="auto" unmountOnExit>
+                                                <Collapse in={this.state.isCardExpanded[index]} timeout="auto" unmountOnExit>
                                                     <CardContent>
                                                         <Typography paragraph>
                                                             {recipe.recipe_description}
