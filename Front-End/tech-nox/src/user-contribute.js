@@ -1,5 +1,5 @@
 import React from "react";
-import { fade, withStyles, ThemeProvider } from "@material-ui/core/styles";
+import { fade, withStyles } from "@material-ui/core/styles";
 import clsx from 'clsx';
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -31,7 +31,6 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -682,18 +681,23 @@ class ContributePage extends React.Component {
     handleRecipeUpdate = obj => event => {
         let temp_mealtypes = [];
         let temp_steps = [];
+        let ingrCheck = [...this.state.ingredient_checked];
 
-        for(var i = 0; i < obj.mealtypes.length; i++) {
-            temp_mealtypes.push(obj.mealtypes[i].mealtype_name);
-        }
+        var index = -1;
+        obj.ingredients.forEach(ingredient => {
+            index = this.state.ingredient_list.findIndex(x => x.ingredient_name === ingredient.ingredient_name);
+            if (index !== -1) {
+                ingrCheck[index] = true;
+            }
+        });
 
-        for(var i = 0; i < obj.steps.length; i++) {
-            temp_steps.push(obj.steps[i].step_description);
-        }
+        obj.mealtypes.forEach(mealtype => {
+            temp_mealtypes.push(mealtype.mealtype_name);
+        });
 
-        console.log(obj);
-        console.log(temp_mealtypes);
-        console.log(temp_steps);
+        obj.steps.forEach(step => {
+            temp_steps.push(step.step_description);
+        });
 
         this.setState({
             isUpdatingRecipe: true,
@@ -705,12 +709,21 @@ class ContributePage extends React.Component {
             selected_visibility: obj.visibility,
             selected_mealtypes: temp_mealtypes,
             selected_ingredients: obj.ingredients,
-            recipe_steps_input: temp_steps
+            recipe_steps_input: temp_steps,
+            ingredient_checked: ingrCheck
         });
     }
 
-    handleRecipeDelete = obj => event => {
+    async handleRecipeDelete(obj) {
+        const endpoint = '/recipe/' + this.state.username;
         
+        let response = await axios.delete(endpoint, {
+            data: {
+                'recipe_id': obj
+            }
+        });
+        
+        this.getUserRecipes();
     }
 
     handleCardExpandClick() {
@@ -833,7 +846,7 @@ class ContributePage extends React.Component {
                                 <div className={classes.cardsContainer}>
                                     <Grid container spacing={1}>
                                     {this.state.user_recipes.map((recipe, index) => 
-                                        <Grid item sm={4}>
+                                        <Grid item sm={4} key={index}>
                                             <Card className={classes.root1}>
                                                 <CardHeader
                                                     title=
@@ -846,7 +859,9 @@ class ContributePage extends React.Component {
                                                 />
                                                 <CardMedia
                                                     className={classes.media}
-                                                    // image={props.imageUrl}
+                                                    // image={this.props.imageUrl}
+                                                    image={require('./static/images/recipe_placeholder.jpg')}
+                                                    alt="no image"
                                                     title={recipe.recipe_name}
                                                 />
                                                 <CardContent>
@@ -874,7 +889,7 @@ class ContributePage extends React.Component {
                                                     </IconButton>
                                                     <IconButton 
                                                         aria-label="delete"
-                                                        onClick={this.handleRecipeDelete(recipe)}
+                                                        onClick={this.handleRecipeDelete.bind(this, recipe.recipe_id)}
                                                     >
                                                         <DeleteIcon />
                                                     </IconButton>
@@ -892,36 +907,38 @@ class ContributePage extends React.Component {
                                                 <Collapse in={this.state.isCardExpanded} timeout="auto" unmountOnExit>
                                                     <CardContent>
                                                         <Typography paragraph>
-                                                            {/* <b>Description</b><br/> */}
                                                             {recipe.recipe_description}
                                                         </Typography>
                                                         <Typography paragraph>
                                                             <b>Ingredients used</b><br/>
-                                                            {recipe.ingredients.map((ingr, index) =>
-                                                                <>
-                                                                <em>{ingr.ingredient_qty}</em> {ingr.ingredient_name}<br/>    
-                                                                </>
+                                                            {recipe.ingredients.map((ingr, index) => 
+                                                                <React.Fragment key={index}>
+                                                                    <em>{ingr.ingredient_qty}</em> {ingr.ingredient_name}<br/>    
+                                                                </React.Fragment>
                                                             )}
                                                         </Typography>
                                                         <Typography paragraph>
                                                             <b>Preparation steps</b><br/>
+                                                            <Grid container spacing={0}>
                                                             {recipe.steps.map((step, index) =>
-                                                                <>
-                                                                {step.step_no}. {step.step_description}<br/>    
-                                                                </>
+                                                                <React.Fragment key={index}>
+                                                                    <Grid item xs={1}>{step.step_no}.</Grid>
+                                                                    <Grid item xs={11}>{step.step_description}</Grid>
+                                                                </React.Fragment>
                                                             )}
+                                                            </Grid>
                                                         </Typography>
                                                         <Typography paragraph>
                                                             <b>Meal type</b><br/>
                                                             {recipe.mealtypes.map((mt, index) =>
                                                                 (index === recipe.mealtypes.length - 1) ? (
-                                                                    <>
-                                                                    {mt.mealtype_name}
-                                                                    </>
+                                                                    <React.Fragment key={index}>
+                                                                        {mt.mealtype_name}
+                                                                    </React.Fragment>
                                                                 ) : (
-                                                                    <>
-                                                                    {mt.mealtype_name},{' '}
-                                                                    </>
+                                                                    <React.Fragment key={index}>
+                                                                        {mt.mealtype_name},{' '}
+                                                                    </React.Fragment>
                                                                 )
                                                             )}
                                                         </Typography>
@@ -967,8 +984,8 @@ class ContributePage extends React.Component {
                                     required
                                     variant="outlined"
                                     value={this.state.recipe_name_input}
-                                    onChange={this.handleOnBlurRecipeName.bind(this)}
-                                    onBlur={this.handleOnBlurRecipeName.bind(this)}
+                                    onChange={this.handleOnBlurRecipeName}
+                                    onBlur={this.handleOnBlurRecipeName}
                                     helperText="Enter the name of the recipe (max. 100 characters)"
                                 />
                                 <TextField
@@ -984,8 +1001,8 @@ class ContributePage extends React.Component {
                                     required
                                     variant="outlined"
                                     value={this.state.recipe_description_input}
-                                    onChange={this.handleOnBlurRecipeDescription.bind(this)}
-                                    onBlur = {this.handleOnBlurRecipeDescription.bind(this)}
+                                    onChange={this.handleOnBlurRecipeDescription}
+                                    onBlur = {this.handleOnBlurRecipeDescription}
                                     helperText="Write a description for the recipe (max. 500 characters)"
                                 />
                                 <Divider className={classes.dividerStyle}/>
@@ -1015,8 +1032,8 @@ class ContributePage extends React.Component {
                                                     name={obj.ingredient_name}
                                                     variant="outlined"
                                                     value={obj.ingredient_qty}
-                                                    onChange={this.handleOnChangeIngredientQty.bind(this, obj)}
-                                                    onBlur={this.handleOnBlurIngredientQty.bind(this, obj)}
+                                                    onChange={this.handleOnChangeIngredientQty(obj)}
+                                                    onBlur={this.handleOnBlurIngredientQty(obj)}
                                                     helperText="Enter the ingredient quantity (example: 2; 2 tblspoons)"
                                                 />
                                             </Grid>
@@ -1060,8 +1077,8 @@ class ContributePage extends React.Component {
                                                     name={"" + index}
                                                     variant="outlined"
                                                     value={obj}
-                                                    onChange={this.handleOnChangeRecipeSteps.bind(this, index)}
-                                                    onBlur={this.handleOnBlurRecipeSteps.bind(this, index)}
+                                                    onChange={this.handleOnChangeRecipeSteps(index)}
+                                                    onBlur={this.handleOnBlurRecipeSteps(index)}
                                                     helperText={"Step " + (index + 1) + " to prepare the recipe (max. 1500 characters)"}
                                                 />
                                             </Grid>
@@ -1201,7 +1218,7 @@ class ContributePage extends React.Component {
                                     name="people_served"
                                     variant="outlined"
                                     defaultValue=""
-                                    value={this.state.recipe_people_served_input}
+                                    value={'' + this.state.recipe_people_served_input}
                                     onChange={this.handleOnBlurRecipePeopleServed.bind(this)}
                                     onBlur={this.handleOnBlurRecipePeopleServed.bind(this)}
                                     helperText="Enter the number of people that can be served by the prepared dish (defaults to 1)"
@@ -1231,6 +1248,7 @@ class ContributePage extends React.Component {
                             <div className={classes.addRecipeImageDiv}>
                                 <img 
                                     src={require('./static/images/recipe_placeholder.jpg')}
+                                    alt="not available"
                                     className={classes.imageUpload}
                                 />
                                 <br/>
