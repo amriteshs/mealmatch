@@ -1,5 +1,6 @@
 import React from "react";
 import { fade, withStyles, ThemeProvider } from "@material-ui/core/styles";
+import clsx from 'clsx';
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
@@ -19,11 +20,23 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Collapse from '@material-ui/core/Collapse';
+import { red } from '@material-ui/core/colors';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import AddIcon from '@material-ui/icons/Add';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import EditIcon from '@material-ui/icons/Edit';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -35,6 +48,9 @@ const useStyles = theme => ({
     root: {
         display: "flex",
         fontFamily: 'Roboto'
+    },
+    root1: {
+        maxWidth: 345
     },
     formControl: {
         margin: theme.spacing(1),
@@ -203,7 +219,36 @@ const useStyles = theme => ({
         width:180,
         height:180,
         display:'inline-block'
-    }
+    },
+    cardsContainer: {
+        marginTop:'1rem'
+    },
+    media: {
+        height: 0,
+        paddingTop: '56.25%', // 16:9
+    },
+    expand: {
+        transform: 'rotate(0deg)',
+        marginLeft: 'auto',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
+    },
+    titleSize:{
+        fontSize:"1rem",
+        fontWeight:"bold",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        width:"14rem",
+        textOverflow:"ellipsis",
+        textTransform:"capitalize"
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
+    },
+    avatar: {
+        backgroundColor: red[500],
+    },
 });
 
 class ContributePage extends React.Component {
@@ -232,7 +277,7 @@ class ContributePage extends React.Component {
             recipe_steps_input: [],
             user_recipes: [],
             isAddingRecipe: false,
-            isUpdatingRecipe: false
+            isCardExpanded: false
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
@@ -259,12 +304,15 @@ class ContributePage extends React.Component {
         this.handleVisibilitySelect = this.handleVisibilitySelect.bind(this);
         this.handleSaveRecipe = this.handleSaveRecipe.bind(this);
         this.handleContributeFormBack = this.handleContributeFormBack.bind(this);
+        this.handleContributeViewAdd = this.handleContributeViewAdd.bind(this);
+        this.handleCardExpandClick = this.handleCardExpandClick.bind(this);
     }
 
     componentDidMount() {
         this.getIngredients();
         this.getCategories();
         this.getMealtypes();
+        this.getUserRecipes();
     }
 
     async getIngredients() {
@@ -305,6 +353,20 @@ class ContributePage extends React.Component {
         .catch(error => {
             console.log(error)
         });
+    }
+
+    async getUserRecipes() {
+        const endpoint = '/recipe/' + this.state.username;
+
+        await axios.get(endpoint)
+            .then(response => {
+                this.setState({
+                    user_recipes: response.data.recipes
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     handleCheckChange(event) {
@@ -544,31 +606,68 @@ class ContributePage extends React.Component {
             'steps': this.state.recipe_steps_input,
         })
 
-        // this.setState({
-        //     isAddingRecipe: false,
-        //     isUpdatingRecipe: false
-        // });
+        this.setState({
+            isAddingRecipe: false,
+            recipe_name_input: '',
+            recipe_description_input: '',
+            recipe_prep_time_input: '',
+            recipe_people_served_input: 1,
+            selected_mealtypes: [],
+            selected_visibility: 'Public',
+            selected_ingredients_qty_input: [],
+            recipe_steps_input: []
+        });
         
         console.log(response);
     }
 
     handleContributeFormBack() {
         this.setState({
-            isAddingRecipe: false
+            isAddingRecipe: false,
+            recipe_name_input: '',
+            recipe_description_input: '',
+            recipe_prep_time_input: '',
+            recipe_people_served_input: 1,
+            selected_mealtypes: [],
+            selected_visibility: 'Public',
+            selected_ingredients_qty_input: [],
+            recipe_steps_input: []
         });
     }
 
-    // handleContributeViewAdd() {
-    //     this.setState({
-    //         isAddingRecipe: true
-    //     });
-    // }
+    handleContributeViewAdd() {
+        this.setState({
+            isAddingRecipe: true,
+            recipe_name_input: '',
+            recipe_description_input: '',
+            recipe_prep_time_input: '',
+            recipe_people_served_input: 1,
+            selected_mealtypes: [],
+            selected_visibility: 'Public',
+            selected_ingredients_qty_input: [],
+            recipe_steps_input: []
+        });
+    }
 
-    // handleContributeViewUpdate(event) {
-    //     this.setState({
-    //         isUpdatingRecipe: true
-    //     });
-    // }
+    handleRecipeUpdate = obj => event => {
+        this.setState({
+            isAddingRecipe: true,
+            recipe_name_input: '',
+            recipe_description_input: '',
+            recipe_prep_time_input: '',
+            recipe_people_served_input: 1,
+            selected_mealtypes: [],
+            selected_visibility: 'Public',
+            selected_ingredients_qty_input: [],
+            recipe_steps_input: []
+        });
+    }
+
+    handleCardExpandClick() {
+        this.setState({
+            isCardExpanded: !this.state.isCardExpanded
+        });
+    }
 
     render() {
         const { classes } = this.props;
@@ -669,305 +768,418 @@ class ContributePage extends React.Component {
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
-                    <Button
-                        onClick={this.handleContributeFormBack} 
-                        className={classes.backBtn}
-                        startIcon={<ArrowBackIosIcon />}
-                    >
-                        Back
-                    </Button>
-                    <Container className={classes.mainContainer}>
-                    <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>ENTER THE RECIPE DETAILS</b></Typography>
-                        <div className={classes.addRecipeDetailsDiv}>
-                            <br/>
-                            <Divider className={classes.dividerStyle}/>
-                            <Typography><b>Basic Information</b></Typography>
-                            <TextField
-                                className={classes.recipeTextField}
-                                style={{fontSize:12}}
-                                inputProps={{maxLength:100}}
-                                autoFocus
-                                margin="dense"
-                                id="recipeName"
-                                label="Name"
-                                fullWidth
-                                name="recipe_name"
-                                required
-                                variant="outlined"
-                                onBlur = {this.handleOnBlurRecipeName.bind(this)}
-                                helperText="Enter the name of the recipe (max. 100 characters)"
-                            />
-                            <TextField
-                                className={classes.recipeTextField}
-                                multiline
-                                rows={4}
-                                inputProps={{maxLength:500}}
-                                margin="dense"
-                                id="recipeDescription"
-                                label="Description"
-                                fullWidth
-                                name="recipe_description"
-                                required
-                                variant="outlined"
-                                onBlur = {this.handleOnBlurRecipeDescription.bind(this)}
-                                helperText="Write a description for the recipe (max. 500 characters)"
-                            />
-                            <Divider className={classes.dividerStyle}/>
-                            <Typography><b>Ingredients</b></Typography>
-                            {!this.state.selected_ingredients.length ? 
-                            (
-                                <Typography style={{fontSize:14, marginTop:10}}>You have not selected any ingredients for the recipe.</Typography>
+                    {!this.state.isAddingRecipe ? (
+                        <>
+                        <Button
+                            onClick={this.handleContributeViewAdd} 
+                            className={classes.backBtn}
+                            startIcon={<AddIcon />}
+                        >
+                            Add Recipe
+                        </Button>
+                        <Container className={classes.mainContainer}>
+                            {!this.state.user_recipes.length ? (
+                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have not contributed any recipes yet.</Typography>
                             ) : (
-                                <>
-                                {this.state.selected_ingredients.length === 1 ? (
-                                    <Typography style={{fontSize:14, marginTop:10}}>You have selected 1 ingredient to prepare the recipe.</Typography>
-                                ) : (
-                                    <Typography style={{fontSize:14, marginTop:10}}>You have selected {this.state.selected_ingredients.length} ingredients to prepare the recipe.</Typography>
-                                )}
-                                <Grid container direction="row" justify="center" alignItems="center">
-                                {this.state.selected_ingredients.map((obj, index) => (
-                                    <React.Fragment key={index}>
-                                        <Grid item xs={5}>
-                                            <Typography align="left">{obj.ingredient_name}</Typography>
+                                <div className={classes.cardsContainer}>
+                                    <Grid container spacing={1}>
+                                    {this.state.user_recipes.map((recipe, index) => 
+                                        <Grid item sm={4}>
+                                            <Card className={classes.root1}>
+                                                <CardHeader
+                                                    title=
+                                                        {<div
+                                                            title={recipe.recipe_name}
+                                                            className={classes.titleSize}
+                                                        >
+                                                            {recipe.recipe_name}
+                                                        </div>}
+                                                />
+                                                <CardMedia
+                                                    className={classes.media}
+                                                    // image={props.imageUrl}
+                                                    title={recipe.recipe_name}
+                                                />
+                                                <CardContent>
+                                                    <Typography variant="body2" color="textSecondary" component="p">
+                                                        <div>Time to prepare the dish: {recipe.preparation_time}</div>
+                                                        <div>Serves people: {recipe.people_served}</div>
+                                                    </Typography>
+                                                </CardContent>
+                                                <CardActions disableSpacing>
+                                                    {/* <IconButton aria-label="add to favorites">
+                                                        <FavoriteIcon />
+                                                    </IconButton> */}
+                                                    <IconButton aria-label="visibility">
+                                                        {recipe.visibility === 'Public' ? (
+                                                            <VisibilityIcon />
+                                                        ) : (
+                                                            <VisibilityOffIcon />
+                                                        )}
+                                                    </IconButton>
+                                                    <IconButton aria-label="edit">
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                    <IconButton aria-label="delete">
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        className={clsx(classes.expand, {
+                                                            [classes.expandOpen]: this.state.isCardExpanded,
+                                                        })}
+                                                        onClick={this.handleCardExpandClick}
+                                                        aria-expanded={this.state.isCardExpanded}
+                                                        aria-label="show more"
+                                                    >
+                                                        <ExpandMoreIcon />
+                                                    </IconButton>
+                                                </CardActions>
+                                                <Collapse in={this.state.isCardExpanded} timeout="auto" unmountOnExit>
+                                                    <CardContent>
+                                                        <Typography paragraph>
+                                                            {/* <b>Description</b><br/> */}
+                                                            {recipe.recipe_description}
+                                                        </Typography>
+                                                        <Typography paragraph>
+                                                            <b>Ingredients used</b><br/>
+                                                            {recipe.ingredients.map((ingr, index) =>
+                                                                <>
+                                                                <em>{ingr.ingredient_qty}</em> {ingr.ingredient_name}<br/>    
+                                                                </>
+                                                            )}
+                                                        </Typography>
+                                                        <Typography paragraph>
+                                                            <b>Preparation steps</b><br/>
+                                                            {recipe.steps.map((step, index) =>
+                                                                <>
+                                                                {step.step_no}. {step.step_description}<br/>    
+                                                                </>
+                                                            )}
+                                                        </Typography>
+                                                        <Typography paragraph>
+                                                            <b>Meal type</b><br/>
+                                                            {recipe.mealtypes.map((mt, index) =>
+                                                                (index === recipe.mealtypes.length - 1) ? (
+                                                                    <>
+                                                                    {mt.mealtype_name}
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                    {mt.mealtype_name},{' '}
+                                                                    </>
+                                                                )
+                                                            )}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Collapse>
+                                                </Card>
                                         </Grid>
-                                        <Grid item xs={7}>
-                                            <TextField
-                                                className={classes.recipeIngredientTextField}
-                                                inputProps={{maxLength:25}}
-                                                margin="dense"
-                                                label=""
-                                                name={obj.ingredient_name}
-                                                variant="outlined"
-                                                value={obj.ingredient_qty}
-                                                onChange={this.handleOnChangeIngredientQty(obj)}
-                                                onBlur={this.handleOnBlurIngredientQty(obj)}
-                                                helperText="Enter the ingredient quantity (example: 2; 2 tblspoons)"
-                                            />
-                                        </Grid>
-                                    </React.Fragment>
-                                ))}
-                                </Grid>
-                                </>
+                                    )}
+                                    </Grid>
+                                </div>
                             )}
-                            <Divider className={classes.dividerStyle}/>
-                            <Typography><b>Steps</b></Typography>
-                            {!this.state.recipe_steps_input.length ? 
-                            (
-                                <Typography style={{fontSize:14, marginTop:15}}>You have not added any steps to prepare the recipe.</Typography>
-                            ) : (
-                                <>
-                                {this.state.recipe_steps_input.length === 1 ? (
-                                    <Typography style={{fontSize:14, marginTop:10}}>You have added 1 step to prepare the recipe.</Typography>
+                        </Container>
+                        </>
+                    ) : (
+                        <>
+                        <Button
+                            onClick={this.handleContributeFormBack} 
+                            className={classes.backBtn}
+                            startIcon={<ArrowBackIosIcon />}
+                        >
+                            Back
+                        </Button>
+                        <Container className={classes.mainContainer}>
+                        <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>ENTER THE RECIPE DETAILS</b></Typography>
+                            <div className={classes.addRecipeDetailsDiv}>
+                                <br/>
+                                <Divider className={classes.dividerStyle}/>
+                                <Typography><b>Basic Information</b></Typography>
+                                <TextField
+                                    className={classes.recipeTextField}
+                                    style={{fontSize:12}}
+                                    inputProps={{maxLength:100}}
+                                    autoFocus
+                                    margin="dense"
+                                    id="recipeName"
+                                    label="Name"
+                                    fullWidth
+                                    name="recipe_name"
+                                    required
+                                    variant="outlined"
+                                    onBlur = {this.handleOnBlurRecipeName.bind(this)}
+                                    helperText="Enter the name of the recipe (max. 100 characters)"
+                                />
+                                <TextField
+                                    className={classes.recipeTextField}
+                                    multiline
+                                    rows={4}
+                                    inputProps={{maxLength:500}}
+                                    margin="dense"
+                                    id="recipeDescription"
+                                    label="Description"
+                                    fullWidth
+                                    name="recipe_description"
+                                    required
+                                    variant="outlined"
+                                    onBlur = {this.handleOnBlurRecipeDescription.bind(this)}
+                                    helperText="Write a description for the recipe (max. 500 characters)"
+                                />
+                                <Divider className={classes.dividerStyle}/>
+                                <Typography><b>Ingredients</b></Typography>
+                                {!this.state.selected_ingredients.length ? 
+                                (
+                                    <Typography style={{fontSize:14, marginTop:10}}>You have not selected any ingredients for the recipe.</Typography>
                                 ) : (
-                                    <Typography style={{fontSize:14, marginTop:10}}>You have added {this.state.recipe_steps_input.length} steps to prepare the recipe.</Typography>
+                                    <>
+                                    {this.state.selected_ingredients.length === 1 ? (
+                                        <Typography style={{fontSize:14, marginTop:10}}>You have selected 1 ingredient to prepare the recipe.</Typography>
+                                    ) : (
+                                        <Typography style={{fontSize:14, marginTop:10}}>You have selected {this.state.selected_ingredients.length} ingredients to prepare the recipe.</Typography>
+                                    )}
+                                    <Grid container direction="row" justify="center" alignItems="center">
+                                    {this.state.selected_ingredients.map((obj, index) => (
+                                        <React.Fragment key={index}>
+                                            <Grid item xs={5}>
+                                                <Typography align="left">{obj.ingredient_name}</Typography>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <TextField
+                                                    className={classes.recipeIngredientTextField}
+                                                    inputProps={{maxLength:25}}
+                                                    margin="dense"
+                                                    label=""
+                                                    name={obj.ingredient_name}
+                                                    variant="outlined"
+                                                    value={obj.ingredient_qty}
+                                                    onChange={this.handleOnChangeIngredientQty(obj)}
+                                                    onBlur={this.handleOnBlurIngredientQty(obj)}
+                                                    helperText="Enter the ingredient quantity (example: 2; 2 tblspoons)"
+                                                />
+                                            </Grid>
+                                        </React.Fragment>
+                                    ))}
+                                    </Grid>
+                                    </>
                                 )}
-                                <Grid container direction="row" justify="center" alignItems="center">
-                                {this.state.recipe_steps_input.map((obj, index) => (
-                                    <React.Fragment key={index}>
-                                        <Grid item xs={1}>
-                                            <IconButton 
-                                                name={"" + index} value={index} 
-                                                aria-label="delete" color="secondary"
-                                                onClick={this.handleRecipeStepDelete.bind(this, index)}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </Grid>
-                                        <Grid item xs={10}>
-                                            <TextField
-                                                className={classes.recipeIngredientTextField}
-                                                inputProps={{maxLength:1500}}
-                                                multiline
-                                                rows={3}
-                                                margin="dense"
-                                                label=""
-                                                name={"" + index}
-                                                variant="outlined"
-                                                value={obj}
-                                                onChange={this.handleOnChangeRecipeSteps(index)}
-                                                onBlur={this.handleOnBlurRecipeSteps(index)}
-                                                helperText={"Step " + (index + 1) + " to prepare the recipe (max. 1500 characters)"}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={1}>
-                                            {(index === 0) ? (
+                                <Divider className={classes.dividerStyle}/>
+                                <Typography><b>Steps</b></Typography>
+                                {!this.state.recipe_steps_input.length ? 
+                                (
+                                    <Typography style={{fontSize:14, marginTop:15}}>You have not added any steps to prepare the recipe.</Typography>
+                                ) : (
+                                    <>
+                                    {this.state.recipe_steps_input.length === 1 ? (
+                                        <Typography style={{fontSize:14, marginTop:10}}>You have added 1 step to prepare the recipe.</Typography>
+                                    ) : (
+                                        <Typography style={{fontSize:14, marginTop:10}}>You have added {this.state.recipe_steps_input.length} steps to prepare the recipe.</Typography>
+                                    )}
+                                    <Grid container direction="row" justify="center" alignItems="center">
+                                    {this.state.recipe_steps_input.map((obj, index) => (
+                                        <React.Fragment key={index}>
+                                            <Grid item xs={1}>
                                                 <IconButton 
-                                                    name={"up" + index} value={index} disabled
-                                                    aria-label="upward" color="primary"
-                                                    onClick={this.handleRecipeStepMoveUp.bind(this, index)}
+                                                    name={"" + index} value={index} 
+                                                    aria-label="delete" color="secondary"
+                                                    onClick={this.handleRecipeStepDelete.bind(this, index)}
                                                 >
-                                                    <ArrowUpwardIcon />
+                                                    <DeleteIcon />
                                                 </IconButton>
-                                            ) : (
-                                                <IconButton 
-                                                    name={"up" + index} value={index} 
-                                                    aria-label="upward" color="primary"
-                                                    onClick={this.handleRecipeStepMoveUp.bind(this, index)}
-                                                >
-                                                    <ArrowUpwardIcon />
-                                                </IconButton>
-                                            )}
-                                            {(index === (this.state.recipe_steps_input.length - 1)) ? (
-                                                <IconButton 
-                                                    name={"down" + index} value={index} disabled
-                                                    aria-label="downward" color="primary"
-                                                    onClick={this.handleRecipeStepMoveDown.bind(this, index)}
-                                                >
-                                                    <ArrowDownwardIcon />
-                                                </IconButton>
-                                            ) : (
-                                                <IconButton 
-                                                    name={"down" + index} value={index} 
-                                                    aria-label="downward" color="primary"
-                                                    onClick={this.handleRecipeStepMoveDown.bind(this, index)}
-                                                >
-                                                    <ArrowDownwardIcon />
-                                                </IconButton>
-                                            )}
-                                        </Grid>
-                                    </React.Fragment>
-                                ))}
-                                </Grid>
-                                </>
-                            )}
-                            <Button
-                                onClick={this.handleRecipeStepAdd} 
-                                className={classes.addStepBtn1}
-                                startIcon={<AddIcon />}
-                            >
-                                Add Step
-                            </Button>
-                            {this.state.recipe_steps_input.length ? (
+                                            </Grid>
+                                            <Grid item xs={10}>
+                                                <TextField
+                                                    className={classes.recipeIngredientTextField}
+                                                    inputProps={{maxLength:1500}}
+                                                    multiline
+                                                    rows={3}
+                                                    margin="dense"
+                                                    label=""
+                                                    name={"" + index}
+                                                    variant="outlined"
+                                                    value={obj}
+                                                    onChange={this.handleOnChangeRecipeSteps(index)}
+                                                    onBlur={this.handleOnBlurRecipeSteps(index)}
+                                                    helperText={"Step " + (index + 1) + " to prepare the recipe (max. 1500 characters)"}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={1}>
+                                                {(index === 0) ? (
+                                                    <IconButton 
+                                                        name={"up" + index} value={index} disabled
+                                                        aria-label="upward" color="primary"
+                                                        onClick={this.handleRecipeStepMoveUp.bind(this, index)}
+                                                    >
+                                                        <ArrowUpwardIcon />
+                                                    </IconButton>
+                                                ) : (
+                                                    <IconButton 
+                                                        name={"up" + index} value={index} 
+                                                        aria-label="upward" color="primary"
+                                                        onClick={this.handleRecipeStepMoveUp.bind(this, index)}
+                                                    >
+                                                        <ArrowUpwardIcon />
+                                                    </IconButton>
+                                                )}
+                                                {(index === (this.state.recipe_steps_input.length - 1)) ? (
+                                                    <IconButton 
+                                                        name={"down" + index} value={index} disabled
+                                                        aria-label="downward" color="primary"
+                                                        onClick={this.handleRecipeStepMoveDown.bind(this, index)}
+                                                    >
+                                                        <ArrowDownwardIcon />
+                                                    </IconButton>
+                                                ) : (
+                                                    <IconButton 
+                                                        name={"down" + index} value={index} 
+                                                        aria-label="downward" color="primary"
+                                                        onClick={this.handleRecipeStepMoveDown.bind(this, index)}
+                                                    >
+                                                        <ArrowDownwardIcon />
+                                                    </IconButton>
+                                                )}
+                                            </Grid>
+                                        </React.Fragment>
+                                    ))}
+                                    </Grid>
+                                    </>
+                                )}
                                 <Button
-                                    onClick={this.handleRecipeStepReset} 
-                                    className={classes.addStepBtn3}
+                                    onClick={this.handleRecipeStepAdd} 
+                                    className={classes.addStepBtn1}
+                                    startIcon={<AddIcon />}
                                 >
-                                    Clear
+                                    Add Step
                                 </Button>
-                            ) : (
-                                <Typography></Typography>
-                            )}
-                            <Divider className={classes.dividerStyle}/>
-                            <Typography><b>Meal types</b></Typography>
-                            <FormControl className={classes.formControl}>
-                                <InputLabel id="select-mealtype">Add a meal type</InputLabel>
-                                <Select
-                                    labelId="select-mealtype"
-                                    id="select-mealtype"
-                                    value={this.state.selected_mealtype}
-                                    onChange={this.handleMealtypeSelect.bind(this)}
-                                >
-                                    {/* <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem> */}
-                                    {this.state.mealtype_list.map((obj, index) => (
-                                        <MenuItem key={index} value={obj.mealtype_name}>{obj.mealtype_name}</MenuItem>
-                                    ))};
-                                </Select>
-                            </FormControl>
-                            {!this.state.selected_mealtypes.length ? 
-                            (
-                                <Typography style={{fontSize:14, marginTop:10}}>You have not tagged any meal types for the recipe.</Typography>
-                            ) : (
-                                <>
-                                <Button
-                                    onClick={this.handleMealTypeReset} 
-                                    className={classes.addStepBtn3}
-                                >
-                                    Clear
-                                </Button>
-                                {this.state.selected_mealtypes.length === 1 ? (
-                                    <Typography style={{fontSize:14, marginTop:10}}>You have tagged 1 meal type for the recipe.</Typography>
+                                {this.state.recipe_steps_input.length ? (
+                                    <Button
+                                        onClick={this.handleRecipeStepReset} 
+                                        className={classes.addStepBtn3}
+                                    >
+                                        Clear
+                                    </Button>
                                 ) : (
-                                    <Typography style={{fontSize:14, marginTop:10}}>You have tagged {this.state.selected_mealtypes.length} meal types for the recipe.</Typography>
+                                    <Typography></Typography>
                                 )}
-                                <Grid container direction="row" justify="center" alignItems="center">
-                                {this.state.selected_mealtypes.map((obj, index) => (
-                                    <React.Fragment key={index}>
-                                        <Grid item xs={1}>
-                                            <IconButton 
-                                                name={obj} value={index} 
-                                                aria-label="delete" color="secondary" 
-                                                onClick={this.handleMealtypeDelete.bind(this, obj)}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </Grid>
-                                        <Grid item xs={11}>
-                                            {obj}
-                                        </Grid>
-                                    </React.Fragment>
-                                ))}
-                                </Grid>
-                                </>
-                            )}
-                            <Divider className={classes.dividerStyle}/>
-                            <Typography><b>Other Information</b></Typography>
-                            <TextField
-                                className={classes.recipeTextField}
-                                inputProps={{maxLength:25}}
-                                margin="dense"
-                                id="prepTime"
-                                label="Preparation time"
-                                fullWidth
-                                name="preparation_time"
-                                variant="outlined"
-                                required
-                                defaultValue=""
-                                onBlur = {this.handleOnBlurRecipePrepTime.bind(this)}
-                                helperText="Enter an approximate time for recipe preparation (example: 30-45 minutes)"
-                            />
-                            <TextField
-                                className={classes.recipeTextField}
-                                inputProps={{maxLength:2}}
-                                margin="dense"
-                                id="peopleServed"
-                                label="People served"
-                                fullWidth
-                                name="people_served"
-                                variant="outlined"
-                                required
-                                defaultValue=""
-                                onBlur = {this.handleOnBlurRecipePeopleServed.bind(this)}
-                                helperText="Enter the number of people that can be served by the prepared dish (defaults to 1)"
-                            />
-                            <Typography className={classes.recipeTextField} style={{fontSize:16}}>Visibility</Typography>
-                            <FormControl className={classes.formControl}>
-                                <InputLabel id="select-visibility">Select visibility of recipe</InputLabel>
-                                <Select
-                                    labelId="select-visibility"
-                                    id="select-visibility"
-                                    value={this.state.selected_visibility}
-                                    onChange={this.handleVisibilitySelect.bind(this)}
+                                <Divider className={classes.dividerStyle}/>
+                                <Typography><b>Meal types</b></Typography>
+                                <FormControl className={classes.formControl}>
+                                    <InputLabel id="select-mealtype">Add a meal type</InputLabel>
+                                    <Select
+                                        labelId="select-mealtype"
+                                        id="select-mealtype"
+                                        value={this.state.selected_mealtype}
+                                        onChange={this.handleMealtypeSelect.bind(this)}
+                                    >
+                                        {this.state.mealtype_list.map((obj, index) => (
+                                            <MenuItem key={index} value={obj.mealtype_name}>{obj.mealtype_name}</MenuItem>
+                                        ))};
+                                    </Select>
+                                </FormControl>
+                                {!this.state.selected_mealtypes.length ? 
+                                (
+                                    <Typography style={{fontSize:14, marginTop:10}}>You have not tagged any meal types for the recipe.</Typography>
+                                ) : (
+                                    <>
+                                    <Button
+                                        onClick={this.handleMealTypeReset} 
+                                        className={classes.addStepBtn3}
+                                    >
+                                        Clear
+                                    </Button>
+                                    {this.state.selected_mealtypes.length === 1 ? (
+                                        <Typography style={{fontSize:14, marginTop:10}}>You have tagged 1 meal type for the recipe.</Typography>
+                                    ) : (
+                                        <Typography style={{fontSize:14, marginTop:10}}>You have tagged {this.state.selected_mealtypes.length} meal types for the recipe.</Typography>
+                                    )}
+                                    <Grid container direction="row" justify="center" alignItems="center">
+                                    {this.state.selected_mealtypes.map((obj, index) => (
+                                        <React.Fragment key={index}>
+                                            <Grid item xs={1}>
+                                                <IconButton 
+                                                    name={obj} value={index} 
+                                                    aria-label="delete" color="secondary" 
+                                                    onClick={this.handleMealtypeDelete.bind(this, obj)}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Grid>
+                                            <Grid item xs={11}>
+                                                {obj}
+                                            </Grid>
+                                        </React.Fragment>
+                                    ))}
+                                    </Grid>
+                                    </>
+                                )}
+                                <Divider className={classes.dividerStyle}/>
+                                <Typography><b>Other Information</b></Typography>
+                                <TextField
+                                    className={classes.recipeTextField}
+                                    inputProps={{maxLength:25}}
+                                    margin="dense"
+                                    id="prepTime"
+                                    label="Preparation time"
+                                    fullWidth
+                                    name="preparation_time"
+                                    variant="outlined"
+                                    required
+                                    defaultValue=""
+                                    onBlur = {this.handleOnBlurRecipePrepTime.bind(this)}
+                                    helperText="Enter an approximate time for recipe preparation (example: 30-45 minutes)"
+                                />
+                                <TextField
+                                    className={classes.recipeTextField}
+                                    inputProps={{maxLength:2}}
+                                    margin="dense"
+                                    id="peopleServed"
+                                    label="People served"
+                                    fullWidth
+                                    name="people_served"
+                                    variant="outlined"
+                                    required
+                                    defaultValue=""
+                                    onBlur = {this.handleOnBlurRecipePeopleServed.bind(this)}
+                                    helperText="Enter the number of people that can be served by the prepared dish (defaults to 1)"
+                                />
+                                <Typography className={classes.recipeTextField} style={{fontSize:16}}>Visibility</Typography>
+                                <FormControl className={classes.formControl}>
+                                    <InputLabel id="select-visibility">Select visibility of recipe</InputLabel>
+                                    <Select
+                                        labelId="select-visibility"
+                                        id="select-visibility"
+                                        value={this.state.selected_visibility}
+                                        onChange={this.handleVisibilitySelect.bind(this)}
+                                    >
+                                        <MenuItem value="Public">Public</MenuItem>
+                                        <MenuItem value="Private">Private</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <br/>
+                                <Divider className={classes.dividerStyle}/>
+                                <Button
+                                    onClick={this.handleSaveRecipe}
+                                    className={classes.saveRecipeBtn}
                                 >
-                                    <MenuItem value="Public">Public</MenuItem>
-                                    <MenuItem value="Private">Private</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <br/>
-                            <Divider className={classes.dividerStyle}/>
-                            <Button
-                                onClick={this.handleSaveRecipe}
-                                className={classes.saveRecipeBtn}
-                            >
-                                Save Recipe
-                            </Button>
-                        </div>
-                        <div className={classes.addRecipeImageDiv}>
-                            <img 
-                                src={require('./static/images/recipe_placeholder.jpg')}
-                                className={classes.imageUpload}
-                            />
-                            <br/>
-                            <Button
-                                onClick={this.handleRecipeImageUpload} 
-                                className={classes.addStepBtn}
-                                startIcon={<CloudUploadIcon />}
-                            >
-                                Upload Image
-                            </Button>
-                        </div>
-                    </Container>
+                                    Save Recipe
+                                </Button>
+                            </div>
+                            <div className={classes.addRecipeImageDiv}>
+                                <img 
+                                    src={require('./static/images/recipe_placeholder.jpg')}
+                                    className={classes.imageUpload}
+                                />
+                                <br/>
+                                <Button
+                                    onClick={this.handleRecipeImageUpload} 
+                                    className={classes.addStepBtn}
+                                    startIcon={<CloudUploadIcon />}
+                                >
+                                    Upload Image
+                                </Button>
+                            </div>
+                        </Container>
+                    </>
+                    )}
             </main>
             </div>
         );
