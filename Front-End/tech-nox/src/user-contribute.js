@@ -26,6 +26,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
+import Switch from '@material-ui/core/Switch';
 import { red } from '@material-ui/core/colors';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -278,8 +279,10 @@ class ContributePage extends React.Component {
             isAddingRecipe: false,
             isUpdatingRecipe: false,
             isCardExpanded: [],
+            filterByIngredient: false,
+            filterByMealtype: false,
             file: '',
-            imagePreviewURL: ''
+            imagePreviewURL: '',
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
@@ -312,6 +315,8 @@ class ContributePage extends React.Component {
         this.handleRecipeUpdate = this.handleRecipeUpdate.bind(this);
         this.handleRecipeDelete = this.handleRecipeDelete.bind(this);
         this.handleVisibilityUpdate = this.handleVisibilityUpdate.bind(this);
+        this.handleFilterByIngredient = this.handleFilterByIngredient.bind(this);
+        this.handleFilterByMealtype = this.handleFilterByMealtype.bind(this);
     }
 
     componentDidMount() {
@@ -809,6 +814,18 @@ class ContributePage extends React.Component {
         });
     }
 
+    handleFilterByIngredient() {
+        this.setState({
+            filterByIngredient: !this.state.filterByIngredient
+        });
+    }
+
+    handleFilterByMealtype() {
+        this.setState({
+            filterByMealtype: !this.state.filterByMealtype
+        });
+    }
+
     render() {
         const { classes } = this.props;
         let {imagePreviewUrl} = this.state;
@@ -940,10 +957,34 @@ class ContributePage extends React.Component {
                             <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have not contributed any recipes yet.</Typography>
                         ) : (
                             this.state.user_recipes.length === 1 ?
-                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed 1 recipe.</Typography>
+                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed <b>1</b> recipe.</Typography>
                             :
-                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed {this.state.user_recipes.length} recipes.</Typography>
+                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed <b>{this.state.user_recipes.length}</b> recipes.</Typography>
                         )}
+                        <FormGroup>
+                            <FormControlLabel
+                                control={
+                                <Switch
+                                    checked={this.state.filterByIngredient}
+                                    onChange={this.handleFilterByIngredient}
+                                    name="checkedB"
+                                    color="primary"
+                                />
+                                }
+                                label="Filter by ingredients"
+                            />
+                            <FormControlLabel
+                                control={
+                                <Switch
+                                    checked={this.state.filterByMealtype}
+                                    onChange={this.handleFilterByMealtype}
+                                    name="checkedB"
+                                    color="primary"
+                                />
+                                }
+                                label="Filter by mealtype"
+                            />
+                        </FormGroup>
                         <Divider className={classes.dividerStyle}/>
                         {!this.state.user_recipes.length ? (
                             <Typography></Typography>
