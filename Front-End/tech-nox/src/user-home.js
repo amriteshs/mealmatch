@@ -147,7 +147,7 @@ class UserHomePage extends React.Component {
         this.getIngredients();
         this.getCategories();
         this.getMealtypes();
-        // this.getRecipe();
+        this.getRecipe();
     }
 
     async getIngredients() {
@@ -257,17 +257,18 @@ class UserHomePage extends React.Component {
     }
 
     setApiRecipeNameValue(event) {
+        console.log(event.target.value);
         this.setState({
             api_recipe_name: event.target.value
         });
     }
     
-    async getRecipe() {
+    getRecipe = () => {
         // all recipes are fetched here 
         const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
         const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
-        await axios.get(URL)
+        axios.get(URL)
             .then(response => {
                 this.setState({
                     api_recipe_list: response.data.results
@@ -382,6 +383,7 @@ class UserHomePage extends React.Component {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
+                            onChange={this.setApiRecipeNameValue}
                             onBlur={this.setApiRecipeNameValue}
                         />
                     </div>
