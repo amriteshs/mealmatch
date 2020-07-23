@@ -246,6 +246,7 @@ const useStyles = theme => ({
     avatar: {
         backgroundColor: red[500],
     },
+
 });
 
 class ContributePage extends React.Component {
@@ -276,7 +277,9 @@ class ContributePage extends React.Component {
             user_recipes: [],
             isAddingRecipe: false,
             isUpdatingRecipe: false,
-            isCardExpanded: []
+            isCardExpanded: [],
+            file: '',
+            imagePreviewURL: ''
         };
 
         this.handleCheckChange = this.handleCheckChange.bind(this);
@@ -300,6 +303,7 @@ class ContributePage extends React.Component {
         this.handleRecipeStepMoveUp = this.handleRecipeStepMoveUp.bind(this);
         this.handleRecipeStepMoveDown = this.handleRecipeStepMoveDown.bind(this);
         this.handleRecipeImageUpload = this.handleRecipeImageUpload.bind(this);
+        this.handleRecipeImageChange = this.handleRecipeImageChange.bind(this);
         this.handleVisibilitySelect = this.handleVisibilitySelect.bind(this);
         this.handleSaveRecipe = this.handleSaveRecipe.bind(this);
         this.handleContributeFormBack = this.handleContributeFormBack.bind(this);
@@ -384,10 +388,10 @@ class ContributePage extends React.Component {
             ingrSelect.push(ingredient_details);
 
             ingrSelect.sort(function(x, y) {
-                if (x.ingredient_name < y.ingredient_name) { 
+                if (x.ingredient_name < y.ingredient_name) {
                     return -1;
                 }
-                if (x.ingredient_name > y.ingredient_name) { 
+                if (x.ingredient_name > y.ingredient_name) {
                     return 1;
                 }
                 return 0;
@@ -500,7 +504,7 @@ class ContributePage extends React.Component {
 
     handleOnChangeIngredientQty = obj => event => {
         let ingrSelect = [...this.state.selected_ingredients];
-        
+
         let index = ingrSelect.findIndex(x => x.ingredient_name === obj.ingredient_name);
         if (index !== -1) {
             ingrSelect[index].ingredient_qty = event.target.value;
@@ -513,7 +517,7 @@ class ContributePage extends React.Component {
 
     handleOnBlurIngredientQty = obj => event => {
         let ingrSelect = [...this.state.selected_ingredients];
-        
+
         let index = ingrSelect.findIndex(x => x.ingredient_name === obj.ingredient_name);
         if (index !== -1) {
             ingrSelect[index].ingredient_qty = event.target.value;
@@ -592,7 +596,31 @@ class ContributePage extends React.Component {
 
     handleRecipeImageUpload(event) {
 
-    }
+       event.preventDefault();
+       // TODO: do something with -> this.state.file
+       console.log('handle uploading-', this.state.file);
+       const endpoint = '/recipe_image';
+
+       axios.post(endpoint, this.state.file);
+     }
+
+
+
+    handleRecipeImageChange(event) {
+        event.preventDefault();
+
+        let reader = new FileReader();
+        let file = event.target.files[0];
+
+        reader.onloadend = () => {
+          this.setState({
+            file: file,
+            imagePreviewUrl: reader.result
+          });
+        }
+
+        reader.readAsDataURL(file)
+      }
 
     async handleSaveRecipe() {
         const endpoint = '/recipe/' + this.state.username;
@@ -608,6 +636,7 @@ class ContributePage extends React.Component {
                 'mealtypes': this.state.selected_mealtypes,
                 'ingredients': this.state.selected_ingredients,
                 'steps': this.state.recipe_steps_input,
+
             });
 
             console.log(response);
@@ -624,7 +653,7 @@ class ContributePage extends React.Component {
                 'ingredients': this.state.selected_ingredients,
                 'steps': this.state.recipe_steps_input,
             });
-        
+
             console.log(response);
         }
 
@@ -717,13 +746,13 @@ class ContributePage extends React.Component {
 
     async handleRecipeDelete(obj) {
         const endpoint = '/recipe/' + this.state.username;
-        
+
         let response = await axios.delete(endpoint, {
             data: {
                 'recipe_id': obj
             }
         });
-        
+
         this.getUserRecipes();
     }
 
@@ -782,6 +811,25 @@ class ContributePage extends React.Component {
 
     render() {
         const { classes } = this.props;
+        let {imagePreviewUrl} = this.state;
+        let $imagePreview = null;
+        if (imagePreviewUrl) {
+          $imagePreview = (<img
+              src={imagePreviewUrl}
+              className={classes.imageUpload}
+               />);
+        } else {
+          $imagePreview = (<img
+              src={require('./static/images/recipe_placeholder.jpg')}
+              alt="not available"
+              className={classes.imageUpload}
+          />)
+        };
+          // <img
+          //     src={require('./static/images/recipe_placeholder.jpg')}
+          //     alt="not available"
+          //     className={classes.imageUpload}
+          // />
 
         return (
             <div className={classes.root}>
@@ -813,7 +861,7 @@ class ContributePage extends React.Component {
                             <Grid container spacing={0} direction="row" justify="center" alignItems="center">
                                 <Grid item xs={4}>
                                     <Button
-                                        onClick={this.handleCheckReset} 
+                                        onClick={this.handleCheckReset}
                                         className={classes.clearBtn}>
                                     Clear
                                     </Button>
@@ -830,9 +878,9 @@ class ContributePage extends React.Component {
                             {this.state.selected_ingredients.map((obj, index) => (
                                 <React.Fragment key={index}>
                                     <Grid item xs={3}>
-                                        <IconButton 
-                                            name={obj.ingredient_name} value={index} 
-                                            aria-label="delete" color="secondary" 
+                                        <IconButton
+                                            name={obj.ingredient_name} value={index}
+                                            aria-label="delete" color="secondary"
                                             onClick={this.handleIngredientDelete.bind(this, obj)}
                                         >
                                             <DeleteIcon />
@@ -869,7 +917,7 @@ class ContributePage extends React.Component {
                     {this.state.ingredient_list.map((obj, index) => (
                         ((this.state.selected_category === '') || (this.state.selected_category === obj.category_name)) &&
                         <FormControlLabel
-                            key={index} control={<Checkbox checked={this.state.ingredient_checked[index]} 
+                            key={index} control={<Checkbox checked={this.state.ingredient_checked[index]}
                             onChange={this.handleCheckChange} name={obj.ingredient_name} value={index} color="primary" />}
                             label={obj.ingredient_name}
                         />
@@ -882,16 +930,16 @@ class ContributePage extends React.Component {
                     {(!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) ? (
                         <>
                         <Button
-                            onClick={this.handleContributeViewAdd} 
+                            onClick={this.handleContributeViewAdd}
                             className={classes.backBtn}
                         >
                             + Add Recipe
                         </Button>
                         <Container className={classes.mainContainer}>
                         {!this.state.user_recipes.length ? (
-                            <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed any recipes yet.</Typography>
+                            <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have not contributed any recipes yet.</Typography>
                         ) : (
-                            this.state.user_recipes.length === 1 ? 
+                            this.state.user_recipes.length === 1 ?
                                 <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed 1 recipe.</Typography>
                             :
                                 <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed {this.state.user_recipes.length} recipes.</Typography>
@@ -902,7 +950,7 @@ class ContributePage extends React.Component {
                         ) : (
                             <div className={classes.cardsContainer}>
                                 <Grid container spacing={1}>
-                                {this.state.user_recipes.map((recipe, index) => 
+                                {this.state.user_recipes.map((recipe, index) =>
                                     <Grid item sm={4} key={index}>
                                         <Card className={classes.root1}>
                                             <CardHeader
@@ -928,7 +976,7 @@ class ContributePage extends React.Component {
                                                 </Typography>
                                             </CardContent>
                                             <CardActions disableSpacing>
-                                                <IconButton 
+                                                <IconButton
                                                     aria-label="visibility"
                                                     onClick={this.handleVisibilityUpdate.bind(this, recipe)}
                                                 >
@@ -938,13 +986,13 @@ class ContributePage extends React.Component {
                                                         <VisibilityOffIcon />
                                                     )}
                                                 </IconButton>
-                                                <IconButton 
+                                                <IconButton
                                                     aria-label="edit"
                                                     onClick={this.handleRecipeUpdate(recipe)}
                                                 >
                                                     <EditIcon />
                                                 </IconButton>
-                                                <IconButton 
+                                                <IconButton
                                                     aria-label="delete"
                                                     onClick={this.handleRecipeDelete.bind(this, recipe.recipe_id)}
                                                 >
@@ -968,9 +1016,9 @@ class ContributePage extends React.Component {
                                                     </Typography>
                                                     <Typography paragraph>
                                                         <b>Ingredients used</b><br/>
-                                                        {recipe.ingredients.map((ingr, index) => 
+                                                        {recipe.ingredients.map((ingr, index) =>
                                                             <React.Fragment key={index}>
-                                                                <em>{ingr.ingredient_qty}</em> {ingr.ingredient_name}<br/>    
+                                                                <em>{ingr.ingredient_qty}</em> {ingr.ingredient_name}<br/>
                                                             </React.Fragment>
                                                         )}
                                                     </Typography>
@@ -1012,7 +1060,7 @@ class ContributePage extends React.Component {
                     ) : (
                         <>
                         <Button
-                            onClick={this.handleContributeFormBack} 
+                            onClick={this.handleContributeFormBack}
                             className={classes.backBtn}
                             startIcon={<ArrowBackIosIcon />}
                         >
@@ -1064,7 +1112,7 @@ class ContributePage extends React.Component {
                                 />
                                 <Divider className={classes.dividerStyle}/>
                                 <Typography><b>Ingredients</b></Typography>
-                                {!this.state.selected_ingredients.length ? 
+                                {!this.state.selected_ingredients.length ?
                                 (
                                     <Typography style={{fontSize:14, marginTop:10}}>You have not selected any ingredients for the recipe.</Typography>
                                 ) : (
@@ -1101,7 +1149,7 @@ class ContributePage extends React.Component {
                                 )}
                                 <Divider className={classes.dividerStyle}/>
                                 <Typography><b>Steps</b></Typography>
-                                {!this.state.recipe_steps_input.length ? 
+                                {!this.state.recipe_steps_input.length ?
                                 (
                                     <Typography style={{fontSize:14, marginTop:15}}>You have not added any steps to prepare the recipe.</Typography>
                                 ) : (
@@ -1115,8 +1163,8 @@ class ContributePage extends React.Component {
                                     {this.state.recipe_steps_input.map((obj, index) => (
                                         <React.Fragment key={index}>
                                             <Grid item xs={1}>
-                                                <IconButton 
-                                                    name={"" + index} value={index} 
+                                                <IconButton
+                                                    name={"" + index} value={index}
                                                     aria-label="delete" color="secondary"
                                                     onClick={this.handleRecipeStepDelete.bind(this, index)}
                                                 >
@@ -1141,7 +1189,7 @@ class ContributePage extends React.Component {
                                             </Grid>
                                             <Grid item xs={1}>
                                                 {(index === 0) ? (
-                                                    <IconButton 
+                                                    <IconButton
                                                         name={"up" + index} value={index} disabled
                                                         aria-label="upward" color="primary"
                                                         onClick={this.handleRecipeStepMoveUp.bind(this, index)}
@@ -1149,8 +1197,8 @@ class ContributePage extends React.Component {
                                                         <ArrowUpwardIcon />
                                                     </IconButton>
                                                 ) : (
-                                                    <IconButton 
-                                                        name={"up" + index} value={index} 
+                                                    <IconButton
+                                                        name={"up" + index} value={index}
                                                         aria-label="upward" color="primary"
                                                         onClick={this.handleRecipeStepMoveUp.bind(this, index)}
                                                     >
@@ -1158,7 +1206,7 @@ class ContributePage extends React.Component {
                                                     </IconButton>
                                                 )}
                                                 {(index === (this.state.recipe_steps_input.length - 1)) ? (
-                                                    <IconButton 
+                                                    <IconButton
                                                         name={"down" + index} value={index} disabled
                                                         aria-label="downward" color="primary"
                                                         onClick={this.handleRecipeStepMoveDown.bind(this, index)}
@@ -1166,8 +1214,8 @@ class ContributePage extends React.Component {
                                                         <ArrowDownwardIcon />
                                                     </IconButton>
                                                 ) : (
-                                                    <IconButton 
-                                                        name={"down" + index} value={index} 
+                                                    <IconButton
+                                                        name={"down" + index} value={index}
                                                         aria-label="downward" color="primary"
                                                         onClick={this.handleRecipeStepMoveDown.bind(this, index)}
                                                     >
@@ -1181,14 +1229,14 @@ class ContributePage extends React.Component {
                                     </>
                                 )}
                                 <Button
-                                    onClick={this.handleRecipeStepAdd} 
+                                    onClick={this.handleRecipeStepAdd}
                                     className={classes.addStepBtn1}
                                 >
                                     + Add Step
                                 </Button>
                                 {this.state.recipe_steps_input.length ? (
                                     <Button
-                                        onClick={this.handleRecipeStepReset} 
+                                        onClick={this.handleRecipeStepReset}
                                         className={classes.addStepBtn3}
                                     >
                                         Clear
@@ -1211,13 +1259,13 @@ class ContributePage extends React.Component {
                                         ))};
                                     </Select>
                                 </FormControl>
-                                {!this.state.selected_mealtypes.length ? 
+                                {!this.state.selected_mealtypes.length ?
                                 (
                                     <Typography style={{fontSize:14, marginTop:10}}>You have not tagged any meal types for the recipe.</Typography>
                                 ) : (
                                     <>
                                     <Button
-                                        onClick={this.handleMealTypeReset} 
+                                        onClick={this.handleMealTypeReset}
                                         className={classes.addStepBtn3}
                                     >
                                         Clear
@@ -1231,9 +1279,9 @@ class ContributePage extends React.Component {
                                     {this.state.selected_mealtypes.map((obj, index) => (
                                         <React.Fragment key={index}>
                                             <Grid item xs={1}>
-                                                <IconButton 
-                                                    name={obj} value={index} 
-                                                    aria-label="delete" color="secondary" 
+                                                <IconButton
+                                                    name={obj} value={index}
+                                                    aria-label="delete" color="secondary"
                                                     onClick={this.handleMealtypeDelete.bind(this, obj)}
                                                 >
                                                     <DeleteIcon />
@@ -1303,19 +1351,25 @@ class ContributePage extends React.Component {
                                 </Button>
                             </div>
                             <div className={classes.addRecipeImageDiv}>
-                                <img 
-                                    src={require('./static/images/recipe_placeholder.jpg')}
-                                    alt="not available"
-                                    className={classes.imageUpload}
-                                />
-                                <br/>
+                                <div>
+                                {$imagePreview}
+                                </div>
+
+                                <input
+                                  type="file"
+                                  onChange={this.handleRecipeImageChange}
+                                  className={classes.addStepBtn}
+                                  startIcon={<CloudUploadIcon />}
+                                  />
                                 <Button
-                                    onClick={this.handleRecipeImageUpload} 
+                                    onClick={this.handleRecipeImageUpload}
                                     className={classes.addStepBtn}
                                     startIcon={<CloudUploadIcon />}
                                 >
                                     Upload Image
                                 </Button>
+
+
                             </div>
                         </Container>
                     </>
@@ -1327,4 +1381,3 @@ class ContributePage extends React.Component {
 }
 
 export default withStyles(useStyles)(ContributePage);
-                
