@@ -1168,13 +1168,13 @@ class ContributePage extends React.Component {
                         </FormGroup>
                         <Divider className={classes.dividerStyle}/>
                         {!this.state.filtered_recipes.length ? (
-                            <Typography>No results found.</Typography>
+                            <Typography style={{fontSize:13}}><em>No results found.</em></Typography>
                         ) : (
                             <>
                             {this.state.filtered_recipes.length === 1 ? (
-                                <Typography>Showing 1 result.</Typography>
+                                <Typography style={{fontSize:13}}><em>Showing <b>1</b> result.</em></Typography>
                             ) : (
-                                <Typography>Showing {this.state.filtered_recipes.length} results.</Typography>
+                                <Typography style={{fontSize:13}}><em>Showing <b>{this.state.filtered_recipes.length}</b> results.</em></Typography>
                             )}
                             <div className={classes.cardsContainer}>
                                 <Grid container spacing={1}>
