@@ -253,6 +253,9 @@ const useStyles = theme => ({
     },
     ingredientFilter: {
         marginLeft: theme.spacing(6)
+    },
+    mealtypeFilter: {
+        marginTop: theme.spacing(2)
     }
 });
 
@@ -380,31 +383,11 @@ class ContributePage extends React.Component {
 
         await axios.get(endpoint)
             .then(response => {
-                if (this.state.filterByIngredient && this.state.filterByMealtype) {
-                    this.setState({
-                        user_recipes: response.data.recipes,
-                        filtered_recipes: response.data.recipes,
-                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
-                    });
-                } else if (this.state.filterByMealtype) {
-                    this.setState({
-                        user_recipes: response.data.recipes,
-                        filtered_recipes: response.data.recipes,
-                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
-                    });
-                } else if (this.state.filterByIngredient) {
-                    this.setState({
-                        user_recipes: response.data.recipes,
-                        filtered_recipes: response.data.recipes,
-                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
-                    });
-                } else {
-                    this.setState({
-                        user_recipes: response.data.recipes,
-                        filtered_recipes: response.data.recipes,
-                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
-                    });
-                }
+                this.setState({
+                    user_recipes: response.data.recipes,
+                    filtered_recipes: response.data.recipes,
+                    isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
+                });
             })
             .catch(error => {
                 console.log(error);
@@ -848,21 +831,117 @@ class ContributePage extends React.Component {
     }
 
     handleFilterByIngredient() {
-        this.setState({
-            filterByIngredient: !this.state.filterByIngredient
-        });
+        if (this.state.filterByIngredient) {
+            if (this.state.filterByMealtype) {
+                // filter by mealtype
+                let rcpFilter = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
+                
+                this.setState({
+                    filtered_recipes: rcpFilter,
+                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    filterByIngredient: false
+                });
+            } else {
+                // no filter
+                this.setState({
+                    filtered_recipes: this.state.user_recipes,
+                    isCardExpanded: new Array(this.state.user_recipes.length).fill().map((item, idx) => item = false),
+                    filterByIngredient: false
+                });
+            }
+        } else {
+            if (this.state.filterByMealtype) {
+                // filter by mealtype and ingredient
+                let rcpFilter1 = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
+                let rcpFilter = [];
+                rcpFilter1.forEach(recipe =>  {
+                    if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
+                        rcpFilter.push(recipe);
+                    }
+                });
+
+                this.setState({
+                    filtered_recipes: rcpFilter,
+                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    filterByIngredient: true
+                });
+            } else {
+                // filter by ingredient
+                let rcpFilter = [];
+                this.state.user_recipes.forEach(recipe =>  {
+                    if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
+                        rcpFilter.push(recipe);
+                    }
+                });
+
+                this.setState({
+                    filtered_recipes: rcpFilter,
+                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    filterByIngredient: true
+                });
+            }
+        }
     }
 
     handleFilterByMealtype() {
-        this.setState({
-            filterByMealtype: !this.state.filterByMealtype
-        });
+        if (this.state.filterByMealtype) {
+            if (this.state.filterByIngredient) {
+                // filter by ingredient
+                let rcpFilter = [];
+                this.state.user_recipes.forEach(recipe =>  {
+                    if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
+                        rcpFilter.push(recipe);
+                    }
+                });
+
+                this.setState({
+                    filtered_recipes: rcpFilter,
+                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    filterByMealtype: false,
+                    selected_mealtype: ''
+                });
+            } else {
+                // no filter
+                this.setState({
+                    filtered_recipes: this.state.user_recipes,
+                    isCardExpanded: new Array(this.state.user_recipes.length).fill().map((item, idx) => item = false),
+                    filterByMealtype: false,
+                    selected_mealtype: ''
+                });
+            }
+        } else {
+            this.setState({
+                filterByMealtype: true
+            });
+        }
     }
 
     handleSelectMealtypeFilter(event) {
-        this.setState({
-            selected_mealtype: event.target.value,
-        });
+        if (this.state.filterByIngredient) {
+            // filter by ingredient and mealtype
+            let rcpFilter1 = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === event.target.value));
+            let rcpFilter = [];
+            rcpFilter1.forEach(recipe =>  {
+                if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
+                    rcpFilter.push(recipe);
+                }
+            });
+
+            this.setState({
+                filtered_recipes: rcpFilter,
+                isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                selected_mealtype: event.target.value
+            });
+        } else {
+            // filter by mealtype
+            let rcpFilter = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === event.target.value));
+            
+            this.setState({
+                filtered_recipes: rcpFilter,
+                isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                selected_mealtype: event.target.value
+            });
+        }
     }
 
     render() {
@@ -1000,6 +1079,7 @@ class ContributePage extends React.Component {
                             :
                                 <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed <b>{this.state.user_recipes.length}</b> recipes.</Typography>
                         )}
+                        <Divider className={classes.dividerStyle}/>
                         <FormGroup>
                             <FormControlLabel
                                 control={
@@ -1057,6 +1137,7 @@ class ContributePage extends React.Component {
                                 <Typography></Typography>
                             )}
                             <FormControlLabel
+                                className={classes.mealtypeFilter}
                                 control={
                                 <Switch
                                     checked={this.state.filterByMealtype}
@@ -1076,9 +1157,6 @@ class ContributePage extends React.Component {
                                         value={this.state.selected_mealtype}
                                         onChange={this.handleSelectMealtypeFilter}
                                     >
-                                        <MenuItem value="">
-                                            <em>None</em>
-                                        </MenuItem>
                                         {this.state.mealtype_list.map((obj, index) => (
                                             <MenuItem key={index} value={obj.mealtype_name}>{obj.mealtype_name}</MenuItem>
                                         ))};
@@ -1100,7 +1178,7 @@ class ContributePage extends React.Component {
                             )}
                             <div className={classes.cardsContainer}>
                                 <Grid container spacing={1}>
-                                {this.state.user_recipes.map((recipe, index) =>
+                                {this.state.filtered_recipes.map((recipe, index) =>
                                     <Grid item sm={4} key={index}>
                                         <Card className={classes.root1}>
                                             <CardHeader
