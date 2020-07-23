@@ -55,6 +55,10 @@ const useStyles = theme => ({
         margin: theme.spacing(1),
         minWidth: 200,
     },
+    formControl1: {
+        marginLeft: theme.spacing(6),
+        width: 200,
+    },
     appBar: {
         // width: `calc(100% - ${drawerWidth}px)`,
         // marginLeft: drawerWidth,
@@ -247,7 +251,9 @@ const useStyles = theme => ({
     avatar: {
         backgroundColor: red[500],
     },
-
+    ingredientFilter: {
+        marginLeft: theme.spacing(6)
+    }
 });
 
 class ContributePage extends React.Component {
@@ -264,6 +270,7 @@ class ContributePage extends React.Component {
             category_list: [],
             mealtype_list: [],
             selected_ingredients: [],
+            selected_ingredients_exclude: [],
             selected_category: '',
             selected_mealtype: '',
             selected_mealtypes: [],
@@ -276,6 +283,7 @@ class ContributePage extends React.Component {
             selected_ingredients_qty_input: [],
             recipe_steps_input: [],
             user_recipes: [],
+            filtered_recipes: [],
             isAddingRecipe: false,
             isUpdatingRecipe: false,
             isCardExpanded: [],
@@ -317,6 +325,7 @@ class ContributePage extends React.Component {
         this.handleVisibilityUpdate = this.handleVisibilityUpdate.bind(this);
         this.handleFilterByIngredient = this.handleFilterByIngredient.bind(this);
         this.handleFilterByMealtype = this.handleFilterByMealtype.bind(this);
+        this.handleSelectMealtypeFilter = this.handleSelectMealtypeFilter.bind(this);
     }
 
     componentDidMount() {
@@ -371,10 +380,31 @@ class ContributePage extends React.Component {
 
         await axios.get(endpoint)
             .then(response => {
-                this.setState({
-                    user_recipes: response.data.recipes,
-                    isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
-                });
+                if (this.state.filterByIngredient && this.state.filterByMealtype) {
+                    this.setState({
+                        user_recipes: response.data.recipes,
+                        filtered_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
+                    });
+                } else if (this.state.filterByMealtype) {
+                    this.setState({
+                        user_recipes: response.data.recipes,
+                        filtered_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
+                    });
+                } else if (this.state.filterByIngredient) {
+                    this.setState({
+                        user_recipes: response.data.recipes,
+                        filtered_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
+                    });
+                } else {
+                    this.setState({
+                        user_recipes: response.data.recipes,
+                        filtered_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
+                    });
+                }
             })
             .catch(error => {
                 console.log(error);
@@ -449,7 +479,7 @@ class ContributePage extends React.Component {
             mtSelect.push(event.target.value);
             mtSelect.sort();
         }
-
+        
         this.setState({
             selected_mealtype: '',
             selected_mealtypes: mtSelect
@@ -600,16 +630,13 @@ class ContributePage extends React.Component {
     }
 
     handleRecipeImageUpload(event) {
+        event.preventDefault();
+        // TODO: do something with -> this.state.file
+        console.log('handle uploading-', this.state.file);
+        const endpoint = '/recipe_image';
 
-       event.preventDefault();
-       // TODO: do something with -> this.state.file
-       console.log('handle uploading-', this.state.file);
-       const endpoint = '/recipe_image';
-
-       axios.post(endpoint, this.state.file);
-     }
-
-
+        axios.post(endpoint, this.state.file);
+    }
 
     handleRecipeImageChange(event) {
         event.preventDefault();
@@ -674,6 +701,8 @@ class ContributePage extends React.Component {
             selected_ingredients: [],
             selected_visibility: 'Public',
             recipe_steps_input: [],
+            selected_mealtype: '',
+            selected_category: '',
             ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
         });
 
@@ -693,6 +722,8 @@ class ContributePage extends React.Component {
             selected_visibility: 'Public',
             selected_ingredients: [],
             recipe_steps_input: [],
+            selected_mealtype: '',
+            selected_category: '',
             ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
         });
     }
@@ -709,6 +740,8 @@ class ContributePage extends React.Component {
             selected_visibility: 'Public',
             selected_ingredients: [],
             recipe_steps_input: [],
+            selected_mealtype: '',
+            selected_category: '',
             ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
         });
     }
@@ -823,6 +856,12 @@ class ContributePage extends React.Component {
     handleFilterByMealtype() {
         this.setState({
             filterByMealtype: !this.state.filterByMealtype
+        });
+    }
+
+    handleSelectMealtypeFilter(event) {
+        this.setState({
+            selected_mealtype: event.target.value,
         });
     }
 
@@ -967,12 +1006,56 @@ class ContributePage extends React.Component {
                                 <Switch
                                     checked={this.state.filterByIngredient}
                                     onChange={this.handleFilterByIngredient}
-                                    name="checkedB"
+                                    name="checkedA"
                                     color="primary"
                                 />
                                 }
-                                label="Filter by ingredients"
+                                label="Filter by selected ingredients"
                             />
+                            {this.state.filterByIngredient ? (
+                                <>
+                                {this.state.selected_ingredients.length ? (
+                                    <>
+                                    <Typography className={classes.ingredientFilter}><b>Include: </b>
+                                    {this.state.selected_ingredients.map((ingr, index) =>
+                                        (index === this.state.selected_ingredients.length - 1) ? (
+                                            <React.Fragment key={index}>
+                                                {ingr.ingredient_name}
+                                            </React.Fragment>
+                                        ) : (
+                                            <React.Fragment key={index}>
+                                                {ingr.ingredient_name},{' '}
+                                            </React.Fragment>
+                                        )
+                                    )}
+                                    </Typography>
+                                    </>
+                                ) : (
+                                    <Typography className={classes.ingredientFilter}><b>Include:</b> <em>None</em></Typography>
+                                )}
+                                {this.state.selected_ingredients_exclude.length ? (
+                                    <>
+                                    <Typography className={classes.ingredientFilter}><b>Exclude: </b>
+                                    {this.state.selected_ingredients_exclude.map((ingr, index) =>
+                                        (index === this.state.selected_ingredients_exclude.length - 1) ? (
+                                            <React.Fragment key={index}>
+                                                {ingr.ingredient_name}
+                                            </React.Fragment>
+                                        ) : (
+                                            <React.Fragment key={index}>
+                                                {ingr.ingredient_name},{' '}
+                                            </React.Fragment>
+                                        )
+                                    )}
+                                    </Typography>
+                                    </>
+                                ) : (
+                                    <Typography className={classes.ingredientFilter}><b>Exclude:</b> <em>None</em></Typography>
+                                )}
+                                </>
+                            ) : (
+                                <Typography></Typography>
+                            )}
                             <FormControlLabel
                                 control={
                                 <Switch
@@ -982,13 +1065,39 @@ class ContributePage extends React.Component {
                                     color="primary"
                                 />
                                 }
-                                label="Filter by mealtype"
+                                label="Filter by selected mealtype"
                             />
+                            {this.state.filterByMealtype ? (
+                                <FormControl className={classes.formControl1}>
+                                    <InputLabel id="select-mealtype">Select a meal type</InputLabel>
+                                    <Select
+                                        labelId="select-mealtype1"
+                                        id="select-mealtype1"
+                                        value={this.state.selected_mealtype}
+                                        onChange={this.handleSelectMealtypeFilter}
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        {this.state.mealtype_list.map((obj, index) => (
+                                            <MenuItem key={index} value={obj.mealtype_name}>{obj.mealtype_name}</MenuItem>
+                                        ))};
+                                    </Select>
+                                </FormControl>
+                            ) : (
+                                <Typography></Typography>
+                            )}
                         </FormGroup>
                         <Divider className={classes.dividerStyle}/>
-                        {!this.state.user_recipes.length ? (
-                            <Typography></Typography>
+                        {!this.state.filtered_recipes.length ? (
+                            <Typography>No results found.</Typography>
                         ) : (
+                            <>
+                            {this.state.filtered_recipes.length === 1 ? (
+                                <Typography>Showing 1 result.</Typography>
+                            ) : (
+                                <Typography>Showing {this.state.filtered_recipes.length} results.</Typography>
+                            )}
                             <div className={classes.cardsContainer}>
                                 <Grid container spacing={1}>
                                 {this.state.user_recipes.map((recipe, index) =>
@@ -1095,6 +1204,7 @@ class ContributePage extends React.Component {
                                 )}
                                 </Grid>
                             </div>
+                            </>
                         )}
                         </Container>
                         </>
