@@ -145,7 +145,8 @@ const useStyles = theme => ({
     },
     ingrSelectionDiv: {
         overflow: 'auto',
-        padding: theme.spacing(1)
+        padding: theme.spacing(1),
+        maxHeight:'45%'
     },
     mainContainer: {
         height: '100%',
@@ -1172,9 +1173,9 @@ class ContributePage extends React.Component {
                         ) : (
                             <>
                             {this.state.filtered_recipes.length === 1 ? (
-                                <Typography style={{fontSize:13}}><em>Showing <b>1</b> result.</em></Typography>
+                                <Typography style={{fontSize:13}}><em><b>Showing 1 result.</b></em></Typography>
                             ) : (
-                                <Typography style={{fontSize:13}}><em>Showing <b>{this.state.filtered_recipes.length}</b> results.</em></Typography>
+                                <Typography style={{fontSize:13}}><em><b>Showing {this.state.filtered_recipes.length} results.</b></em></Typography>
                             )}
                             <div className={classes.cardsContainer}>
                                 <Grid container spacing={1}>

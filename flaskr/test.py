@@ -1,168 +1,11 @@
-import sqlite3
-
-
-def db_init(db_file):
-    try:
-        conn = sqlite3.connect(db_file)
-        c = conn.cursor()
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS User (
-                    id              INTEGER         NOT NULL,
-                    username        VARCHAR(30)     NOT NULL    UNIQUE,
-                    password        VARCHAR(50)     NOT NULL,
-                    first_name      VARCHAR(30)     NOT NULL,
-                    last_name       VARCHAR(50)     NOT NULL,
-                    PRIMARY KEY(id)
-                )
-            '''
-        )
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS Ingredient (
-                    id              INTEGER         NOT NULL,
-                    name            VARCHAR(30)     NOT NULL    UNIQUE,
-                    PRIMARY KEY(id)
-                )
-            '''
-        )
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS Recipe (
-                    id              INTEGER         NOT NULL,
-                    name            VARCHAR(100)    NOT NULL,
-                    description     VARCHAR(500),
-                    prep_time       VARCHAR(25),
-                    people_served   INTEGER,
-                    PRIMARY KEY(id)
-                )
-            '''
-        )
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS MealType (
-                    id              INTEGER         NOT NULL,
-                    name            VARCHAR(50)     NOT NULL    UNIQUE,
-                    PRIMARY KEY(id)
-                )
-            '''
-        )
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS Category (
-                    id              INTEGER         NOT NULL,
-                    name            VARCHAR(50)     NOT NULL    UNIQUE,
-                    PRIMARY KEY(id)
-                )
-            '''
-        )
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS User_Recipe (
-                    id              INTEGER         NOT NULL,
-                    user_id         INTEGER         NOT NULL,
-                    recipe_id       INTEGER         NOT NULL,
-                    visibility      VARCHAR(10)     NOT NULL,
-                    PRIMARY KEY(id),
-                    FOREIGN KEY(user_id) REFERENCES User(id),
-                    FOREIGN KEY(recipe_id) REFERENCES Recipe(id)
-                )
-            '''
-        )
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS Recipe_Step (
-                    id                  INTEGER         NOT NULL,
-                    recipe_id           INTEGER         NOT NULL,
-                    step_no             INTEGER         NOT NULL,
-                    step_description    VARCHAR(1500)   NOT NULL,
-                    PRIMARY KEY(id),
-                    FOREIGN KEY(recipe_id) REFERENCES Recipe(id)
-                )
-            '''
-        )
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS Recipe_Ingredient (
-                    id                  INTEGER         NOT NULL,
-                    recipe_id           INTEGER         NOT NULL,
-                    ingredient_id       INTEGER         NOT NULL,
-                    ingredient_qty      VARCHAR(25),
-                    PRIMARY KEY(id),
-                    FOREIGN KEY(recipe_id) REFERENCES Recipe(id),
-                    FOREIGN KEY(ingredient_id) REFERENCES Ingredient(id)
-                )
-            '''
-        )
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS Ingredient_Category (
-                    id                  INTEGER         NOT NULL,
-                    category_id         INTEGER         NOT NULL,
-                    ingredient_id       INTEGER         NOT NULL,
-                    PRIMARY KEY(id),
-                    FOREIGN KEY(category_id) REFERENCES Category(id),
-                    FOREIGN KEY(ingredient_id) REFERENCES Ingredient(id)
-                )
-            '''
-        )
-
-        c.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS MealType_Recipe (
-                    id                  INTEGER         NOT NULL,
-                    mealtype_id         INTEGER         NOT NULL,
-                    recipe_id           INTEGER         NOT NULL,
-                    PRIMARY KEY(id),
-                    FOREIGN KEY(mealtype_id) REFERENCES MealType(id),
-                    FOREIGN KEY(recipe_id) REFERENCES Recipe(id)
-                )
-            '''
-        )
-
-        conn.commit()
-
-        # populate database if empty
-        query = list(c.execute('SELECT * FROM Category'))
-        
-        if not query:
-            conn.close()
-            conn = populate_db(db_file)
-
-        return conn
-    except sqlite3.Error as e:
-        print(e)
-
-def db_connect(db_file):
-    try:
-        conn = sqlite3.connect(db_file)
-
-        return conn
-    except sqlite3.Error as e:
-        print(e)
-
-def populate_db(db_file):
-    try:
-        conn = sqlite3.connect(db_file)
-        c = conn.cursor()
-
-        mealtypes = [
+mealtypes = [
             'Breads', 'Breakfast', 'Cakes', 'Casseroles', 'Cookies', 'Desserts', 'Dinner', 'Dips', 'Drinks',
             'Fish recipes', 'Grilling & BBQ', 'Kid Friendly', 'Meat recipes', 'Poultry recipes', 'Quick & Easy',
             'Salad Dressings', 'Salads', 'Sandwiches', 'Sauces', 'Seafood recipes', 'Slow Cooker', 'Soups',
             'Vegetarian recipes', 'Vegan recipes', 'Gluten free recipes', 'Lactose free recipes'
         ]
 
-        ingredient_categories = {
+ingredient_categories = {
             'Dairy': [
                     'butter', 'egg', 'milk', 'parmesan', 'cheddar', 'american cheese', 'sour cream', 'cream cheese',
                     'mozzarella', 'yogurt', 'cream', 'evaporated milk', 'whipped cream', 'half and half',
@@ -178,7 +21,7 @@ def populate_db(db_file):
                 ],
             'Vegetables': [
                     'onion', 'garlic', 'tomato', 'potato', 'carrot', 'bell pepper', 'basil', 'parsley', 'broccoli', 
-                    'corn', 'spinach', 'mushroom', 'ginger', 'chili pepper', 'celery', 'rosemary', 'salad greens', 
+                    'corn', 'spinach', 'mushroom', 'green beans', 'ginger', 'chili pepper', 'celery', 'rosemary', 'salad greens', 
                     'red onion', 'cucumber', 'sweet potato', 'pickle', 'avocado', 'zucchini', 'cilantro', 'frozen vegetables', 
                     'olive', 'asparagus', 'cabbage', 'cauliflower', 'dill', 'kale', 'mixed vegetable', 'pumpkin', 'squash', 'mint', 
                     'scallion', 'sun dried tomato', 'shallot', 'eggplant', 'beet', 'butternut squash', 'horseradish', 'leek', 
@@ -312,26 +155,12 @@ def populate_db(db_file):
                 ]
         }
 
-        # enter mealtypes
-        for i in mealtypes:
-            c.execute('INSERT INTO MealType VALUES(null,?)', (i,))
-
-        # enter ingredients and categories
-        ctr_cat = 1
-        ctr_igr = 1
-        for key, val in ingredient_categories.items():
-            c.execute('INSERT INTO Category VALUES(null,?)', (key,))
-
-            for v in val:
-                c.execute('INSERT INTO Ingredient VALUES(null,?)', (v,))
-                c.execute('INSERT INTO Ingredient_Category VALUES(null,?,?)', (ctr_cat, ctr_igr))
-                
-                ctr_igr += 1
-
-            ctr_cat += 1
-
-        conn.commit()
-
-        return conn
-    except sqlite3.Error as e:
-        print(e)
+visited = []
+result = []
+for key, val in ingredient_categories.items():
+    for v in val:
+        if v in visited:
+            result.append(v)
+        else:
+            visited.append(v)
+print(result)
