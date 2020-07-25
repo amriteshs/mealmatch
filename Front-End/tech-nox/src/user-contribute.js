@@ -462,7 +462,7 @@ class ContributePage extends React.Component {
             mtSelect.push(event.target.value);
             mtSelect.sort();
         }
-
+        
         this.setState({
             selected_mealtype: '',
             selected_mealtypes: mtSelect
@@ -835,7 +835,7 @@ class ContributePage extends React.Component {
             if (this.state.filterByMealtype) {
                 // filter by mealtype
                 let rcpFilter = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
-
+              
                 this.setState({
                     filtered_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
