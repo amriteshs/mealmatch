@@ -835,7 +835,7 @@ class ContributePage extends React.Component {
             if (this.state.filterByMealtype) {
                 // filter by mealtype
                 let rcpFilter = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
-                
+              
                 this.setState({
                     filtered_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
@@ -935,7 +935,7 @@ class ContributePage extends React.Component {
         } else {
             // filter by mealtype
             let rcpFilter = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === event.target.value));
-            
+
             this.setState({
                 filtered_recipes: rcpFilter,
                 isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
@@ -972,10 +972,11 @@ class ContributePage extends React.Component {
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" noWrap className={classes.title}>
-                        mealmatch
+                        <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
                     </Typography>
                     <Button color="inherit" >{this.state.username}</Button>
                     <Button color="inherit" href={'/' + this.state.username}>Home</Button>
+                    <Button color="inherit" href='/about'>About</Button>
                     <Button color="inherit" href='/'>Logout</Button>
                 </Toolbar>
             </AppBar>
