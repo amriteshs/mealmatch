@@ -135,10 +135,9 @@ export default function PermanentDrawerLeft() {
       setcategoryShow(false);
     }
   }
-
   
   const getRecipe = () => {
-    // all recipes are fetched here 
+    // all recipes are fetched here
     const API_KEY= 'c972685406f94d8cac65c8c6c48febeb'
     const URL = 'https://api.spoonacular.com/recipes/search?apiKey='+ API_KEY +'&number=10&query=' + recipeName
 
@@ -146,7 +145,7 @@ export default function PermanentDrawerLeft() {
       console.log(response)
       setRecipeList(response.data.results)
     })
-    
+
   }
 
   // Uncomment below line for default behavior
@@ -163,9 +162,10 @@ export default function PermanentDrawerLeft() {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap className={classes.title}>
-            mealmatch
+            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
           </Typography>
           <Button color="inherit" href='/login'>Login</Button>
+          <Button color="inherit" href='/about'>About</Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -227,20 +227,20 @@ export default function PermanentDrawerLeft() {
         </Toolbar>
         <div className={classes.cardsContaioner}>
             <Grid container spacing={1}>
-              {recipeList.map((recipe) => 
+              {recipeList.map((recipe) =>
               <Grid item sm={4}>
-                <RecipeReviewCard 
-                  title={recipe.title} 
-                  imageUrl={BaseUri+recipe.image} 
-                  source={recipe.sourceUrl} 
-                  time={recipe.readyInMinutes} 
+                <RecipeReviewCard
+                  title={recipe.title}
+                  imageUrl={BaseUri+recipe.image}
+                  source={recipe.sourceUrl}
+                  time={recipe.readyInMinutes}
                   serves={recipe.servings}
                 />
               </Grid>)}
             </Grid>
         </div>
         </div>
-        
+
       </main>
     </div>
   );

@@ -202,10 +202,10 @@ class UserHomePage extends React.Component {
             ingrSelect.push(ingredient_details);
 
             ingrSelect.sort(function(x, y) {
-                if (x.ingredient_name < y.ingredient_name) { 
+                if (x.ingredient_name < y.ingredient_name) {
                     return -1;
                 }
-                if (x.ingredient_name > y.ingredient_name) { 
+                if (x.ingredient_name > y.ingredient_name) {
                     return 1;
                 }
                 return 0;
@@ -257,17 +257,18 @@ class UserHomePage extends React.Component {
     }
 
     setApiRecipeNameValue(event) {
+        console.log(event.target.value);
         this.setState({
             api_recipe_name: event.target.value
         });
     }
-    
-    async getRecipe() {
-        // all recipes are fetched here 
+
+    getRecipe = () => {
+        // all recipes are fetched here
         const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
         const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
-        await axios.get(URL)
+        axios.get(URL)
             .then(response => {
                 this.setState({
                     api_recipe_list: response.data.results
@@ -284,10 +285,11 @@ class UserHomePage extends React.Component {
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" noWrap className={classes.title}>
-                        mealmatch
+                        <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
                     </Typography>
                     <Button color="inherit" >{this.state.username}</Button>
                     <Button color="inherit" href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                    <Button color="inherit" href='/about'>About</Button>
                     <Button color="inherit" href='/'>Logout</Button>
                 </Toolbar>
             </AppBar>
@@ -319,7 +321,7 @@ class UserHomePage extends React.Component {
                         <Grid container spacing={0} direction="row" justify="center" alignItems="center">
                             <Grid item xs={4}>
                                 <Button
-                                    onClick={this.handleCheckReset} 
+                                    onClick={this.handleCheckReset}
                                     className={classes.clearBtn}>Clear
                                 </Button>
                             </Grid>
@@ -335,9 +337,9 @@ class UserHomePage extends React.Component {
                         {this.state.selected_ingredients.map((obj, index) => (
                             <React.Fragment key={index}>
                                 <Grid item xs={3}>
-                                    <IconButton 
-                                        name={obj.ingredient_name} value={index} 
-                                        aria-label="delete" color="secondary" 
+                                    <IconButton
+                                        name={obj.ingredient_name} value={index}
+                                        aria-label="delete" color="secondary"
                                         onClick={this.handleIngredientDelete.bind(this, obj)}
                                     >
                                         <DeleteIcon />
@@ -382,6 +384,7 @@ class UserHomePage extends React.Component {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
+                            onChange={this.setApiRecipeNameValue}
                             onBlur={this.setApiRecipeNameValue}
                         />
                     </div>
@@ -389,13 +392,13 @@ class UserHomePage extends React.Component {
                     </Toolbar>
                     <div className={classes.cardsContaioner}>
                         <Grid container spacing={1}>
-                        {this.state.api_recipe_list.map((recipe) => 
+                        {this.state.api_recipe_list.map((recipe) =>
                             <Grid item sm={4}>
-                                <RecipeReviewCard 
-                                    title={recipe.title} 
-                                    imageUrl={this.state.base_uri + recipe.image} 
-                                    source={recipe.sourceUrl} 
-                                    time={recipe.readyInMinutes} 
+                                <RecipeReviewCard
+                                    title={recipe.title}
+                                    imageUrl={this.state.base_uri + recipe.image}
+                                    source={recipe.sourceUrl}
+                                    time={recipe.readyInMinutes}
                                     serves={recipe.servings}
                                 />
                             </Grid>
