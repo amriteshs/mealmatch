@@ -26,6 +26,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
+import InputBase from '@material-ui/core/InputBase';
 import Switch from '@material-ui/core/Switch';
 import { red } from '@material-ui/core/colors';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
@@ -36,6 +37,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import SearchIcon from '@material-ui/icons/Search';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -288,6 +290,7 @@ class ContributePage extends React.Component {
             recipe_steps_input: [],
             user_recipes: [],
             filtered_recipes: [],
+            searched_ingredient: '',
             isAddingRecipe: false,
             isUpdatingRecipe: false,
             isCardExpanded: [],
@@ -297,9 +300,10 @@ class ContributePage extends React.Component {
             imagePreviewURL: '',
         };
 
-        this.handleCheckChange = this.handleCheckChange.bind(this);
-        this.handleCheckReset = this.handleCheckReset.bind(this);
+        this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
+        this.handleIngredientCheckReset = this.handleIngredientCheckReset.bind(this);
         this.handleIngredientDelete = this.handleIngredientDelete.bind(this);
+        this.handleIngredientSearch = this.handleIngredientSearch.bind(this);
         this.handleCategorySelect = this.handleCategorySelect.bind(this);
         this.handleMealtypeSelect = this.handleMealtypeSelect.bind(this);
         this.handleMealtypeDelete = this.handleMealtypeDelete.bind(this);
@@ -395,7 +399,7 @@ class ContributePage extends React.Component {
             });
     }
 
-    handleCheckChange(event) {
+    handleIngredientCheckChange(event) {
         let ingrCheck = [...this.state.ingredient_checked];
         let ingrSelect = [...this.state.selected_ingredients];
 
@@ -425,7 +429,7 @@ class ContributePage extends React.Component {
         });
     }
 
-    handleCheckReset() {
+    handleIngredientCheckReset() {
         this.setState({
             ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
             selected_ingredients: []
@@ -447,6 +451,12 @@ class ContributePage extends React.Component {
             ingredient_checked: ingrCheck,
             selected_ingredients: ingrSelect,
         });
+    }
+
+    handleIngredientSearch(event) {
+        this.setState({
+            searched_ingredient: event.target.value
+        })
     }
 
     handleCategorySelect(event) {
@@ -997,7 +1007,7 @@ class ContributePage extends React.Component {
                             <Grid container spacing={0} direction="row" justify="center" alignItems="center">
                                 <Grid item xs={4}>
                                     <Button
-                                        onClick={this.handleCheckReset}
+                                        onClick={this.handleIngredientCheckReset}
                                         className={classes.clearBtn}>
                                     Clear
                                     </Button>
@@ -1032,6 +1042,23 @@ class ContributePage extends React.Component {
                     )}
                 </div>
                 <Divider />
+                <Grid style={{marginBottom:0}} direction="row" alignItems="center" justify="center" container className={classes.formControl}>
+                    <Grid style={{marginBottom:0}} item xs={2}>
+                        <SearchIcon />
+                    </Grid>
+                    <Grid style={{marginTop:0}} item xs={10}>
+                        <InputBase
+                            placeholder="Search ingredient..."
+                            // classes={{
+                            //     root: classes.inputRoot,
+                            //     input: classes.inputInput,
+                            // }}
+                            inputProps={{ 'aria-label': 'search' }}
+                            onChange={this.handleIngredientSearch}
+                            onBlur={this.handleIngredientSearch}
+                        />
+                    </Grid>
+                </Grid>
                 <FormControl className={classes.formControl}>
                     <InputLabel id="select-category">Select a category</InputLabel>
                     <Select
@@ -1051,10 +1078,10 @@ class ContributePage extends React.Component {
                 <div className={classes.ingrSelectionDiv}>
                     <FormGroup>
                     {this.state.ingredient_list.map((obj, index) => (
-                        ((this.state.selected_category === '') || (this.state.selected_category === obj.category_name)) &&
+                        this.state.selected_category === obj.category_name &&
                         <FormControlLabel
                             key={index} control={<Checkbox checked={this.state.ingredient_checked[index]}
-                            onChange={this.handleCheckChange} name={obj.ingredient_name} value={index} color="primary" />}
+                            onChange={this.handleIngredientCheckChange} name={obj.ingredient_name} value={index} color="primary" />}
                             label={obj.ingredient_name}
                         />
                     ))}

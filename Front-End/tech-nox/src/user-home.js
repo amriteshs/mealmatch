@@ -147,7 +147,7 @@ class UserHomePage extends React.Component {
         this.getIngredients();
         this.getCategories();
         this.getMealtypes();
-        this.getRecipe();
+        // this.getRecipe();
     }
 
     async getIngredients() {
