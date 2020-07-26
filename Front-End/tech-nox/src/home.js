@@ -150,9 +150,9 @@ export default function PermanentDrawerLeft() {
 
   // Uncomment below line for default behavior
 
-   useEffect(() => {
-     getRecipe();
-   },[]);
+  //  useEffect(() => {
+  //    getRecipe();
+  //  },[]);
 
   // set the recipe name form the input box on Keyup event
 

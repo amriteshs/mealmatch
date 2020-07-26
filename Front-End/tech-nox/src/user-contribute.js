@@ -271,10 +271,9 @@ class ContributePage extends React.Component {
             ingredient_count: 0,
             category_count: 0,
             mealtype_count: 0,
-            ingredient_list: [],
-            ingredient_checked: [],
-            category_list: [],
-            mealtype_list: [],
+            ingredient_list: {},
+            category_list: {},
+            mealtype_list: {},
             selected_ingredients: [],
             selected_ingredients_exclude: [],
             selected_category: '',
@@ -286,7 +285,7 @@ class ContributePage extends React.Component {
             recipe_description_input: '',
             recipe_prep_time_input: '',
             recipe_people_served_input: 1,
-            selected_ingredients_qty_input: [],
+            // selected_ingredients_qty_input: [],
             recipe_steps_input: [],
             user_recipes: [],
             filtered_recipes: [],
@@ -349,7 +348,7 @@ class ContributePage extends React.Component {
             this.setState({
                 ingredient_count: response.data.count,
                 ingredient_list: response.data.ingredients,
-                ingredient_checked: new Array(response.data.count).fill().map((item, idx) => item = false)
+                // ingredient_checked: new Array(response.data.count).fill().map((item, idx) => item = false)
             })
         })
         .catch(error => {
@@ -400,55 +399,50 @@ class ContributePage extends React.Component {
     }
 
     handleIngredientCheckChange(event) {
-        let ingrCheck = [...this.state.ingredient_checked];
+        let ingrList = {...this.state.ingredient_list};
         let ingrSelect = [...this.state.selected_ingredients];
 
-        ingrCheck[event.target.value] = event.target.checked;
+        ingrList[event.target.value].checked = event.target.checked;
 
         if (event.target.checked) {
-            let ingredient_details = this.state.ingredient_list[event.target.value];
-            ingredient_details.ingredient_qty = '';
-            ingrSelect.push(ingredient_details);
-
-            ingrSelect.sort(function(x, y) {
-                if (x.ingredient_name < y.ingredient_name) {
-                    return -1;
-                }
-                if (x.ingredient_name > y.ingredient_name) {
-                    return 1;
-                }
-                return 0;
-            });
+            ingrSelect.push(event.target.value);
+            ingrSelect.sort();
         } else {
-            ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.name);
+            ingrSelect = ingrSelect.filter(x => x !== event.target.value);
         }
 
         this.setState({
-            ingredient_checked: ingrCheck,
+            ingredient_list: ingrList,
             selected_ingredients: ingrSelect
         });
     }
 
     handleIngredientCheckReset() {
+        let ingrList = {...this.state.ingredient_list};
+
+        this.state.selected_ingredients.map((obj, index) => (
+            ingrList[obj].checked = false,
+            ingrList[obj].ingredient_qty = ''
+        ));
+        
         this.setState({
-            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
+            ingredient_list: ingrList,
             selected_ingredients: []
         });
     }
 
     handleIngredientDelete(obj) {
-        let ingrCheck = [...this.state.ingredient_checked];
+        // let ingrCheck = [...this.state.ingredient_checked];
+        let ingrList = {...this.state.ingredient_list};
         let ingrSelect = [...this.state.selected_ingredients];
 
-        let index = this.state.ingredient_list.findIndex(x => x.ingredient_name === obj.ingredient_name);
-        if (index !== -1) {
-            ingrCheck[index] = false;
-        }
+        ingrList[obj].checked = false;
+        ingrList[obj].ingredient_qty = '';
 
-        ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj.ingredient_name);
+        ingrSelect = ingrSelect.filter(x => x !== obj);
 
         this.setState({
-            ingredient_checked: ingrCheck,
+            ingredient_list: ingrList,
             selected_ingredients: ingrSelect,
         });
     }
@@ -532,27 +526,35 @@ class ContributePage extends React.Component {
     }
 
     handleOnChangeIngredientQty = obj => event => {
+        let ingrList = {...this.state.ingredient_list};
         let ingrSelect = [...this.state.selected_ingredients];
 
-        let index = ingrSelect.findIndex(x => x.ingredient_name === obj.ingredient_name);
-        if (index !== -1) {
-            ingrSelect[index].ingredient_qty = event.target.value;
-        }
+        // let index = ingrSelect.findIndex(x => x.ingredient_name === obj.ingredient_name);
+        // if (index !== -1) {
+        //     ingrSelect[index].ingredient_qty = event.target.value;
+        // }
+
+        ingrList[obj].ingredient_qty = event.target.value;
 
         this.setState({
+            ingredient_list: ingrList,
             selected_ingredients: ingrSelect
         });
     }
 
     handleOnBlurIngredientQty = obj => event => {
+        let ingrList = {...this.state.ingredient_list};
         let ingrSelect = [...this.state.selected_ingredients];
 
-        let index = ingrSelect.findIndex(x => x.ingredient_name === obj.ingredient_name);
-        if (index !== -1) {
-            ingrSelect[index].ingredient_qty = event.target.value;
-        }
+        // let index = ingrSelect.findIndex(x => x.ingredient_name === obj.ingredient_name);
+        // if (index !== -1) {
+        //     ingrSelect[index].ingredient_qty = event.target.value;
+        // }
+
+        ingrList[obj].ingredient_qty = event.target.value;
 
         this.setState({
+            ingredient_list: ingrList,
             selected_ingredients: ingrSelect
         });
     }
@@ -957,25 +959,26 @@ class ContributePage extends React.Component {
 
     render() {
         const { classes } = this.props;
+        
         let {imagePreviewUrl} = this.state;
         let $imagePreview = null;
         if (imagePreviewUrl) {
-          $imagePreview = (<img
-              src={imagePreviewUrl}
-              className={classes.imageUpload}
-               />);
+            $imagePreview = (<img
+                src={imagePreviewUrl}
+                className={classes.imageUpload}
+                />);
         } else {
-          $imagePreview = (<img
-              src={require('./static/images/recipe_placeholder.jpg')}
-              alt="not available"
-              className={classes.imageUpload}
-          />)
+            $imagePreview = (<img
+                src={require('./static/images/recipe_placeholder.jpg')}
+                alt="not available"
+                className={classes.imageUpload}
+            />)
         };
-          // <img
-          //     src={require('./static/images/recipe_placeholder.jpg')}
-          //     alt="not available"
-          //     className={classes.imageUpload}
-          // />
+        // <img
+        //     src={require('./static/images/recipe_placeholder.jpg')}
+        //     alt="not available"
+        //     className={classes.imageUpload}
+        // />
 
         return (
             <div className={classes.root}>
@@ -999,47 +1002,46 @@ class ContributePage extends React.Component {
                 anchor="left"
             >
                 <div className={classes.ingrSelectedDiv}>
-                    {!this.state.selected_ingredients.length ?
+                {!this.state.selected_ingredients.length ?
+                (
+                    <Typography>You have not selected any ingredients.</Typography>
+                ) : (
+                <>
+                    <Grid container spacing={0} direction="row" justify="center" alignItems="center">
+                        <Grid item xs={4}>
+                            <Button
+                                onClick={this.handleIngredientCheckReset}
+                                className={classes.clearBtn}>
+                            Clear
+                            </Button>
+                        </Grid>
+                        <Grid item xs={8}>
+                        {this.state.selected_ingredients.length === 1 ?
                         (
-                            <Typography>You have not selected any ingredients.</Typography>
+                            <Typography>1 ingredient selected.</Typography>
                         ) : (
-                        <>
-                            <Grid container spacing={0} direction="row" justify="center" alignItems="center">
-                                <Grid item xs={4}>
-                                    <Button
-                                        onClick={this.handleIngredientCheckReset}
-                                        className={classes.clearBtn}>
-                                    Clear
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={8}>
-                                    {this.state.selected_ingredients.length === 1 ?
-                                        (
-                                            <Typography>1 ingredient selected.</Typography>
-                                        ) : (
-                                            <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
-                                        )
-                                    }
-                                </Grid>
-                            {this.state.selected_ingredients.map((obj, index) => (
-                                <React.Fragment key={index}>
-                                    <Grid item xs={3}>
-                                        <IconButton
-                                            name={obj.ingredient_name} value={index}
-                                            aria-label="delete" color="secondary"
-                                            onClick={this.handleIngredientDelete.bind(this, obj)}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Grid>
-                                    <Grid item xs={9}>
-                                        {obj.ingredient_name}
-                                    </Grid>
-                                </React.Fragment>
-                            ))}
+                            <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
+                        )}
+                        </Grid>
+                    {this.state.selected_ingredients.map((obj, index) => (
+                        <React.Fragment key={index}>
+                            <Grid item xs={3}>
+                                <IconButton
+                                    name={obj} value={obj}
+                                    aria-label="delete" color="secondary"
+                                    onClick={this.handleIngredientDelete.bind(this, obj)}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
                             </Grid>
-                        </>
-                    )}
+                            <Grid item xs={9}>
+                                {obj}
+                            </Grid>
+                        </React.Fragment>
+                    ))}
+                    </Grid>
+                </>
+                )}
                 </div>
                 <Divider />
                 <Grid style={{marginBottom:0}} direction="row" alignItems="center" justify="center" container className={classes.formControl}>
@@ -1070,19 +1072,18 @@ class ContributePage extends React.Component {
                         <MenuItem value="">
                             <em>None</em>
                         </MenuItem>
-                        {this.state.category_list.map((obj, index) => (
-                            <MenuItem key={index} value={obj.category_name}>{obj.category_name}</MenuItem>
+                        {Object.entries(this.state.category_list).map(([key, value]) => (
+                            <MenuItem value={key}>{key}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
                 <div className={classes.ingrSelectionDiv}>
                     <FormGroup>
-                    {this.state.ingredient_list.map((obj, index) => (
-                        this.state.selected_category === obj.category_name &&
-                        <FormControlLabel
-                            key={index} control={<Checkbox checked={this.state.ingredient_checked[index]}
-                            onChange={this.handleIngredientCheckChange} name={obj.ingredient_name} value={index} color="primary" />}
-                            label={obj.ingredient_name}
+                    {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                        this.state.selected_category === value.category_name &&
+                        <FormControlLabel key={key} control={<Checkbox checked={value.checked}
+                            onChange={this.handleIngredientCheckChange} name={key} value={key} color="primary" />}
+                            label={key}
                         />
                     ))}
                     </FormGroup>
@@ -1128,7 +1129,7 @@ class ContributePage extends React.Component {
                                     {this.state.selected_ingredients.map((ingr, index) =>
                                         (index === this.state.selected_ingredients.length - 1) ? (
                                             <React.Fragment key={index}>
-                                                {ingr.ingredient_name}
+                                                {ingr}
                                             </React.Fragment>
                                         ) : (
                                             <React.Fragment key={index}>
@@ -1383,7 +1384,7 @@ class ContributePage extends React.Component {
                                     {this.state.selected_ingredients.map((obj, index) => (
                                         <React.Fragment key={index}>
                                             <Grid item xs={5}>
-                                                <Typography align="left">{obj.ingredient_name}</Typography>
+                                                <Typography align="left">{obj}</Typography>
                                             </Grid>
                                             <Grid item xs={7}>
                                                 <TextField
@@ -1391,9 +1392,9 @@ class ContributePage extends React.Component {
                                                     inputProps={{maxLength:25}}
                                                     margin="dense"
                                                     label=""
-                                                    name={obj.ingredient_name}
+                                                    name={obj}
                                                     variant="outlined"
-                                                    value={obj.ingredient_qty}
+                                                    value={this.state.ingredient_list[obj].ingredient_qty}
                                                     onChange={this.handleOnChangeIngredientQty(obj)}
                                                     onBlur={this.handleOnBlurIngredientQty(obj)}
                                                     helperText="Enter the ingredient quantity (example: 2; 2 tblspoons)"
