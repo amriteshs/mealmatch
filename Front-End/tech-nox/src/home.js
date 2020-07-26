@@ -20,6 +20,8 @@ import { useState, useEffect } from 'react';
 import Axios from "axios";
 import RecipeReviewCard from './recipeCards';
 import Grid from '@material-ui/core/Grid';
+import OutlinedCard from './Cads';
+import MealCard from './MealType';
 
 import 'fontsource-roboto';
 
@@ -116,6 +118,9 @@ export default function PermanentDrawerLeft() {
 
   const [recipeName, setRecipeName] = useState('');
 
+  const [categoryShow, setcategoryShow] = useState(true);
+
+
   const setRecipeNameValue = (event) => {
     setRecipeName(event.target.value)
     console.log(event.target.value)
@@ -123,9 +128,16 @@ export default function PermanentDrawerLeft() {
 
   const BaseUri= 'https://spoonacular.com/recipeImages/'
 
+  const updateCardState = (name) => {
+    if(name=="Ingredient Category"){
+      setcategoryShow(true);
+    }else{
+      setcategoryShow(false);
+    }
+  }
   
   const getRecipe = () => {
-    // all recipes are fetched here 
+    // all recipes are fetched here
     const API_KEY= 'c972685406f94d8cac65c8c6c48febeb'
     const URL = 'https://api.spoonacular.com/recipes/search?apiKey='+ API_KEY +'&number=10&query=' + recipeName
 
@@ -133,14 +145,14 @@ export default function PermanentDrawerLeft() {
       console.log(response)
       setRecipeList(response.data.results)
     })
-    
+
   }
 
   // Uncomment below line for default behavior
 
-  // useEffect(() => {
-  //   getRecipe();
-  // },[]);
+   useEffect(() => {
+     getRecipe();
+   },[]);
 
   // set the recipe name form the input box on Keyup event
 
@@ -150,9 +162,10 @@ export default function PermanentDrawerLeft() {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap className={classes.title}>
-            mealmatch
+            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
           </Typography>
           <Button color="inherit" href='/login'>Login</Button>
+          <Button color="inherit" href='/about'>About</Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -164,12 +177,12 @@ export default function PermanentDrawerLeft() {
         anchor="left"
       >
         <List>
-          {["Ingredient Category", "Meal Type"].map((text, index) => (
-            <ListItem button key={text}>
+          {[{name:"Ingredient Category",stateVal:categoryShow},{name:"Meal Type",stateVal:categoryShow}].map((text, index) => (
+            <ListItem button key={text.name} onClick={updateCardState.bind(this,text.name)}>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={text.name} />
             </ListItem>
           ))}
         </List>
@@ -189,19 +202,8 @@ export default function PermanentDrawerLeft() {
         </List>
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.toolbar} />
-      <Typography>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-          facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-          gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-          donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-          Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-          imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-          arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-          donec massa sapien faucibus et molestie ac.
-        </Typography>
+        <div className={classes.toolbar}/>
+        {categoryShow?<OutlinedCard/>:<MealCard/>}
         <div className={classes.searchBar}>
         <Toolbar>
         {/* This is the search bar */}
@@ -223,20 +225,20 @@ export default function PermanentDrawerLeft() {
         </Toolbar>
         <div className={classes.cardsContaioner}>
             <Grid container spacing={1}>
-              {recipeList.map((recipe) => 
+              {recipeList.map((recipe) =>
               <Grid item sm={4}>
-                <RecipeReviewCard 
-                  title={recipe.title} 
-                  imageUrl={BaseUri+recipe.image} 
-                  source={recipe.sourceUrl} 
-                  time={recipe.readyInMinutes} 
+                <RecipeReviewCard
+                  title={recipe.title}
+                  imageUrl={BaseUri+recipe.image}
+                  source={recipe.sourceUrl}
+                  time={recipe.readyInMinutes}
                   serves={recipe.servings}
                 />
               </Grid>)}
             </Grid>
         </div>
         </div>
-        
+
       </main>
     </div>
   );
