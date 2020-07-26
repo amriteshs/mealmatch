@@ -20,6 +20,8 @@ import { useState, useEffect } from 'react';
 import Axios from "axios";
 import RecipeReviewCard from './recipeCards';
 import Grid from '@material-ui/core/Grid';
+import OutlinedCard from './Cads';
+import MealCard from './MealType';
 
 import 'fontsource-roboto';
 
@@ -116,12 +118,23 @@ export default function PermanentDrawerLeft() {
 
   const [recipeName, setRecipeName] = useState('');
 
+  const [categoryShow, setcategoryShow] = useState(true);
+
+
   const setRecipeNameValue = (event) => {
     setRecipeName(event.target.value)
     console.log(event.target.value)
   }
 
   const BaseUri= 'https://spoonacular.com/recipeImages/'
+
+  const updateCardState = (name) => {
+    if(name=="Ingredient Category"){
+      setcategoryShow(true);
+    }else{
+      setcategoryShow(false);
+    }
+  }
 
   
   const getRecipe = () => {
@@ -138,9 +151,9 @@ export default function PermanentDrawerLeft() {
 
   // Uncomment below line for default behavior
 
-  // useEffect(() => {
-  //   getRecipe();
-  // },[]);
+   useEffect(() => {
+     getRecipe();
+   },[]);
 
   // set the recipe name form the input box on Keyup event
 
@@ -166,12 +179,12 @@ export default function PermanentDrawerLeft() {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          {["Ingredient Category", "Meal Type"].map((text, index) => (
-            <ListItem button key={text}>
+          {[{name:"Ingredient Category",stateVal:categoryShow},{name:"Meal Type",stateVal:categoryShow}].map((text, index) => (
+            <ListItem button key={text.name} onClick={updateCardState.bind(this,text.name)}>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={text.name} />
             </ListItem>
           ))}
         </List>
@@ -191,19 +204,8 @@ export default function PermanentDrawerLeft() {
         </List>
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.toolbar} />
-      <Typography>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-          facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-          gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-          donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-          Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-          imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-          arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-          donec massa sapien faucibus et molestie ac.
-        </Typography>
+        <div className={classes.toolbar}/>
+        {categoryShow?<OutlinedCard/>:<MealCard/>}
         <div className={classes.searchBar}>
         <Toolbar>
         {/* This is the search bar */}
