@@ -24,6 +24,7 @@ import InputBase from '@material-ui/core/InputBase';
 import Grid from '@material-ui/core/Grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 
 import 'fontsource-roboto';
@@ -137,6 +138,10 @@ const useStyles = theme => ({
         borderColor:'orange',
         border:'1px solid orange'
     },
+    ingrView: {
+        height:'36vh',
+        overflow:'auto'
+    }
 });
 
 class UserHomePage extends React.Component {
@@ -184,7 +189,7 @@ class UserHomePage extends React.Component {
     }
 
     updateCardState = (name) => {
-        if (name == "Ingredient Category") {
+        if (name === "Ingredient Category") {
             this.setState({
                 isShowCategory: true
             });
@@ -236,9 +241,13 @@ class UserHomePage extends React.Component {
 
     handleIngredientCheckChange(event) {
         let ingrList = {...this.state.ingredient_list};
+        let catList = {...this.state.category_list};
         let ingrSelect = [...this.state.selected_ingredients];
 
         ingrList[event.target.value].checked = event.target.checked;
+
+        let ingrCategory = ingrList[event.target.value].category_name;
+        catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
 
         if (event.target.checked) {
             ingrSelect.push(event.target.value);
@@ -249,53 +258,57 @@ class UserHomePage extends React.Component {
 
         this.setState({
             ingredient_list: ingrList,
+            category_list: catList,
             selected_ingredients: ingrSelect
         });
     }
 
     handleIngredientCheckReset() {
         let ingrList = {...this.state.ingredient_list};
+        let catList = {...this.state.category_list};
+        var ingrCategory = '';
 
         this.state.selected_ingredients.map((obj, index) => (
-            ingrList[obj].checked = false
+            ingrList[obj].checked = false,
+            ingrCategory = ingrList[obj].category_name,
+            catList[ingrCategory].ingredients[obj].checked = false
         ));
         
         this.setState({
             ingredient_list: ingrList,
+            category_list: catList,
             selected_ingredients: []
         });
     }
 
     handleIngredientDelete(obj) {
         let ingrList = {...this.state.ingredient_list};
+        let catList = {...this.state.category_list};
         let ingrSelect = [...this.state.selected_ingredients];
 
         ingrList[obj].checked = false;
+
+        let ingrCategory = ingrList[obj].category_name;
+        catList[ingrCategory].ingredients[obj].checked = false;
+
         ingrSelect = ingrSelect.filter(x => x !== obj);
 
         this.setState({
             ingredient_list: ingrList,
+            category_list: catList,
             selected_ingredients: ingrSelect,
         });
     }
 
     handleCategorySelect(obj) {
-        console.log(obj);
         this.setState({
             selected_category: obj
         });
     }
 
-    handleMealtypeSelect(event) {
+    handleMealtypeSelect(obj) {
         this.setState({
-            selected_mealtype: event.target.value
-        });
-    }
-
-    setApiRecipeNameValue(event) {
-        console.log(event.target.value);
-        this.setState({
-            api_recipe_name: event.target.value
+            selected_mealtype: obj
         });
     }
 
@@ -311,6 +324,12 @@ class UserHomePage extends React.Component {
             selected_category: '',
             isShowAllIngredients: false
         })
+    }
+
+    setApiRecipeNameValue(event) {
+        this.setState({
+            api_recipe_name: event.target.value
+        });
     }
 
     getRecipe = () => {
@@ -354,8 +373,12 @@ class UserHomePage extends React.Component {
                 {["Ingredient Category", "Meal Type"].map((text, index) => (
                     <ListItem button onClick={this.updateCardState.bind(this, text)} key={text}>
                         <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
+                            {index % 2 === 0 ? 
+                                <InboxIcon /> 
+                            : 
+                                <MailIcon />
+                            }
+                        </ListItemIcon>
                         <ListItemText primary={text} />
                     </ListItem>
                 ))}
@@ -370,24 +393,23 @@ class UserHomePage extends React.Component {
                         <Grid container spacing={0} direction="row" justify="center" alignItems="center">
                             <Grid item xs={4}>
                                 <Button
-                                    onClick={this.handleCheckReset}
-                                    className={classes.clearBtn}>Clear
+                                    onClick={this.handleIngredientCheckReset}
+                                    className={classes.showIngrBtn}>
+                                        Clear
                                 </Button>
                             </Grid>
                             <Grid item xs={8}>
                                 {this.state.selected_ingredients.length === 1 ?
-                                    (
-                                        <Typography>1 ingredient selected.</Typography>
-                                    ) : (
-                                        <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
-                                    )
+                                    <Typography>1 ingredient selected.</Typography>
+                                :
+                                    <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
                                 }
                             </Grid>
                         {this.state.selected_ingredients.map((obj, index) => (
                             <React.Fragment key={index}>
                                 <Grid item xs={3}>
                                     <IconButton
-                                        name={obj.ingredient_name} value={index}
+                                        name={obj} value={index}
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleIngredientDelete.bind(this, obj)}
                                     >
@@ -395,7 +417,7 @@ class UserHomePage extends React.Component {
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
-                                    {obj.ingredient_name}
+                                    {obj}
                                 </Grid>
                             </React.Fragment>
                         ))}
@@ -407,65 +429,128 @@ class UserHomePage extends React.Component {
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                     {this.state.isShowCategory ? (
-                        <Card style={{maxHeight:'47%', overflow:'auto'}} variant="outlined">
+                        <Card variant="outlined">
                             <CardContent>
-                                <Grid container direction="row" justify="center" alignItems="center">
-                                    <Grid item xs={7}>
-                                        <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                            <b>Select an ingredient category</b>
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={5}>
-                                        <Button className={classes.backCatBtn} onClick={this.handleBackToCategorySelect}>
-                                            Back
-                                        </Button>
-                                        <Button className={classes.showIngrBtn} onClick={this.handleShowAllIngredients}>
-                                            Show All Ingredients
-                                        </Button>
-                                    </Grid>
-                                </Grid>
-                                <Divider className={classes.dividerStyle}/>
-                                
-                                <Grid container spacing={0}>
-                                    {this.state.isShowAllIngredients ? 
-                                        <Grid item xs={3}>
-                                            {Object.entries(this.state.ingredient_list).map(([key, value]) => (
-                                                <FormControlLabel key={key} control={<Checkbox checked={value.checked}
-                                                    onChange={this.handleIngredientCheckChange} name={key} value={key} color="primary" />}
-                                                    label={key}
-                                                />
-                                            ))}
+                                <div>
+                                    <Grid container direction="row" justify="center" alignItems="center">
+                                        <Grid item xs={8}>
+                                            {this.state.selected_category === '' ?
+                                                this.state.isShowAllIngredients ?
+                                                    <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                                        <b>Complete list of ingredients</b>
+                                                    </Typography>
+                                                :
+                                                    <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                                        <b>Select an ingredient category</b>
+                                                    </Typography>
+                                            :
+                                                <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                                    <b>List of ingredients for category "<em>{this.state.selected_category}</em>"</b>
+                                                </Typography>
+                                            }
                                         </Grid>
-                                    : 
-                                        this.state.selected_category === '' ?
-                                            <>
-                                            {Object.entries(this.state.category_list).map(([key, value]) => (
-                                                <Grid item xs={4} key={key}>
-                                                    <Button fullWidth value={key} onClick={this.handleCategorySelect.bind(this, key)}>
-                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./milk.png")}/>
-                                                        {key}
+                                        {this.state.isShowAllIngredients ?
+                                            <Grid item xs={4}>
+                                                <Button className={classes.backCatBtn} onClick={this.handleBackToCategorySelect}>
+                                                    Back
+                                                </Button>
+                                            </Grid>
+                                        :
+                                            this.state.selected_category === '' ?
+                                                <Grid item xs={4}>
+                                                    <Button className={classes.showIngrBtn} onClick={this.handleShowAllIngredients}>
+                                                        View All Ingredients
                                                     </Button>
                                                 </Grid>
-                                            ))}
-                                            <Grid item xs={4}></Grid>
-                                            </>
-                                        :
+                                            :
+                                                <>
+                                                <Grid item xs={1}>
+                                                    <Button className={classes.backCatBtn} onClick={this.handleBackToCategorySelect}>
+                                                        Back
+                                                    </Button>
+                                                </Grid>
+                                                <Grid item xs={3}>
+                                                    <Button className={classes.showIngrBtn} onClick={this.handleShowAllIngredients}>
+                                                        View All Ingredients
+                                                    </Button>
+                                                </Grid>
+                                                </>
+                                        }
+                                    </Grid>
+                                </div>
+                                <Divider className={classes.dividerStyle}/>
+                                <div className={classes.ingrView}>
+                                    <Grid container spacing={0}>
+                                        {this.state.isShowAllIngredients ? 
                                             <>
-                                            <FormGroup>
-                                                {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
+                                            {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                                <Grid item key={key} xs={3}>
                                                     <FormControlLabel key={key} control={<Checkbox checked={value.checked}
                                                         onChange={this.handleIngredientCheckChange} name={key} value={key} color="primary" />}
                                                         label={key}
                                                     />
-                                                ))}
-                                            </FormGroup>
+                                                </Grid>
+                                            ))}
                                             </>
-                                    }
-                                </Grid>
+                                        : 
+                                            this.state.selected_category === '' ?
+                                                <>
+                                                {Object.entries(this.state.category_list).map(([key, value]) => (
+                                                    <Grid item key={key} xs={4}>
+                                                        <Button value={key} onClick={this.handleCategorySelect.bind(this, key)}>
+                                                            <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./milk.png")}/>
+                                                            {key}
+                                                        </Button>
+                                                    </Grid>
+                                                ))}
+                                                <Grid item xs={4}></Grid>
+                                                </>
+                                            :
+                                                <>
+                                                {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
+                                                    <Grid item xs={3} key={key}>
+                                                        <FormControlLabel key={key} control={<Checkbox checked={value.checked}
+                                                            onChange={this.handleIngredientCheckChange} name={key} value={key} color="primary" />}
+                                                            label={key}
+                                                        />
+                                                    </Grid>
+                                                ))}
+                                                </>
+                                        }
+                                    </Grid>
+                                </div>
                             </CardContent>
                         </Card>
                     ) : (
-                        <MealCard/>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <div>
+                                    <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                        <b>Select a meal type</b>
+                                    </Typography>          
+                                </div>
+                                <Divider className={classes.dividerStyle}/>
+                                <div className={classes.ingrView}>
+                                    <Grid container spacing={0}>
+                                        {Object.entries(this.state.mealtype_list).map(([key, value]) => (
+                                            <Grid item key={key} xs={4}>
+                                                {this.state.selected_mealtype === '' ?
+                                                    <Button value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
+                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
+                                                        {key}
+                                                    </Button>
+                                                :
+                                                    <Button disabled value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
+                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
+                                                        {key}
+                                                    </Button>
+                                                }
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </div>
+                            </CardContent>
+                        </Card>
                     )}
                     <div className={classes.searchBar}>
                     <Toolbar>
