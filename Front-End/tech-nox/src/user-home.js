@@ -1,5 +1,6 @@
 import React from "react";
 import { fade, withStyles } from "@material-ui/core/styles";
+import clsx from 'clsx';
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
@@ -24,16 +25,16 @@ import InputBase from '@material-ui/core/InputBase';
 import Grid from '@material-ui/core/Grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Collapse from '@material-ui/core/Collapse';
+import Tooltip from '@material-ui/core/Tooltip';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { deepOrange, green } from '@material-ui/core/colors';
 
 import 'fontsource-roboto';
 import axios from 'axios';
 import RecipeReviewCard from './recipeCards';
-import OutlinedCard from './Cads';
-import MealCard from './MealType';
-import { Collapse } from "@material-ui/core";
 
 const drawerWidth = 240;
 const topAppBarWidth = 64;
@@ -151,13 +152,20 @@ const useStyles = theme => ({
         overflow:'auto'
     },
     green: {
-        // color: theme.palette.getContrastText(green[500]),
+        color: 'white',
         backgroundColor: green[500],
     },
     orange: {
-        color: theme.palette.getContrastText(deepOrange[500]),
+        color: 'white',
         backgroundColor: deepOrange[500],
     },
+    catMtBtn: {
+        textTransform: 'none',
+        justifyContent: 'flex-start'
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
+    }
 });
 
 class UserHomePage extends React.Component {
@@ -183,7 +191,8 @@ class UserHomePage extends React.Component {
             api_recipe_list: [],
             base_uri: 'https://spoonacular.com/recipeImages/',
             isShowCategory: true,
-            isShowAllIngredients: false
+            isShowAllIngredients: false,
+            isIngrListCardExpanded: {}
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -196,6 +205,7 @@ class UserHomePage extends React.Component {
         this.updateCardState = this.updateCardState.bind(this);
         this.handleShowAllIngredients = this.handleShowAllIngredients.bind(this);
         this.handleBackToCategorySelect = this.handleBackToCategorySelect.bind(this);
+        this.handleIngredientCardExpand = this.handleIngredientCardExpand.bind(this);
     }
 
     componentDidMount() {
@@ -220,9 +230,17 @@ class UserHomePage extends React.Component {
     async getIngredients() {
         await axios.get('/ingredient')
         .then(response => {
+            let cdExpand = {};
+            Object.keys(response.data.ingredients).map((key, index) => (
+                cdExpand[key] = false
+            ));
+
+            console.log(cdExpand);
+
             this.setState({
                 ingredient_count: response.data.count,
                 ingredient_list: response.data.ingredients,
+                isIngrListCardExpanded: cdExpand
             })
         })
         .catch(error => {
@@ -366,6 +384,15 @@ class UserHomePage extends React.Component {
                     api_recipe_list: response.data.results
                 })
             });
+    }
+
+    handleIngredientCardExpand = obj => event => {
+        let ingrList = {...this.state.ingredient_list};
+        ingrList[obj].expanded = !ingrList[obj].expanded;
+
+        this.setState({
+            ingredient_list: ingrList
+        })
     }
 
     render() {
@@ -532,19 +559,39 @@ class UserHomePage extends React.Component {
                                             <>
                                             {Object.entries(this.state.ingredient_list).map(([key, value]) => (
                                                 <Grid item key={key} xs={3}>
-                                                    <FormControlLabel key={key} control={<Checkbox checked={value.checked}
-                                                        onChange={this.handleIngredientCheckChange} name={key} value={key} color="primary" />}
+                                                    <Tooltip placement="right-start" title={"Category: " + value.category_name}>
+                                                    <FormControlLabel key={key} 
+                                                        control={
+                                                            <Checkbox checked={value.checked}
+                                                            onChange={this.handleIngredientCheckChange} 
+                                                            name={key} value={key} color="primary" 
+                                                        />}
                                                         label={key}
                                                     />
+                                                    </Tooltip>
+                                                    {/* <IconButton
+                                                        className={clsx(classes.expand, {
+                                                            [classes.expandOpen]: value.expanded,
+                                                        })}
+                                                        style={{justifyContent:'flex-end'}}
+                                                        onClick={this.handleIngredientCardExpand(key)}
+                                                        aria-expanded={value.expanded}
+                                                        aria-label="show more"
+                                                    >
+                                                        <ExpandMoreIcon />
+                                                    </IconButton>
+                                                    <Collapse in={value.expanded} timeout="auto" unmountOnExit>
+                                                        <Typography style={{marginLeft:30,fontSize:11}}>Category: <b>{value.category_name}</b></Typography>
+                                                    </Collapse> */}
                                                 </Grid>
                                             ))}
                                             </>
-                                        : 
+                                        :
                                             this.state.selected_category === '' ?
                                                 <>
                                                 {Object.entries(this.state.category_list).map(([key, value]) => (
                                                     <Grid item key={key} xs={4}>
-                                                        <Button value={key} onClick={this.handleCategorySelect.bind(this, key)}>
+                                                        <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleCategorySelect.bind(this, key)}>
                                                             <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./milk.png")}/>
                                                             {key}
                                                         </Button>
@@ -556,8 +603,12 @@ class UserHomePage extends React.Component {
                                                 <>
                                                 {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
                                                     <Grid item xs={3} key={key}>
-                                                        <FormControlLabel key={key} control={<Checkbox checked={value.checked}
-                                                            onChange={this.handleIngredientCheckChange} name={key} value={key} color="primary" />}
+                                                        <FormControlLabel key={key} 
+                                                            control={
+                                                                <Checkbox checked={value.checked}
+                                                                onChange={this.handleIngredientCheckChange} 
+                                                                name={key} value={key} color="primary" 
+                                                            />}
                                                             label={key}
                                                         />
                                                     </Grid>
@@ -582,12 +633,12 @@ class UserHomePage extends React.Component {
                                         {Object.entries(this.state.mealtype_list).map(([key, value]) => (
                                             <Grid item key={key} xs={4}>
                                                 {this.state.selected_mealtype === '' ?
-                                                    <Button value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
+                                                    <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
                                                         <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
                                                         {key}
                                                     </Button>
                                                 :
-                                                    <Button disabled value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
+                                                    <Button fullWidth className={classes.catMtBtn} disabled value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
                                                         <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
                                                         {key}
                                                     </Button>
