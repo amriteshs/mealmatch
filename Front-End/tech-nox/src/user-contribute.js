@@ -62,8 +62,6 @@ const useStyles = theme => ({
         width: 200,
     },
     appBar: {
-        // width: `calc(100% - ${drawerWidth}px)`,
-        // marginLeft: drawerWidth,
         backgroundColor:'black'
     },
     searchBar:{
@@ -83,19 +81,18 @@ const useStyles = theme => ({
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade(theme.palette.common.white, 0.15),
         '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
+            backgroundColor: fade(theme.palette.common.white, 0.25),
         },
         marginRight: theme.spacing(2),
         marginLeft: 0,
         width: '20rem',
         [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(1),
-        width: 'auto',
+            marginLeft: theme.spacing(1),
+            width: 'auto',
         },
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
@@ -133,7 +130,6 @@ const useStyles = theme => ({
         marginTop: topAppBarWidth,
         width: drawerWidth
     },
-    // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
@@ -274,11 +270,14 @@ class ContributePage extends React.Component {
             ingredient_list: {},
             category_list: {},
             mealtype_list: {},
+            user_recipe_list: [],
+            searched_ingredient: '',
             selected_ingredients: [],
             selected_ingredients_exclude: [],
             selected_category: '',
             selected_mealtype: '',
             selected_mealtypes: [],
+            selected_recipes: [],
             selected_visibility: 'Public',
             selected_recipe_id: -1,
             recipe_name_input: '',
@@ -287,9 +286,6 @@ class ContributePage extends React.Component {
             recipe_people_served_input: 1,
             // selected_ingredients_qty_input: [],
             recipe_steps_input: [],
-            user_recipes: [],
-            filtered_recipes: [],
-            searched_ingredient: '',
             isAddingRecipe: false,
             isUpdatingRecipe: false,
             isCardExpanded: [],
@@ -348,7 +344,6 @@ class ContributePage extends React.Component {
             this.setState({
                 ingredient_count: response.data.count,
                 ingredient_list: response.data.ingredients,
-                // ingredient_checked: new Array(response.data.count).fill().map((item, idx) => item = false)
             })
         })
         .catch(error => {
@@ -388,8 +383,8 @@ class ContributePage extends React.Component {
         await axios.get(endpoint)
             .then(response => {
                 this.setState({
-                    user_recipes: response.data.recipes,
-                    filtered_recipes: response.data.recipes,
+                    user_recipe_list: response.data.recipes,
+                    selected_recipes: response.data.recipes,
                     isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
                 });
             })
@@ -421,8 +416,7 @@ class ContributePage extends React.Component {
         let ingrList = {...this.state.ingredient_list};
 
         this.state.selected_ingredients.map((obj, index) => (
-            ingrList[obj].checked = false,
-            ingrList[obj].ingredient_qty = ''
+            ingrList[obj].checked = false
         ));
         
         this.setState({
@@ -432,13 +426,10 @@ class ContributePage extends React.Component {
     }
 
     handleIngredientDelete(obj) {
-        // let ingrCheck = [...this.state.ingredient_checked];
         let ingrList = {...this.state.ingredient_list};
         let ingrSelect = [...this.state.selected_ingredients];
 
         ingrList[obj].checked = false;
-        ingrList[obj].ingredient_qty = '';
-
         ingrSelect = ingrSelect.filter(x => x !== obj);
 
         this.setState({
@@ -847,25 +838,25 @@ class ContributePage extends React.Component {
         if (this.state.filterByIngredient) {
             if (this.state.filterByMealtype) {
                 // filter by mealtype
-                let rcpFilter = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
+                let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
                 
                 this.setState({
-                    filtered_recipes: rcpFilter,
+                    selected_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                     filterByIngredient: false
                 });
             } else {
                 // no filter
                 this.setState({
-                    filtered_recipes: this.state.user_recipes,
-                    isCardExpanded: new Array(this.state.user_recipes.length).fill().map((item, idx) => item = false),
+                    selected_recipes: this.state.user_recipe_list,
+                    isCardExpanded: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
                     filterByIngredient: false
                 });
             }
         } else {
             if (this.state.filterByMealtype) {
                 // filter by mealtype and ingredient
-                let rcpFilter1 = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
+                let rcpFilter1 = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
                 let rcpFilter = [];
                 rcpFilter1.forEach(recipe =>  {
                     if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
@@ -874,21 +865,21 @@ class ContributePage extends React.Component {
                 });
 
                 this.setState({
-                    filtered_recipes: rcpFilter,
+                    selected_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                     filterByIngredient: true
                 });
             } else {
                 // filter by ingredient
                 let rcpFilter = [];
-                this.state.user_recipes.forEach(recipe =>  {
+                this.state.user_recipe_list.forEach(recipe =>  {
                     if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
                         rcpFilter.push(recipe);
                     }
                 });
 
                 this.setState({
-                    filtered_recipes: rcpFilter,
+                    selected_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                     filterByIngredient: true
                 });
@@ -901,14 +892,14 @@ class ContributePage extends React.Component {
             if (this.state.filterByIngredient) {
                 // filter by ingredient
                 let rcpFilter = [];
-                this.state.user_recipes.forEach(recipe =>  {
+                this.state.user_recipe_list.forEach(recipe =>  {
                     if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
                         rcpFilter.push(recipe);
                     }
                 });
 
                 this.setState({
-                    filtered_recipes: rcpFilter,
+                    selected_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                     filterByMealtype: false,
                     selected_mealtype: ''
@@ -916,8 +907,8 @@ class ContributePage extends React.Component {
             } else {
                 // no filter
                 this.setState({
-                    filtered_recipes: this.state.user_recipes,
-                    isCardExpanded: new Array(this.state.user_recipes.length).fill().map((item, idx) => item = false),
+                    selected_recipes: this.state.user_recipe_list,
+                    isCardExpanded: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
                     filterByMealtype: false,
                     selected_mealtype: ''
                 });
@@ -932,7 +923,7 @@ class ContributePage extends React.Component {
     handleSelectMealtypeFilter(event) {
         if (this.state.filterByIngredient) {
             // filter by ingredient and mealtype
-            let rcpFilter1 = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === event.target.value));
+            let rcpFilter1 = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === event.target.value));
             let rcpFilter = [];
             rcpFilter1.forEach(recipe =>  {
                 if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
@@ -941,16 +932,16 @@ class ContributePage extends React.Component {
             });
 
             this.setState({
-                filtered_recipes: rcpFilter,
+                selected_recipes: rcpFilter,
                 isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                 selected_mealtype: event.target.value
             });
         } else {
             // filter by mealtype
-            let rcpFilter = this.state.user_recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === event.target.value));
+            let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === event.target.value));
             
             this.setState({
-                filtered_recipes: rcpFilter,
+                selected_recipes: rcpFilter,
                 isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                 selected_mealtype: event.target.value
             });
@@ -966,7 +957,7 @@ class ContributePage extends React.Component {
             $imagePreview = (<img
                 src={imagePreviewUrl}
                 className={classes.imageUpload}
-                />);
+            />);
         } else {
             $imagePreview = (<img
                 src={require('./static/images/recipe_placeholder.jpg')}
@@ -974,6 +965,7 @@ class ContributePage extends React.Component {
                 className={classes.imageUpload}
             />)
         };
+
         // <img
         //     src={require('./static/images/recipe_placeholder.jpg')}
         //     alt="not available"
@@ -1007,39 +999,39 @@ class ContributePage extends React.Component {
                     <Typography>You have not selected any ingredients.</Typography>
                 ) : (
                 <>
-                    <Grid container spacing={0} direction="row" justify="center" alignItems="center">
-                        <Grid item xs={4}>
-                            <Button
-                                onClick={this.handleIngredientCheckReset}
-                                className={classes.clearBtn}>
-                            Clear
-                            </Button>
-                        </Grid>
-                        <Grid item xs={8}>
-                        {this.state.selected_ingredients.length === 1 ?
-                        (
-                            <Typography>1 ingredient selected.</Typography>
-                        ) : (
-                            <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
-                        )}
-                        </Grid>
-                    {this.state.selected_ingredients.map((obj, index) => (
-                        <React.Fragment key={index}>
-                            <Grid item xs={3}>
-                                <IconButton
-                                    name={obj} value={obj}
-                                    aria-label="delete" color="secondary"
-                                    onClick={this.handleIngredientDelete.bind(this, obj)}
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Grid>
-                            <Grid item xs={9}>
-                                {obj}
-                            </Grid>
-                        </React.Fragment>
-                    ))}
+                <Grid container spacing={0} direction="row" justify="center" alignItems="center">
+                    <Grid item xs={4}>
+                        <Button
+                            onClick={this.handleIngredientCheckReset}
+                            className={classes.clearBtn}>
+                        Clear
+                        </Button>
                     </Grid>
+                    <Grid item xs={8}>
+                    {this.state.selected_ingredients.length === 1 ?
+                    (
+                        <Typography>1 ingredient selected.</Typography>
+                    ) : (
+                        <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
+                    )}
+                    </Grid>
+                {this.state.selected_ingredients.map((obj, index) => (
+                    <React.Fragment key={index}>
+                        <Grid item xs={3}>
+                            <IconButton
+                                name={obj} value={obj}
+                                aria-label="delete" color="secondary"
+                                onClick={this.handleIngredientDelete.bind(this, obj)}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Grid>
+                        <Grid item xs={9}>
+                            {obj}
+                        </Grid>
+                    </React.Fragment>
+                ))}
+                </Grid>
                 </>
                 )}
                 </div>
@@ -1073,7 +1065,7 @@ class ContributePage extends React.Component {
                             <em>None</em>
                         </MenuItem>
                         {Object.entries(this.state.category_list).map(([key, value]) => (
-                            <MenuItem value={key}>{key}</MenuItem>
+                            <MenuItem key={key} value={key}>{key}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -1100,13 +1092,13 @@ class ContributePage extends React.Component {
                             + Add Recipe
                         </Button>
                         <Container className={classes.mainContainer}>
-                        {!this.state.user_recipes.length ? (
+                        {!this.state.user_recipe_list.length ? (
                             <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have not contributed any recipes yet.</Typography>
                         ) : (
-                            this.state.user_recipes.length === 1 ?
+                            this.state.user_recipe_list.length === 1 ?
                                 <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed <b>1</b> recipe.</Typography>
                             :
-                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed <b>{this.state.user_recipes.length}</b> recipes.</Typography>
+                                <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}>You have contributed <b>{this.state.user_recipe_list.length}</b> recipes.</Typography>
                         )}
                         <Divider className={classes.dividerStyle}/>
                         <FormGroup>
@@ -1196,18 +1188,18 @@ class ContributePage extends React.Component {
                             )}
                         </FormGroup>
                         <Divider className={classes.dividerStyle}/>
-                        {!this.state.filtered_recipes.length ? (
+                        {!this.state.selected_recipes.length ? (
                             <Typography style={{fontSize:13}}><em>No results found.</em></Typography>
                         ) : (
                             <>
-                            {this.state.filtered_recipes.length === 1 ? (
+                            {this.state.selected_recipes.length === 1 ? (
                                 <Typography style={{fontSize:13}}><em><b>Showing 1 result.</b></em></Typography>
                             ) : (
-                                <Typography style={{fontSize:13}}><em><b>Showing {this.state.filtered_recipes.length} results.</b></em></Typography>
+                                <Typography style={{fontSize:13}}><em><b>Showing {this.state.selected_recipes.length} results.</b></em></Typography>
                             )}
                             <div className={classes.cardsContainer}>
                                 <Grid container spacing={1}>
-                                {this.state.filtered_recipes.map((recipe, index) =>
+                                {this.state.selected_recipes.map((recipe, index) =>
                                     <Grid item sm={4} key={index}>
                                         <Card className={classes.root1}>
                                             <CardHeader

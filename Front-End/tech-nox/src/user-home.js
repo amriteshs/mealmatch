@@ -5,7 +5,13 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import Typography from "@material-ui/core/Typography";
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Avatar from '@material-ui/core/Avatar';
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -18,10 +24,13 @@ import InputBase from '@material-ui/core/InputBase';
 import Grid from '@material-ui/core/Grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 
 import 'fontsource-roboto';
 import axios from 'axios';
 import RecipeReviewCard from './recipeCards';
+import OutlinedCard from './Cads';
+import MealCard from './MealType';
 
 const drawerWidth = 240;
 const topAppBarWidth = 64;
@@ -110,7 +119,24 @@ const useStyles = theme => ({
     selectedIngrDiv: {
         overflow: 'auto',
         padding: theme.spacing(1)
-    }
+    },
+    dividerStyle: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1)
+    },
+    backCatBtn:{
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange',
+        marginRight: theme.spacing(1)
+    },
+    showIngrBtn:{
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange'
+    },
 });
 
 class UserHomePage extends React.Component {
@@ -122,25 +148,32 @@ class UserHomePage extends React.Component {
             ingredient_count: 0,
             category_count: 0,
             mealtype_count: 0,
-            ingredient_list: [],
-            ingredient_checked: [],
-            category_list: [],
-            mealtype_list: [],
+            ingredient_list: {},
+            category_list: {},
+            mealtype_list: {},
+            searched_ingredient: '',
             selected_ingredients: [],
+            selected_ingredients_exclude: [],
             selected_category: '',
             selected_mealtype: '',
             selected_mealtypes: [],
+            selected_recipes: [],
             api_recipe_name: '',
             api_recipe_list: [],
-            base_uri: 'https://spoonacular.com/recipeImages/'
+            base_uri: 'https://spoonacular.com/recipeImages/',
+            isShowCategory: true,
+            isShowAllIngredients: false
         };
 
-        this.handleCheckChange = this.handleCheckChange.bind(this);
-        this.handleCheckReset = this.handleCheckReset.bind(this);
+        this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
+        this.handleIngredientCheckReset = this.handleIngredientCheckReset.bind(this);
         this.handleIngredientDelete = this.handleIngredientDelete.bind(this);
         this.handleCategorySelect = this.handleCategorySelect.bind(this);
         this.handleMealtypeSelect = this.handleMealtypeSelect.bind(this);
         this.setApiRecipeNameValue = this.setApiRecipeNameValue.bind(this);
+        this.updateCardState = this.updateCardState.bind(this);
+        this.handleShowAllIngredients = this.handleShowAllIngredients.bind(this);
+        this.handleBackToCategorySelect = this.handleBackToCategorySelect.bind(this);
     }
 
     componentDidMount() {
@@ -150,13 +183,24 @@ class UserHomePage extends React.Component {
         // this.getRecipe();
     }
 
+    updateCardState = (name) => {
+        if (name == "Ingredient Category") {
+            this.setState({
+                isShowCategory: true
+            });
+        } else {
+            this.setState({
+                isShowCategory: false
+            });
+        }
+    }
+
     async getIngredients() {
         await axios.get('/ingredient')
         .then(response => {
             this.setState({
                 ingredient_count: response.data.count,
                 ingredient_list: response.data.ingredients,
-                ingredient_checked: new Array(response.data.count).fill().map((item, idx) => item = false)
             })
         })
         .catch(error => {
@@ -190,63 +234,55 @@ class UserHomePage extends React.Component {
         });
     }
 
-    handleCheckChange(event) {
-        let ingrCheck = [...this.state.ingredient_checked];
+    handleIngredientCheckChange(event) {
+        let ingrList = {...this.state.ingredient_list};
         let ingrSelect = [...this.state.selected_ingredients];
 
-        ingrCheck[event.target.value] = event.target.checked;
+        ingrList[event.target.value].checked = event.target.checked;
 
         if (event.target.checked) {
-            let ingredient_details = this.state.ingredient_list[event.target.value];
-            ingredient_details.ingredient_qty = '';
-            ingrSelect.push(ingredient_details);
-
-            ingrSelect.sort(function(x, y) {
-                if (x.ingredient_name < y.ingredient_name) {
-                    return -1;
-                }
-                if (x.ingredient_name > y.ingredient_name) {
-                    return 1;
-                }
-                return 0;
-            });
+            ingrSelect.push(event.target.value);
+            ingrSelect.sort();
         } else {
-            ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.name);
+            ingrSelect = ingrSelect.filter(x => x !== event.target.value);
         }
 
         this.setState({
-            ingredient_checked: ingrCheck,
+            ingredient_list: ingrList,
             selected_ingredients: ingrSelect
         });
     }
 
-    handleCheckReset() {
+    handleIngredientCheckReset() {
+        let ingrList = {...this.state.ingredient_list};
+
+        this.state.selected_ingredients.map((obj, index) => (
+            ingrList[obj].checked = false
+        ));
+        
         this.setState({
-            ingredient_checked: new Array(this.state.ingredient_count).fill().map((item, idx) => item = false),
+            ingredient_list: ingrList,
             selected_ingredients: []
         });
     }
 
     handleIngredientDelete(obj) {
-        let ingrCheck = [...this.state.ingredient_checked];
+        let ingrList = {...this.state.ingredient_list};
         let ingrSelect = [...this.state.selected_ingredients];
 
-        let index = this.state.ingredient_list.findIndex(x => x.ingredient_name === obj.ingredient_name);
-        if (index !== -1) {
-            ingrCheck[index] = false;
-        }
-
-        ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj.ingredient_name);
+        ingrList[obj].checked = false;
+        ingrSelect = ingrSelect.filter(x => x !== obj);
 
         this.setState({
-            ingredient_checked: ingrCheck,
+            ingredient_list: ingrList,
             selected_ingredients: ingrSelect,
         });
     }
 
-    handleCategorySelect(event) {
+    handleCategorySelect(obj) {
+        console.log(obj);
         this.setState({
-            selected_category: event.target.value
+            selected_category: obj
         });
     }
 
@@ -261,6 +297,20 @@ class UserHomePage extends React.Component {
         this.setState({
             api_recipe_name: event.target.value
         });
+    }
+
+    handleShowAllIngredients() {
+        this.setState({
+            selected_category: '',
+            isShowAllIngredients: true
+        });
+    }
+
+    handleBackToCategorySelect() {
+        this.setState({
+            selected_category: '',
+            isShowAllIngredients: false
+        })
     }
 
     getRecipe = () => {
@@ -278,7 +328,6 @@ class UserHomePage extends React.Component {
 
     render() {
         const { classes } = this.props;
-
         return (
             <div className={classes.root}>
             <CssBaseline />
@@ -303,7 +352,7 @@ class UserHomePage extends React.Component {
             >
                 <List>
                 {["Ingredient Category", "Meal Type"].map((text, index) => (
-                    <ListItem button key={text}>
+                    <ListItem button onClick={this.updateCardState.bind(this, text)} key={text}>
                         <ListItemIcon>
                             {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                             </ListItemIcon>
@@ -346,9 +395,7 @@ class UserHomePage extends React.Component {
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
-                                    {/* <Typography> */}
-                                        {obj.ingredient_name}
-                                    {/* </Typography> */}
+                                    {obj.ingredient_name}
                                 </Grid>
                             </React.Fragment>
                         ))}
@@ -359,18 +406,67 @@ class UserHomePage extends React.Component {
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-                        facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-                        gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-                        donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                        adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-                        Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-                        imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-                        arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-                        donec massa sapien faucibus et molestie ac.
-                    </Typography>
+                    {this.state.isShowCategory ? (
+                        <Card style={{maxHeight:'47%', overflow:'auto'}} variant="outlined">
+                            <CardContent>
+                                <Grid container direction="row" justify="center" alignItems="center">
+                                    <Grid item xs={7}>
+                                        <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                            <b>Select an ingredient category</b>
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <Button className={classes.backCatBtn} onClick={this.handleBackToCategorySelect}>
+                                            Back
+                                        </Button>
+                                        <Button className={classes.showIngrBtn} onClick={this.handleShowAllIngredients}>
+                                            Show All Ingredients
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                                <Divider className={classes.dividerStyle}/>
+                                
+                                <Grid container spacing={0}>
+                                    {this.state.isShowAllIngredients ? 
+                                        <Grid item xs={3}>
+                                            {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                                <FormControlLabel key={key} control={<Checkbox checked={value.checked}
+                                                    onChange={this.handleIngredientCheckChange} name={key} value={key} color="primary" />}
+                                                    label={key}
+                                                />
+                                            ))}
+                                        </Grid>
+                                    : 
+                                        this.state.selected_category === '' ?
+                                            <>
+                                            {Object.entries(this.state.category_list).map(([key, value]) => (
+                                                <Grid item xs={4} key={key}>
+                                                    <Button fullWidth value={key} onClick={this.handleCategorySelect.bind(this, key)}>
+                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./milk.png")}/>
+                                                        {key}
+                                                    </Button>
+                                                </Grid>
+                                            ))}
+                                            <Grid item xs={4}></Grid>
+                                            </>
+                                        :
+                                            <>
+                                            <FormGroup>
+                                                {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
+                                                    <FormControlLabel key={key} control={<Checkbox checked={value.checked}
+                                                        onChange={this.handleIngredientCheckChange} name={key} value={key} color="primary" />}
+                                                        label={key}
+                                                    />
+                                                ))}
+                                            </FormGroup>
+                                            </>
+                                    }
+                                </Grid>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <MealCard/>
+                    )}
                     <div className={classes.searchBar}>
                     <Toolbar>
                     <div className={classes.search}>

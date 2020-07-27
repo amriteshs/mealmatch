@@ -32,7 +32,7 @@ class Mealtype(Resource):
 
         data = {
             'count': 0,
-            'mealtypes': []
+            'mealtypes': {}
         }
 
         visited = []
@@ -40,32 +40,22 @@ class Mealtype(Resource):
             if row[2] is None:
                 visited.append(row[1])
 
-                temp = {
+                data['mealtypes'][row[1]] = {
                     'mealtype_id': row[0],
-                    'mealtype_name': row[1],
-                    'recipes': []
+                    'recipes': {}
                 }
-
-                data['mealtypes'].append(temp)
             else:
                 if row[1] not in visited:
                     visited.append(row[1])
 
-                    temp = {
+                    data['mealtypes'][row[1]] = {
                         'mealtype_id': row[0],
-                        'mealtype_name': row[1],
-                        'recipes': [{
-                            'recipe_id': row[2],
-                            'recipe_name': row[3]
-                        }]
+                        'recipes': {
+                            row[2]: row[3]
+                        }
                     }
-
-                    data['mealtypes'].append(temp)
                 else:
-                    data['mealtypes'][-1]['recipes'].append({
-                        'recipe_id': row[2],
-                        'recipe_name': row[3]
-                    })
+                    data['mealtypes'][row[1]]['recipes'][row[2]] = row[3]
 
         data['count'] = len(data['mealtypes'])
 
@@ -100,17 +90,14 @@ class Mealtype(Resource):
             data = {
                 'mealtype_id': query[0][0],
                 'meatype_name': query[0][1],
-                'recipes': []
+                'recipes': {}
             }
 
             for row in query:
                 if row[2] is None:
                     break
 
-                data['recipes'].append({
-                    'recipe_id': row[2],
-                    'recipe_name': row[3]
-                })
+                data['recipes'][row[2]] = row[3]
 
             return json.loads(json.dumps(data)), 200
 
