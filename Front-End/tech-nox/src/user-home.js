@@ -134,18 +134,20 @@ const useStyles = theme => ({
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1)
     },
-    backCatBtn:{
+    backCatBtn: {
         color:'orange',
         backgroundColor:'black',
         borderColor:'orange',
         border:'1px solid orange',
-        marginRight: theme.spacing(1)
+        marginRight: theme.spacing(1),
+        float: 'right'        
     },
-    showIngrBtn:{
+    showIngrBtn: {
         color:'orange',
         backgroundColor:'black',
         borderColor:'orange',
-        border:'1px solid orange'
+        border:'1px solid orange',
+        float: 'right'
     },
     ingrView: {
         height:'36vh',
@@ -230,17 +232,9 @@ class UserHomePage extends React.Component {
     async getIngredients() {
         await axios.get('/ingredient')
         .then(response => {
-            let cdExpand = {};
-            Object.keys(response.data.ingredients).map((key, index) => (
-                cdExpand[key] = false
-            ));
-
-            console.log(cdExpand);
-
             this.setState({
                 ingredient_count: response.data.count,
                 ingredient_list: response.data.ingredients,
-                isIngrListCardExpanded: cdExpand
             })
         })
         .catch(error => {
@@ -468,7 +462,7 @@ class UserHomePage extends React.Component {
                             <Grid item xs={4}>
                                 <Button
                                     onClick={this.handleIngredientCheckReset}
-                                    className={classes.showIngrBtn}>
+                                    className={classes.searchBtn}>
                                         Clear
                                 </Button>
                             </Grid>
@@ -491,7 +485,9 @@ class UserHomePage extends React.Component {
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
-                                    {obj}
+                                    <Tooltip arrow placement="bottom-start" title={"Category: " + this.state.ingredient_list[obj].category_name}>          
+                                        <Typography style={{fontSize:14}}>{obj}</Typography>
+                                    </Tooltip>
                                 </Grid>
                             </React.Fragment>
                         ))}
@@ -537,18 +533,14 @@ class UserHomePage extends React.Component {
                                                     </Button>
                                                 </Grid>
                                             :
-                                                <>
-                                                <Grid item xs={1}>
+                                                <Grid item xs={4}>
+                                                    <Button className={classes.showIngrBtn} onClick={this.handleShowAllIngredients}>
+                                                        View All Ingredients
+                                                    </Button>
                                                     <Button className={classes.backCatBtn} onClick={this.handleBackToCategorySelect}>
                                                         Back
                                                     </Button>
                                                 </Grid>
-                                                <Grid item xs={3}>
-                                                    <Button className={classes.showIngrBtn} onClick={this.handleShowAllIngredients}>
-                                                        View All Ingredients
-                                                    </Button>
-                                                </Grid>
-                                                </>
                                         }
                                     </Grid>
                                 </div>
@@ -559,7 +551,7 @@ class UserHomePage extends React.Component {
                                             <>
                                             {Object.entries(this.state.ingredient_list).map(([key, value]) => (
                                                 <Grid item key={key} xs={3}>
-                                                    <Tooltip placement="right-start" title={"Category: " + value.category_name}>
+                                                    <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
                                                     <FormControlLabel key={key} 
                                                         control={
                                                             <Checkbox checked={value.checked}
@@ -569,20 +561,6 @@ class UserHomePage extends React.Component {
                                                         label={key}
                                                     />
                                                     </Tooltip>
-                                                    {/* <IconButton
-                                                        className={clsx(classes.expand, {
-                                                            [classes.expandOpen]: value.expanded,
-                                                        })}
-                                                        style={{justifyContent:'flex-end'}}
-                                                        onClick={this.handleIngredientCardExpand(key)}
-                                                        aria-expanded={value.expanded}
-                                                        aria-label="show more"
-                                                    >
-                                                        <ExpandMoreIcon />
-                                                    </IconButton>
-                                                    <Collapse in={value.expanded} timeout="auto" unmountOnExit>
-                                                        <Typography style={{marginLeft:30,fontSize:11}}>Category: <b>{value.category_name}</b></Typography>
-                                                    </Collapse> */}
                                                 </Grid>
                                             ))}
                                             </>
