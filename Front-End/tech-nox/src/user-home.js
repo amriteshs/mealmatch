@@ -119,7 +119,13 @@ const useStyles = theme => ({
     },
     selectedIngrDiv: {
         overflow: 'auto',
-        padding: theme.spacing(1)
+        padding: theme.spacing(1),
+        height: '50%'
+    },
+    selectedMtDiv: {
+        overflow: 'auto',
+        padding: theme.spacing(1),
+        height: '16%'
     },
     dividerStyle: {
         marginTop: theme.spacing(1),
@@ -175,6 +181,7 @@ class UserHomePage extends React.Component {
         this.handleIngredientDelete = this.handleIngredientDelete.bind(this);
         this.handleCategorySelect = this.handleCategorySelect.bind(this);
         this.handleMealtypeSelect = this.handleMealtypeSelect.bind(this);
+        this.handleMealtypeDelete = this.handleMealtypeDelete.bind(this);
         this.setApiRecipeNameValue = this.setApiRecipeNameValue.bind(this);
         this.updateCardState = this.updateCardState.bind(this);
         this.handleShowAllIngredients = this.handleShowAllIngredients.bind(this);
@@ -312,6 +319,12 @@ class UserHomePage extends React.Component {
         });
     }
 
+    handleMealtypeDelete() {
+        this.setState({
+            selected_mealtype: ''
+        });
+    }
+
     handleShowAllIngredients() {
         this.setState({
             selected_category: '',
@@ -383,6 +396,30 @@ class UserHomePage extends React.Component {
                     </ListItem>
                 ))}
                 </List>
+                <Divider />
+                <div className={classes.selectedMtDiv}>
+                    {this.state.selected_mealtype === '' ?
+                        <Typography>You have not selected a mealtype.</Typography>
+                    :
+                        <Grid container spacing={0} direction="row" justify="center" alignItems="center">
+                            <Grid item xs={12}>
+                                <Typography>1 meal type selected.</Typography>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <IconButton
+                                    value={this.state.selected_mealtype}
+                                    aria-label="delete" color="secondary"
+                                    onClick={this.handleMealtypeDelete}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Grid>
+                            <Grid item xs={9}>
+                                {this.state.selected_mealtype}
+                            </Grid>
+                        </Grid>
+                    }
+                </div>
                 <Divider />
                 <div className={classes.selectedIngrDiv}>
                     {!this.state.selected_ingredients.length ?
