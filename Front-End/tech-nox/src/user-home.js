@@ -26,12 +26,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import { deepOrange, green } from '@material-ui/core/colors';
 
 import 'fontsource-roboto';
 import axios from 'axios';
 import RecipeReviewCard from './recipeCards';
 import OutlinedCard from './Cads';
 import MealCard from './MealType';
+import { Collapse } from "@material-ui/core";
 
 const drawerWidth = 240;
 const topAppBarWidth = 64;
@@ -147,7 +149,15 @@ const useStyles = theme => ({
     ingrView: {
         height:'36vh',
         overflow:'auto'
-    }
+    },
+    green: {
+        // color: theme.palette.getContrastText(green[500]),
+        backgroundColor: green[500],
+    },
+    orange: {
+        color: theme.palette.getContrastText(deepOrange[500]),
+        backgroundColor: deepOrange[500],
+    },
 });
 
 class UserHomePage extends React.Component {
@@ -383,18 +393,18 @@ class UserHomePage extends React.Component {
                 anchor="left"
             >
                 <List>
-                {["Ingredient Category", "Meal Type"].map((text, index) => (
-                    <ListItem button onClick={this.updateCardState.bind(this, text)} key={text}>
-                        <ListItemIcon>
-                            {index % 2 === 0 ? 
-                                <InboxIcon /> 
-                            : 
-                                <MailIcon />
-                            }
-                        </ListItemIcon>
-                        <ListItemText primary={text} />
+                    <ListItem button onClick={this.updateCardState.bind(this, "Ingredient Category")}>
+                        <ListItemAvatar>
+                            <Avatar className={classes.green} variant="rounded">C</Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary={"Ingredient Category"} />
                     </ListItem>
-                ))}
+                    <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
+                        <ListItemAvatar>
+                            <Avatar className={classes.orange} variant="rounded">M</Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary={"Meal Type"} />
+                    </ListItem>
                 </List>
                 <Divider />
                 <div className={classes.selectedMtDiv}>
