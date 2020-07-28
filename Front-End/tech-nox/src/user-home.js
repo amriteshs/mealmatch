@@ -496,7 +496,7 @@ class UserHomePage extends React.Component {
                                             {this.state.selected_category === '' ?
                                                 this.state.isShowAllIngredients ?
                                                     <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                        <b>Complete list of ingredients</b>
+                                                        <b>Complete list of ingredients ({this.state.ingredient_count})</b>
                                                     </Typography>
                                                 :
                                                     <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
@@ -504,7 +504,7 @@ class UserHomePage extends React.Component {
                                                     </Typography>
                                             :
                                                 <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                    <b>List of ingredients for category "<em>{this.state.selected_category}</em>"</b>
+                                                    <b>List of ingredients for category "<em>{this.state.selected_category}</em>" ({this.state.category_list[this.state.selected_category].ingredients})</b>
                                                 </Typography>
                                             }
                                         </Grid>

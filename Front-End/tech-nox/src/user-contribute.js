@@ -189,7 +189,7 @@ const useStyles = theme => ({
         borderColor:'orange',
         border:'1px solid orange',
         marginBottom: theme.spacing(1),
-        float: 'right'
+        float: 'right',
     },
     saveRecipeBtn: {
         marginLeft: theme.spacing(30),
@@ -337,7 +337,8 @@ class ContributePage extends React.Component {
             file: '',
             imagePreviewURL: '',
             isShowCategory: true,
-            isShowAllIngredients: false
+            isShowAllIngredients: false,
+            recipeErrorMessage: ''
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -743,56 +744,90 @@ class ContributePage extends React.Component {
     }
 
     async handleSaveRecipe() {
-        const endpoint = '/recipe/' + this.state.username;
+        if (this.state.recipe_name_input === '') {
+            this.setState({
+                recipeErrorMessage: 'Recipe name cannot be empty.'
+            });
+        } else if (this.state.recipe_description_input === '') {
+            this.setState({
+                recipeErrorMessage: 'Recipe description cannot be empty.'
+            });
+        } else if (!this.state.selected_ingredients.length) {
+            this.setState({
+                recipeErrorMessage: 'Recipe must have atleast one ingredient.'
+            });
+        } else if (this.state.selected_ingredients.filter(x => x.ingredient_qty === '').length) {
+            this.setState({
+                recipeErrorMessage: 'Recipe ingredient quantities cannot be empty.'
+            });
+        } else if (!this.state.recipe_steps_input.length) {
+            this.setState({
+                recipeErrorMessage: 'Recipe must have atleast one preparation step.'
+            });
+        } else if (this.state.recipe_steps_input.filter(x => x === '').length) {
+            this.setState({
+                recipeErrorMessage: 'Recipe preparation steps cannot be empty.'
+            });
+        } else if (!this.state.selected_mealtypes.length) {
+            this.setState({
+                recipeErrorMessage: 'Recipe must have atleast one meal type.'
+            });
+        } else if (this.state.recipe_prep_time_input === '') {
+            this.setState({
+                recipeErrorMessage: 'Recipe preparation time must be specified.'
+            });
+        } else {
+            const endpoint = '/recipe/' + this.state.username;
 
-        if (this.state.isAddingRecipe) {
-            let response = await axios.post(endpoint, {
-                'username': this.state.username,
-                'recipe_name': this.state.recipe_name_input,
-                'recipe_description': this.state.recipe_description_input,
-                'preparation_time': this.state.recipe_prep_time_input,
-                'people_served': this.state.recipe_people_served_input,
-                'visibility': this.state.selected_visibility,
-                'mealtypes': this.state.selected_mealtypes,
-                'ingredients': this.state.selected_ingredients,
-                'steps': this.state.recipe_steps_input,
+            if (this.state.isAddingRecipe) {
+                let response = await axios.post(endpoint, {
+                    'username': this.state.username,
+                    'recipe_name': this.state.recipe_name_input,
+                    'recipe_description': this.state.recipe_description_input,
+                    'preparation_time': this.state.recipe_prep_time_input,
+                    'people_served': this.state.recipe_people_served_input,
+                    'visibility': this.state.selected_visibility,
+                    'mealtypes': this.state.selected_mealtypes,
+                    'ingredients': this.state.selected_ingredients,
+                    'steps': this.state.recipe_steps_input,
+                });
+
+                console.log(response);
+            } else if (this.state.isUpdatingRecipe) {
+                let response = await axios.put(endpoint, {
+                    'username': this.state.username,
+                    'recipe_id': this.state.selected_recipe_id,
+                    'recipe_name': this.state.recipe_name_input,
+                    'recipe_description': this.state.recipe_description_input,
+                    'preparation_time': this.state.recipe_prep_time_input,
+                    'people_served': this.state.recipe_people_served_input,
+                    'visibility': this.state.selected_visibility,
+                    'mealtypes': this.state.selected_mealtypes,
+                    'ingredients': this.state.selected_ingredients,
+                    'steps': this.state.recipe_steps_input,
+                });
+
+                console.log(response);
+            }
+
+            this.setState({
+                isAddingRecipe: false,
+                isUpdatingRecipe: false,
+                selected_recipe_id: -1,
+                recipe_name_input: '',
+                recipe_description_input: '',
+                recipe_prep_time_input: '',
+                recipe_people_served_input: 1,
+                selected_mealtypes: [],
+                selected_ingredients: [],
+                selected_visibility: 'Public',
+                recipe_steps_input: [],
+                selected_mealtype: '',
+                selected_category: '',
             });
 
-            console.log(response);
-        } else if (this.state.isUpdatingRecipe) {
-            let response = await axios.put(endpoint, {
-                'username': this.state.username,
-                'recipe_id': this.state.selected_recipe_id,
-                'recipe_name': this.state.recipe_name_input,
-                'recipe_description': this.state.recipe_description_input,
-                'preparation_time': this.state.recipe_prep_time_input,
-                'people_served': this.state.recipe_people_served_input,
-                'visibility': this.state.selected_visibility,
-                'mealtypes': this.state.selected_mealtypes,
-                'ingredients': this.state.selected_ingredients,
-                'steps': this.state.recipe_steps_input,
-            });
-
-            console.log(response);
+            this.getUserRecipes();
         }
-
-        this.setState({
-            isAddingRecipe: false,
-            isUpdatingRecipe: false,
-            selected_recipe_id: -1,
-            recipe_name_input: '',
-            recipe_description_input: '',
-            recipe_prep_time_input: '',
-            recipe_people_served_input: 1,
-            selected_mealtypes: [],
-            selected_ingredients: [],
-            selected_visibility: 'Public',
-            recipe_steps_input: [],
-            selected_mealtype: '',
-            selected_category: '',
-        });
-
-        this.getUserRecipes();
     }
 
     handleContributeFormBack() {
@@ -1095,12 +1130,21 @@ class ContributePage extends React.Component {
                         </ListItemAvatar>
                         <ListItemText primary={<b>Ingredient Category</b>} />
                     </ListItem>
-                    <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
-                        <ListItemAvatar>
-                            <Avatar className={classes.orange} variant="rounded">M</Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary={<b>Meal Type</b>} />
-                    </ListItem>
+                    {(this.state.isAddingRecipe || this.state.isUpdatingRecipe) ?
+                        <ListItem button disabled onClick={this.updateCardState.bind(this, "Meal Type")}>
+                            <ListItemAvatar>
+                                <Avatar className={classes.orange} variant="rounded">M</Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={<b>Meal Type</b>} />
+                        </ListItem>
+                    :
+                        <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
+                            <ListItemAvatar>
+                                <Avatar className={classes.orange} variant="rounded">M</Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={<b>Meal Type</b>} />
+                        </ListItem>
+                    }
                 </List>
                 <Divider />
                 <div className={classes.selectedMtDiv}>
@@ -1280,7 +1324,7 @@ class ContributePage extends React.Component {
                                         <b>Select a meal type</b>
                                     </Typography>          
                                 </div>
-                                <Divider className={classes.dividerStyle}/>
+                                <Divider className={classes.dividerStyle1}/>
                                 <div className={classes.ingrView}>
                                     <Grid container spacing={0}>
                                         {Object.entries(this.state.mealtype_list).map(([key, value]) => (
@@ -1328,17 +1372,32 @@ class ContributePage extends React.Component {
                         </Grid>
                         <Divider className={classes.dividerStyle1}/>
                         <FormGroup>
-                            <FormControlLabel
-                                control={
-                                <Switch
-                                    checked={this.state.filterByIngredient}
-                                    onChange={this.handleFilterByIngredient}
-                                    name="checkedA"
-                                    color="primary"
+                            {this.state.selected_ingredients.length ?
+                                <FormControlLabel
+                                    control={
+                                    <Switch
+                                        checked={this.state.filterByIngredient}
+                                        onChange={this.handleFilterByIngredient}
+                                        name="checkedA"
+                                        color="primary"
+                                    />
+                                    }
+                                    label="Filter by selected ingredients"
                                 />
-                                }
-                                label="Filter by selected ingredients"
-                            />
+                            :
+                                <FormControlLabel
+                                    disabled
+                                    control={
+                                    <Switch
+                                        checked={this.state.filterByIngredient}
+                                        onChange={this.handleFilterByIngredient}
+                                        name="checkedA"
+                                        color="primary"
+                                    />
+                                    }
+                                    label="Filter by selected ingredients"
+                                />
+                            }
                             {/* {this.state.filterByIngredient ? (
                                 <>
                                 {this.state.selected_ingredients.length ? (
@@ -1383,18 +1442,34 @@ class ContributePage extends React.Component {
                             ) : (
                                 <Typography></Typography>
                             )} */}
-                            <FormControlLabel
-                                className={classes.mealtypeFilter}
-                                control={
-                                <Switch
-                                    checked={this.state.filterByMealtype}
-                                    onChange={this.handleFilterByMealtype}
-                                    name="checkedB"
-                                    color="primary"
+                            {this.state.selected_mealtype !== '' ?
+                                <FormControlLabel
+                                    className={classes.mealtypeFilter}
+                                    control={
+                                    <Switch
+                                        checked={this.state.filterByMealtype}
+                                        onChange={this.handleFilterByMealtype}
+                                        name="checkedB"
+                                        color="primary"
+                                    />
+                                    }
+                                    label="Filter by selected meal type"
                                 />
-                                }
-                                label="Filter by selected mealtype"
-                            />
+                            :
+                                <FormControlLabel
+                                    disabled
+                                    className={classes.mealtypeFilter}
+                                    control={
+                                    <Switch
+                                        checked={this.state.filterByMealtype}
+                                        onChange={this.handleFilterByMealtype}
+                                        name="checkedB"
+                                        color="primary"
+                                    />
+                                    }
+                                    label="Filter by selected meal type"
+                                /> 
+                            }
                             {/* {this.state.filterByMealtype ? (
                                 <FormControl className={classes.formControl1}>
                                     <InputLabel id="select-mealtype">Select a meal type</InputLabel>
@@ -1824,6 +1899,11 @@ class ContributePage extends React.Component {
                                 </FormControl>
                                 <br/>
                                 <Divider className={classes.dividerStyle}/>
+                                {this.state.recipeErrorMessage !== '' ?
+                                    <Typography style={{marginTop:10,marginBottom:20,fontSize:13,color:'red'}}><b>* {this.state.recipeErrorMessage}</b></Typography>
+                                :
+                                    <Typography style={{marginTop:10,marginBottom:20,fontSize:13,color:'red'}}><b>{this.state.recipeErrorMessage}</b></Typography>
+                                }
                                 <Button
                                     onClick={this.handleSaveRecipe}
                                     className={classes.saveRecipeBtn}
