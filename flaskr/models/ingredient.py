@@ -36,14 +36,14 @@ class Ingredient(Resource):
         
         conn.close()
 
-        data = []
+        data = {}
         for row in query:
-            data.append({
+            data[row[1]] = {
                 'ingredient_id': row[0],
-                'ingredient_name': row[1],
                 'category_id': row[2],
-                'category_name': row[3]
-            })
+                'category_name': row[3],
+                'checked': False
+            }
 
         return json.loads(json.dumps({
             'count': len(data),
@@ -80,14 +80,14 @@ class Ingredient(Resource):
 
         conn.close()
 
-        data = []
+        data = {}
         for row in query:
-            data.append({
+            data[row[1]] = {
                 'ingredient_id': row[0],
-                'ingredient_name': row[1],
                 'category_id': row[2],
-                'category_name': row[3]
-            })
+                'category_name': row[3],
+                'checked': False
+            }
 
         return json.loads(json.dumps({
             'count': len(data),

@@ -150,9 +150,9 @@ export default function PermanentDrawerLeft() {
 
   // Uncomment below line for default behavior
 
-   useEffect(() => {
-     getRecipe();
-   },[]);
+  //  useEffect(() => {
+  //    getRecipe();
+  //  },[]);
 
   // set the recipe name form the input box on Keyup event
 
@@ -176,8 +176,6 @@ export default function PermanentDrawerLeft() {
         }}
         anchor="left"
       >
-        <div className={classes.toolbar} />
-        <Divider />
         <List>
           {[{name:"Ingredient Category",stateVal:categoryShow},{name:"Meal Type",stateVal:categoryShow}].map((text, index) => (
             <ListItem button key={text.name} onClick={updateCardState.bind(this,text.name)}>

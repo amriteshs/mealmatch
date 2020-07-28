@@ -38,7 +38,7 @@ class Category(Resource):
 
         data = {
             'count': 0,
-            'categories': []
+            'categories': {}
         }
 
         visited = []
@@ -46,32 +46,28 @@ class Category(Resource):
             if row[2] is None:
                 visited.append(row[1])
 
-                temp = {
+                data['categories'][row[1]] = {
                     'category_id': row[0],
-                    'category_name': row[1],
-                    'ingredients': []
+                    'ingredients': {}
                 }
-
-                data['categories'].append(temp)
             else:
                 if row[1] not in visited:
                     visited.append(row[1])
 
-                    temp = {
+                    data['categories'][row[1]] = {
                         'category_id': row[0],
-                        'category_name': row[1],
-                        'ingredients': [{
-                            'ingredient_id': row[2],
-                            'ingredient_name': row[3]
-                        }]
+                        'ingredients': {
+                            row[3]: {
+                                'ingredient_id': row[2],
+                                'checked': False
+                            }
+                        }
                     }
-
-                    data['categories'].append(temp)
                 else:
-                    data['categories'][-1]['ingredients'].append({
-                            'ingredient_id': row[2],
-                            'ingredient_name': row[3]
-                        })
+                    data['categories'][row[1]]['ingredients'][row[3]] = {
+                        'ingredient_id': row[2],
+                        'checked': False
+                    }
 
         data['count'] = len(data['categories'])
 
@@ -111,17 +107,17 @@ class Category(Resource):
             data = {
                 'category_id': query[0][0],
                 'category_name': query[0][1],
-                'ingredients': []
+                'ingredients': {}
             }
 
             for row in query:
                 if row[2] is None:
                     break
 
-                data['ingredients'].append({
+                data['ingredients'][row[3]] = {
                     'ingredient_id': row[2],
-                    'ingredient_name': row[3]
-                })
+                    'checked': False
+                }
 
             return json.loads(json.dumps(data)), 200
 

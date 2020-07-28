@@ -2,4 +2,4 @@ flask
 flask-restplus
 flask-cors
 python-dotenv
-werkzeug=0.16.1
+werkzeug==0.16.1
