@@ -193,8 +193,7 @@ class UserHomePage extends React.Component {
             api_recipe_list: [],
             base_uri: 'https://spoonacular.com/recipeImages/',
             isShowCategory: true,
-            isShowAllIngredients: false,
-            isIngrListCardExpanded: {}
+            isShowAllIngredients: false
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -207,7 +206,6 @@ class UserHomePage extends React.Component {
         this.updateCardState = this.updateCardState.bind(this);
         this.handleShowAllIngredients = this.handleShowAllIngredients.bind(this);
         this.handleBackToCategorySelect = this.handleBackToCategorySelect.bind(this);
-        this.handleIngredientCardExpand = this.handleIngredientCardExpand.bind(this);
     }
 
     componentDidMount() {
@@ -380,15 +378,6 @@ class UserHomePage extends React.Component {
             });
     }
 
-    handleIngredientCardExpand = obj => event => {
-        let ingrList = {...this.state.ingredient_list};
-        ingrList[obj].expanded = !ingrList[obj].expanded;
-
-        this.setState({
-            ingredient_list: ingrList
-        })
-    }
-
     render() {
         const { classes } = this.props;
         return (
@@ -418,19 +407,19 @@ class UserHomePage extends React.Component {
                         <ListItemAvatar>
                             <Avatar className={classes.green} variant="rounded">C</Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary={"Ingredient Category"} />
+                        <ListItemText primary={<b>Ingredient Category</b>} />
                     </ListItem>
                     <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
                         <ListItemAvatar>
                             <Avatar className={classes.orange} variant="rounded">M</Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary={"Meal Type"} />
+                        <ListItemText primary={<b>Meal Type</b>} />
                     </ListItem>
                 </List>
                 <Divider />
                 <div className={classes.selectedMtDiv}>
                     {this.state.selected_mealtype === '' ?
-                        <Typography>You have not selected a mealtype.</Typography>
+                        <Typography>You have not selected a meal type.</Typography>
                     :
                         <Grid container spacing={0} direction="row" justify="center" alignItems="center">
                             <Grid item xs={12}>

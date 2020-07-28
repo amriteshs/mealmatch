@@ -42,8 +42,7 @@ class Ingredient(Resource):
                 'ingredient_id': row[0],
                 'category_id': row[2],
                 'category_name': row[3],
-                'checked': False,
-                'expanded': False
+                'checked': False
             }
 
         return json.loads(json.dumps({
@@ -87,8 +86,7 @@ class Ingredient(Resource):
                 'ingredient_id': row[0],
                 'category_id': row[2],
                 'category_name': row[3],
-                'checked': False,
-                'expanded': False
+                'checked': False
             }
 
         return json.loads(json.dumps({
