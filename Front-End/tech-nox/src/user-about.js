@@ -158,9 +158,9 @@ const useStyles = theme => ({
                         <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
                     </Typography>
                     <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
-                    <Button color="inherit" style={{marginLeft:5}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                    <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
                 </Box>
-                <Button style={{marginRight:'1%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
+                <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                 <div>
                     <IconButton
                         aria-label="account of current user"
