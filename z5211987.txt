@@ -56,3 +56,8 @@
 • CHALLENGE FACED (Front-end for recipe addition form): Researched Material UI to use the appropriate components for the form; also figured out how to dynamically include the currently selected ingredients in the form in order to specify their quantities.
 • Discussed novel features that can be implemented in the project with other team members.
 • WORK FOR NEXT WEEK: Complete recipe contribution module in time for the progressive demo on Friday.
+
+  WEEK 8
+• Completed the recipe contribution module.
+• Presented the project, with all tasks of the second and third sprints completed, to the mentor during the lab session and noted the feedback received.
+• WORK FOR NEXT WEEK: Complete the remaining tasks in time to submit the project on Friday.
