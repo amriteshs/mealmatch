@@ -416,7 +416,7 @@ class UserHomePage extends React.Component {
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:5}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
                     </Box>
-                    <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
+                    <Button style={{marginRight:'1%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
                         <IconButton
                             aria-label="account of current user"
@@ -430,8 +430,9 @@ class UserHomePage extends React.Component {
                         <Menu
                             id="menu-appbar"
                             anchorEl={this.state.anchorEl}
+                            getContentAnchorEl={null}
                             anchorOrigin={{
-                                vertical: 'top',
+                                vertical: 'bottom',
                                 horizontal: 'right',
                             }}
                             keepMounted
@@ -444,7 +445,6 @@ class UserHomePage extends React.Component {
                         >
                             <MenuItem style={{fontSize:14}}>{this.state.username}</MenuItem>
                             <MenuItem style={{fontSize:14}} onClick={() => {this.handleLogout("/")}}><b>LOGOUT</b></MenuItem>
-                            {/* <MenuItem linkButton={true} href="/" primaryText="Sample Link">Logout</MenuItem> */}
                         </Menu>
                     </div>
                 </Toolbar>

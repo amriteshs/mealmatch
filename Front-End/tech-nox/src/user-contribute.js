@@ -1143,7 +1143,7 @@ class ContributePage extends React.Component {
                             <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
-                        <Button color="inherit" style={{marginLeft:5}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                        <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
@@ -1159,8 +1159,9 @@ class ContributePage extends React.Component {
                         <Menu
                             id="menu-appbar"
                             anchorEl={this.state.anchorEl}
+                            getContentAnchorEl={null}
                             anchorOrigin={{
-                                vertical: 'top',
+                                vertical: 'bottom',
                                 horizontal: 'right',
                             }}
                             keepMounted
@@ -1173,7 +1174,6 @@ class ContributePage extends React.Component {
                         >
                             <MenuItem style={{fontSize:14}}>{this.state.username}</MenuItem>
                             <MenuItem style={{fontSize:14}} onClick={() => {this.handleLogout("/")}}><b>LOGOUT</b></MenuItem>
-                            {/* <MenuItem linkButton={true} href="/" primaryText="Sample Link">Logout</MenuItem> */}
                         </Menu>
                     </div>
                 </Toolbar>
