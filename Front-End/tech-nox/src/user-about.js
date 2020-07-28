@@ -187,8 +187,9 @@ const useStyles = theme => ({
                         open={Boolean(this.state.anchorEl)}
                         onClose={this.handleMenuClose}
                     >
-                        <MenuItem style={{fontSize:14}}>{this.state.username}</MenuItem>
-                        <MenuItem style={{fontSize:14}} onClick={() => {this.handleLogout("/")}}><b>LOGOUT</b></MenuItem>
+                        <MenuItem style={{fontSize:14}}><b>{this.state.username}</b></MenuItem>
+                        <Divider/>
+                        <MenuItem style={{fontSize:14}} onClick={() => {this.handleLogout("/")}}>Logout</MenuItem>
                     </Menu>
                 </div>
             </Toolbar>
