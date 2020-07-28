@@ -148,6 +148,11 @@ const useStyles = theme => ({
         padding: theme.spacing(1),
         height: '50%'
     },
+    selectedIngrDiv1: {
+        overflow: 'auto',
+        padding: theme.spacing(1),
+        height: '64%'
+    },
     selectedMtDiv: {
         overflow: 'auto',
         padding: theme.spacing(1),
@@ -823,10 +828,11 @@ class ContributePage extends React.Component {
                 selected_visibility: 'Public',
                 recipe_steps_input: [],
                 selected_mealtype: '',
-                selected_category: '',
+                selected_category: ''
             });
 
             this.getUserRecipes();
+            window.scrollTo(0, 0);
         }
     }
 
@@ -844,8 +850,10 @@ class ContributePage extends React.Component {
             selected_ingredients: [],
             recipe_steps_input: [],
             selected_mealtype: '',
-            selected_category: '',
+            selected_category: ''
         });
+
+        window.scrollTo(0, 0);
     }
 
     handleContributeViewAdd() {
@@ -863,6 +871,8 @@ class ContributePage extends React.Component {
             selected_mealtype: '',
             selected_category: '',
         });
+
+        window.scrollTo(0, 0);
     }
 
     handleRecipeUpdate = obj => event => {
@@ -895,6 +905,8 @@ class ContributePage extends React.Component {
             recipe_steps_input: temp_steps,
             ingredient_list: ingrList
         });
+
+        window.scrollTo(0, 0);
     }
 
     async handleRecipeDelete(obj) {
@@ -1094,14 +1106,6 @@ class ContributePage extends React.Component {
             />)
         };
 
-        // <img
-        //     src={require('./static/images/recipe_placeholder.jpg')}
-        //     alt="not available"
-        //     className={classes.imageUpload}
-        // />
-
-        console.log(this.state.user_recipe_list);
-
         return (
             <div className={classes.root}>
             <CssBaseline />
@@ -1146,32 +1150,37 @@ class ContributePage extends React.Component {
                         </ListItem>
                     }
                 </List>
+                {(!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) &&
+                    <>
+                    <Divider />
+                    <div className={classes.selectedMtDiv}>
+                        {this.state.selected_mealtype === '' ?
+                            <Typography>You have not selected a meal type.</Typography>
+                        :
+                            <Grid container spacing={0} direction="row" justify="center" alignItems="center">
+                                <Grid item xs={12}>
+                                    <Typography>1 meal type selected.</Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <IconButton
+                                        value={this.state.selected_mealtype}
+                                        aria-label="delete" color="secondary"
+                                        onClick={this.handleSingleMealtypeDelete}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={9}>
+                                    {this.state.selected_mealtype}
+                                </Grid>
+                            </Grid>
+                        }
+                    </div>
+                    </>
+                }
                 <Divider />
-                <div className={classes.selectedMtDiv}>
-                    {this.state.selected_mealtype === '' ?
-                        <Typography>You have not selected a meal type.</Typography>
-                    :
-                        <Grid container spacing={0} direction="row" justify="center" alignItems="center">
-                            <Grid item xs={12}>
-                                <Typography>1 meal type selected.</Typography>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <IconButton
-                                    value={this.state.selected_mealtype}
-                                    aria-label="delete" color="secondary"
-                                    onClick={this.handleSingleMealtypeDelete}
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Grid>
-                            <Grid item xs={9}>
-                                {this.state.selected_mealtype}
-                            </Grid>
-                        </Grid>
-                    }
-                </div>
-                <Divider />
-                <div className={classes.selectedIngrDiv}>
+                {(!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) ?
+                    <div className={classes.selectedIngrDiv1}>
                     {!this.state.selected_ingredients.length ?
                     (
                         <Typography>You have not selected any ingredients.</Typography>
@@ -1213,10 +1222,59 @@ class ContributePage extends React.Component {
                         </Grid>
                     </>
                     )}
-                </div>
+                    </div>
+                :
+                    <div className={classes.selectedIngrDiv}>
+                        {!this.state.selected_ingredients.length ?
+                    (
+                        <Typography>You have not selected any ingredients.</Typography>
+                    ) : (
+                    <>
+                        <Grid container spacing={0} direction="row" justify="center" alignItems="center">
+                            <Grid item xs={4}>
+                                <Button
+                                    onClick={this.handleIngredientCheckReset}
+                                    className={classes.searchBtn}>
+                                        Clear
+                                </Button>
+                            </Grid>
+                            <Grid item xs={8}>
+                                {this.state.selected_ingredients.length === 1 ?
+                                    <Typography>1 ingredient selected.</Typography>
+                                :
+                                    <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
+                                }
+                            </Grid>
+                        {this.state.selected_ingredients.map((obj, index) => (
+                            <React.Fragment key={index}>
+                                <Grid item xs={3}>
+                                    <IconButton
+                                        name={obj.ingredient_name} value={index}
+                                        aria-label="delete" color="secondary"
+                                        onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={9}>
+                                    <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
+                                        <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
+                                    </Tooltip>
+                                </Grid>
+                            </React.Fragment>
+                        ))}
+                        </Grid>
+                    </>
+                    )}
+                    </div>
+                }
+                
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
+                {(this.state.isAddingRecipe || this.state.isUpdatingRecipe) &&
+                    <Typography style={{marginLeft:10,marginBottom:8}}><b>STEP 1: INGREDIENT SELECTION</b></Typography>
+                }
                 {this.state.isShowCategory ? (
                         <Card variant="outlined">
                             <CardContent>
@@ -1329,13 +1387,13 @@ class ContributePage extends React.Component {
                                     <Grid container spacing={0}>
                                         {Object.entries(this.state.mealtype_list).map(([key, value]) => (
                                             <Grid item key={key} xs={4}>
-                                                {this.state.selected_mealtype === '' ?
-                                                    <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleSingleMealtypeSelect.bind(this, key)}>
+                                                {(this.state.selected_mealtype !== '' || this.state.isAddingRecipe || this.state.isUpdatingRecipe) ?
+                                                    <Button fullWidth disabled className={classes.catMtBtn} value={key} onClick={this.handleSingleMealtypeSelect.bind(this, key)}>
                                                         <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
                                                         {key}
                                                     </Button>
                                                 :
-                                                    <Button fullWidth className={classes.catMtBtn} disabled value={key} onClick={this.handleSingleMealtypeSelect.bind(this, key)}>
+                                                    <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleSingleMealtypeSelect.bind(this, key)}>
                                                         <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
                                                         {key}
                                                     </Button>
@@ -1388,12 +1446,12 @@ class ContributePage extends React.Component {
                                 <FormControlLabel
                                     disabled
                                     control={
-                                    <Switch
-                                        checked={this.state.filterByIngredient}
-                                        onChange={this.handleFilterByIngredient}
-                                        name="checkedA"
-                                        color="primary"
-                                    />
+                                        <Switch
+                                            checked={this.state.filterByIngredient}
+                                            onChange={this.handleFilterByIngredient}
+                                            name="checkedA"
+                                            color="primary"
+                                        />
                                     }
                                     label="Filter by selected ingredients"
                                 />
@@ -1446,12 +1504,12 @@ class ContributePage extends React.Component {
                                 <FormControlLabel
                                     className={classes.mealtypeFilter}
                                     control={
-                                    <Switch
-                                        checked={this.state.filterByMealtype}
-                                        onChange={this.handleFilterByMealtype}
-                                        name="checkedB"
-                                        color="primary"
-                                    />
+                                        <Switch
+                                            checked={this.state.filterByMealtype}
+                                            onChange={this.handleFilterByMealtype}
+                                            name="checkedB"
+                                            color="primary"
+                                        />
                                     }
                                     label="Filter by selected meal type"
                                 />
@@ -1490,7 +1548,7 @@ class ContributePage extends React.Component {
                         </FormGroup>
                         <Divider className={classes.dividerStyle1}/>
                         {!this.state.selected_recipes.length ? (
-                            <Typography style={{fontSize:14}}><em>No results found.</em></Typography>
+                            <Typography style={{fontSize:14}}><em><b>No results found.</b></em></Typography>
                         ) : (
                             <>
                             {this.state.selected_recipes.length === 1 ? (
@@ -1599,7 +1657,7 @@ class ContributePage extends React.Component {
                                                     </Typography>
                                                 </CardContent>
                                             </Collapse>
-                                            </Card>
+                                        </Card>
                                     </Grid>
                                 )}
                                 </Grid>
@@ -1610,6 +1668,12 @@ class ContributePage extends React.Component {
                         </>
                     ) : (
                         <>
+                        {this.state.isAddingRecipe &&
+                            <Typography style={{marginLeft:10,marginTop:30}}><b>STEP 2: RECIPE CREATION</b></Typography>
+                        }
+                        {this.state.isUpdatingRecipe &&
+                            <Typography style={{marginLeft:10,marginTop:30}}><b>STEP 2: RECIPE MODIFICATION</b></Typography>
+                        }
                         <Container className={classes.mainContainer}>
                         <Grid container>
                             <Grid item xs={8}>
