@@ -31,6 +31,11 @@ import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import InputBase from '@material-ui/core/InputBase';
 import Switch from '@material-ui/core/Switch';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import { red } from '@material-ui/core/colors';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -349,7 +354,8 @@ class ContributePage extends React.Component {
             isShowCategory: true,
             isShowAllIngredients: false,
             recipeErrorMessage: '',
-            anchorEl: null
+            anchorEl: null,
+            openRecipeDelete: []
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -394,6 +400,8 @@ class ContributePage extends React.Component {
         this.handleMenu = this.handleMenu.bind(this);
         this.handleMenuClose = this.handleMenuClose.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
+        this.handleDeleteDialogOpen = this.handleDeleteDialogOpen.bind(this);
+        this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
     }
 
     componentDidMount() {
@@ -414,6 +422,24 @@ class ContributePage extends React.Component {
             anchorEl: null
         })
     };
+    
+    handleDeleteDialogOpen(index) {
+        let opRcpDel = [...this.state.openRecipeDelete];
+        opRcpDel[index] = true;
+
+        this.setState({
+            openRecipeDelete: opRcpDel
+        });
+    }
+
+    handleDeleteCancel(index) {
+        let opRcpDel = [...this.state.openRecipeDelete];
+        opRcpDel[index] = false;
+
+        this.setState({
+            openRecipeDelete: opRcpDel
+        });
+    }
 
     updateCardState = (name) => {
         if (name === "Ingredient Category") {
@@ -474,7 +500,8 @@ class ContributePage extends React.Component {
                 this.setState({
                     user_recipe_list: response.data.recipes,
                     selected_recipes: response.data.recipes,
-                    isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false)
+                    isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false),
+                    openRecipeDelete: new Array(response.data.count).fill().map((item, idx) => item = false),
                 });
             })
             .catch(error => {
@@ -1006,6 +1033,7 @@ class ContributePage extends React.Component {
                 this.setState({
                     selected_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                     filterByIngredient: false
                 });
             } else {
@@ -1013,6 +1041,7 @@ class ContributePage extends React.Component {
                 this.setState({
                     selected_recipes: this.state.user_recipe_list,
                     isCardExpanded: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
+                    openRecipeDelete: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
                     filterByIngredient: false
                 });
             }
@@ -1030,6 +1059,7 @@ class ContributePage extends React.Component {
                 this.setState({
                     selected_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                     filterByIngredient: true
                 });
             } else {
@@ -1044,6 +1074,7 @@ class ContributePage extends React.Component {
                 this.setState({
                     selected_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                     filterByIngredient: true
                 });
             }
@@ -1064,6 +1095,7 @@ class ContributePage extends React.Component {
                 this.setState({
                     selected_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                     filterByMealtype: false,
                     selected_mealtype: ''
                 });
@@ -1072,6 +1104,7 @@ class ContributePage extends React.Component {
                 this.setState({
                     selected_recipes: this.state.user_recipe_list,
                     isCardExpanded: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
+                    openRecipeDelete: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
                     filterByMealtype: false,
                     selected_mealtype: ''
                 });
@@ -1097,6 +1130,7 @@ class ContributePage extends React.Component {
             this.setState({
                 selected_recipes: rcpFilter,
                 isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                 selected_mealtype: event.target.value
             });
         } else {
@@ -1106,6 +1140,7 @@ class ContributePage extends React.Component {
             this.setState({
                 selected_recipes: rcpFilter,
                 isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                 selected_mealtype: event.target.value
             });
         }
@@ -1662,10 +1697,34 @@ class ContributePage extends React.Component {
                                                 </IconButton>
                                                 <IconButton
                                                     aria-label="delete"
-                                                    onClick={this.handleRecipeDelete.bind(this, recipe.recipe_id)}
+                                                    onClick={this.handleDeleteDialogOpen.bind(this, index)}
                                                 >
                                                     <DeleteIcon />
                                                 </IconButton>
+                                                <Dialog
+                                                    disableBackdropClick
+                                                    disableEscapeKeyDown
+                                                    maxWidth="xs"
+                                                    aria-labelledby="confirmation-dialog-title"
+                                                    open={this.state.openRecipeDelete[index]}
+                                                >
+                                                    <DialogTitle id="confirmation-dialog-title">
+                                                        Deleting recipe <em>{recipe.recipe_name}</em>
+                                                    </DialogTitle>
+                                                    <DialogContent>
+                                                        <DialogContentText id="alert-dialog-description">
+                                                            Are you sure you want to delete this recipe?
+                                                        </DialogContentText>
+                                                    </DialogContent>
+                                                    <DialogActions>
+                                                        <Button autoFocus onClick={this.handleDeleteCancel.bind(this, index)} color="primary">
+                                                            Cancel
+                                                        </Button>
+                                                        <Button onClick={this.handleRecipeDelete.bind(this, recipe.recipe_id)} color="primary">
+                                                            Ok
+                                                        </Button>
+                                                    </DialogActions>
+                                                </Dialog>
                                                 <IconButton
                                                     className={clsx(classes.expand, {
                                                         [classes.expandOpen]: this.state.isCardExpanded[index],
