@@ -30,6 +30,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Collapse from '@material-ui/core/Collapse';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Box from '@material-ui/core/Box';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import { deepOrange, green } from '@material-ui/core/colors';
 
 import 'fontsource-roboto';
@@ -193,7 +197,8 @@ class UserHomePage extends React.Component {
             api_recipe_list: [],
             base_uri: 'https://spoonacular.com/recipeImages/',
             isShowCategory: true,
-            isShowAllIngredients: false
+            isShowAllIngredients: false,
+            anchorEl: null
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -206,6 +211,9 @@ class UserHomePage extends React.Component {
         this.updateCardState = this.updateCardState.bind(this);
         this.handleShowAllIngredients = this.handleShowAllIngredients.bind(this);
         this.handleBackToCategorySelect = this.handleBackToCategorySelect.bind(this);
+        this.handleMenu = this.handleMenu.bind(this);
+        this.handleMenuClose = this.handleMenuClose.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     componentDidMount() {
@@ -213,6 +221,22 @@ class UserHomePage extends React.Component {
         this.getCategories();
         this.getMealtypes();
         // this.getRecipe();
+    }
+
+    handleMenu = (event) => {
+        this.setState({
+            anchorEl: event.currentTarget
+        })
+    };
+    
+    handleMenuClose = () => {
+        this.setState({
+            anchorEl: null
+        })
+    };
+
+    handleLogout(nav) {
+        window.location.href = nav;
     }
 
     updateCardState = (name) => {
@@ -385,13 +409,44 @@ class UserHomePage extends React.Component {
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                    <Typography variant="h6" noWrap className={classes.title}>
-                        <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-                    </Typography>
-                    <Button color="inherit" >{this.state.username}</Button>
-                    <Button color="inherit" href={'/' + this.state.username + '/contribute'}>Contribute</Button>
-                    <Button color="inherit" href='/about'>About</Button>
-                    <Button color="inherit" href='/'>Logout</Button>
+                    <Box display='flex' flexGrow={1}>
+                        <Typography variant="h6" noWrap>
+                            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                        </Typography>
+                        <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
+                        <Button color="inherit" style={{marginLeft:5}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                    </Box>
+                    <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={this.handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircleIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={this.state.anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(this.state.anchorEl)}
+                            onClose={this.handleMenuClose}
+                        >
+                            <MenuItem style={{fontSize:14}}>{this.state.username}</MenuItem>
+                            <MenuItem style={{fontSize:14}} onClick={() => {this.handleLogout("/")}}><b>LOGOUT</b></MenuItem>
+                            {/* <MenuItem linkButton={true} href="/" primaryText="Sample Link">Logout</MenuItem> */}
+                        </Menu>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -405,13 +460,13 @@ class UserHomePage extends React.Component {
                 <List>
                     <ListItem button onClick={this.updateCardState.bind(this, "Ingredient Category")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.green} variant="rounded">C</Avatar>
+                            <Avatar className={classes.green} variant="rounded"><b>C</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Ingredient Category</b>} />
                     </ListItem>
                     <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.orange} variant="rounded">M</Avatar>
+                            <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Meal Type</b>} />
                     </ListItem>

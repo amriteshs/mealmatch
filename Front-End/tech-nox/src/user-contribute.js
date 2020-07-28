@@ -1,9 +1,12 @@
 import React from "react";
 import { fade, withStyles } from "@material-ui/core/styles";
+import { Redirect } from 'react-router-dom';
 import clsx from 'clsx';
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
+import Link from "@material-ui/core/Link";
+import Box from "@material-ui/core/Box";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
@@ -38,6 +41,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import SearchIcon from '@material-ui/icons/Search';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Menu from '@material-ui/core/Menu';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { deepOrange, green } from '@material-ui/core/colors';
@@ -343,7 +348,8 @@ class ContributePage extends React.Component {
             imagePreviewURL: '',
             isShowCategory: true,
             isShowAllIngredients: false,
-            recipeErrorMessage: ''
+            recipeErrorMessage: '',
+            anchorEl: null
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -385,6 +391,9 @@ class ContributePage extends React.Component {
         this.handleBackToCategorySelect = this.handleBackToCategorySelect.bind(this);
         this.handleSingleMealtypeSelect = this.handleSingleMealtypeSelect.bind(this);
         this.handleSingleMealtypeDelete = this.handleSingleMealtypeDelete.bind(this);
+        this.handleMenu = this.handleMenu.bind(this);
+        this.handleMenuClose = this.handleMenuClose.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     componentDidMount() {
@@ -393,6 +402,18 @@ class ContributePage extends React.Component {
         this.getMealtypes();
         this.getUserRecipes();
     }
+
+    handleMenu = (event) => {
+        this.setState({
+            anchorEl: event.currentTarget
+        })
+    };
+    
+    handleMenuClose = () => {
+        this.setState({
+            anchorEl: null
+        })
+    };
 
     updateCardState = (name) => {
         if (name === "Ingredient Category") {
@@ -870,6 +891,7 @@ class ContributePage extends React.Component {
             recipe_steps_input: [],
             selected_mealtype: '',
             selected_category: '',
+            isShowCategory: true
         });
 
         window.scrollTo(0, 0);
@@ -903,7 +925,8 @@ class ContributePage extends React.Component {
             selected_mealtypes: temp_mealtypes,
             selected_ingredients: obj.ingredients,
             recipe_steps_input: temp_steps,
-            ingredient_list: ingrList
+            ingredient_list: ingrList,
+            isShowCategory: true
         });
 
         window.scrollTo(0, 0);
@@ -1088,6 +1111,10 @@ class ContributePage extends React.Component {
         }
     }
 
+    handleLogout(nav) {
+        window.location.href = nav;
+    }
+
     render() {
         const { classes } = this.props;
         
@@ -1111,12 +1138,44 @@ class ContributePage extends React.Component {
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                    <Typography variant="h6" noWrap className={classes.title}>
-                        mealmatch
-                    </Typography>
-                    <Button color="inherit" >{this.state.username}</Button>
-                    <Button color="inherit" href={'/' + this.state.username}>Home</Button>
-                    <Button color="inherit" href='/'>Logout</Button>
+                    <Box display='flex' flexGrow={1}>
+                        <Typography variant="h6" noWrap>
+                            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                        </Typography>
+                        <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
+                        <Button color="inherit" style={{marginLeft:5}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                    </Box>
+                    <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={this.handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircleIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={this.state.anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(this.state.anchorEl)}
+                            onClose={this.handleMenuClose}
+                        >
+                            <MenuItem style={{fontSize:14}}>{this.state.username}</MenuItem>
+                            <MenuItem style={{fontSize:14}} onClick={() => {this.handleLogout("/")}}><b>LOGOUT</b></MenuItem>
+                            {/* <MenuItem linkButton={true} href="/" primaryText="Sample Link">Logout</MenuItem> */}
+                        </Menu>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -1130,21 +1189,21 @@ class ContributePage extends React.Component {
                 <List>
                     <ListItem button onClick={this.updateCardState.bind(this, "Ingredient Category")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.green} variant="rounded">C</Avatar>
+                            <Avatar className={classes.green} variant="rounded"><b>C</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Ingredient Category</b>} />
                     </ListItem>
                     {(this.state.isAddingRecipe || this.state.isUpdatingRecipe) ?
                         <ListItem button disabled onClick={this.updateCardState.bind(this, "Meal Type")}>
                             <ListItemAvatar>
-                                <Avatar className={classes.orange} variant="rounded">M</Avatar>
+                                <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
                             </ListItemAvatar>
                             <ListItemText primary={<b>Meal Type</b>} />
                         </ListItem>
                     :
                         <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
                             <ListItemAvatar>
-                                <Avatar className={classes.orange} variant="rounded">M</Avatar>
+                                <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
                             </ListItemAvatar>
                             <ListItemText primary={<b>Meal Type</b>} />
                         </ListItem>
@@ -1619,30 +1678,37 @@ class ContributePage extends React.Component {
                                             </CardActions>
                                             <Collapse in={this.state.isCardExpanded[index]} timeout="auto" unmountOnExit>
                                                 <CardContent>
-                                                    <Typography paragraph>
+                                                    <Typography paragraph style={{fontSize:14}}>
                                                         {recipe.recipe_description}
                                                     </Typography>
                                                     <Typography paragraph>
                                                         <b>Ingredients used</b><br/>
+                                                        <Typography  style={{fontSize:14}}>
                                                         {recipe.ingredients.map((ingr, index) =>
                                                             <React.Fragment key={index}>
-                                                                <em>{ingr.ingredient_qty}</em> {ingr.ingredient_name}<br/>
+                                                                {ingr.ingredient_qty}<em> {ingr.ingredient_name}</em><br/>
                                                             </React.Fragment>
                                                         )}
+                                                        </Typography>
                                                     </Typography>
                                                     <Typography paragraph>
                                                         <b>Preparation steps</b><br/>
                                                         <Grid container spacing={0}>
                                                         {recipe.steps.map((step, index) =>
                                                             <React.Fragment key={index}>
-                                                                <Grid item xs={1}>{step.step_no}.</Grid>
-                                                                <Grid item xs={11}>{step.step_description}</Grid>
+                                                                <Grid item xs={1}>
+                                                                    <Typography style={{fontSize:14}}>{step.step_no}.</Typography>
+                                                                </Grid>
+                                                                <Grid item xs={11}>
+                                                                    <Typography style={{fontSize:14}}>{step.step_description}</Typography>
+                                                                </Grid>
                                                             </React.Fragment>
                                                         )}
                                                         </Grid>
                                                     </Typography>
                                                     <Typography paragraph>
                                                         <b>Meal type</b><br/>
+                                                        <Typography  style={{fontSize:14}}>
                                                         {recipe.mealtypes.map((mt, index) =>
                                                             (index === recipe.mealtypes.length - 1) ? (
                                                                 <React.Fragment key={index}>
@@ -1654,6 +1720,7 @@ class ContributePage extends React.Component {
                                                                 </React.Fragment>
                                                             )
                                                         )}
+                                                        </Typography>
                                                     </Typography>
                                                 </CardContent>
                                             </Collapse>

@@ -20,6 +20,7 @@ import { useState, useEffect } from 'react';
 import Axios from "axios";
 import RecipeReviewCard from './recipeCards';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 import OutlinedCard from './Cads';
 import MealCard from './MealType';
 
@@ -161,11 +162,14 @@ export default function PermanentDrawerLeft() {
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          <Typography variant="h6" noWrap className={classes.title}>
-            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-          </Typography>
-          <Button color="inherit" href='/login'>Login</Button>
-          <Button color="inherit" href='/about'>About</Button>
+            <Box display='flex' flexGrow={1}>
+                <Typography variant="h6" noWrap>
+                    <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                </Typography>
+                <Button color="inherit" style={{marginLeft:'5%'}} href='/'>Home</Button>
+            </Box>
+            <Button color="inherit" href='/about'>About</Button>
+            <Button color="inherit" href='/login'>Login</Button>
         </Toolbar>
       </AppBar>
       <Drawer

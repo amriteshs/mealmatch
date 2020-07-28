@@ -7,6 +7,7 @@ import HomePage from './home';
 import UserHomePage from './user-home';
 import ContributePage from './user-contribute';
 import AboutPage from './about';
+import UserAboutPage from './user-about';
 
 class LandingPage extends React.Component {
     render() {
@@ -20,6 +21,7 @@ class LandingPage extends React.Component {
                     <Route exact path='/about' component={AboutPage}/>
                     <Route exact path='/:username' component={UserHomePage}/>
                     <Route exact path='/:username/contribute' component={ContributePage}/>
+                    <Route exact path='/:username/about' component={UserAboutPage}/>
                 </Switch>
             </BrowserRouter>
         );

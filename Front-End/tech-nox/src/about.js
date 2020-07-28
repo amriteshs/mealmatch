@@ -8,6 +8,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import 'fontsource-roboto';
 
 
@@ -122,12 +123,14 @@ const useStyles = theme => ({
           <CssBaseline />
           <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-              <Typography variant="h6" noWrap className={classes.title}>
-                  <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-              </Typography>
-
-              <Button color="inherit" href='/'>Home</Button>
-              <Button color="inherit" href='/'>Logout</Button>
+              <Box display='flex' flexGrow={1}>
+                  <Typography variant="h6" noWrap>
+                      <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                  </Typography>
+                  <Button color="inherit" style={{marginLeft:'5%'}} href='/'>Home</Button>
+              </Box>
+              <Button color="inherit" href='/about'>About</Button>
+              <Button color="inherit" href='/login'>Login</Button>
             </Toolbar>
           </AppBar>
           <main className={classes.content}>
