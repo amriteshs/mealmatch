@@ -197,6 +197,7 @@ class UserHomePage extends React.Component {
             category_list: {},
             mealtype_list: {},
             searched_ingredient: '',
+            ingredient_search_results: [],
             selected_ingredients: [],
             selected_ingredients_exclude: [],
             selected_category: '',
@@ -227,6 +228,8 @@ class UserHomePage extends React.Component {
         this.handleLogout = this.handleLogout.bind(this);
         this.handleIngredientInclusion = this.handleIngredientInclusion.bind(this);
         this.handleIngredientExclusion = this.handleIngredientExclusion.bind(this);
+        this.handleIngredientSearch = this.handleIngredientSearch.bind(this);
+        this.setIngredientNameValue = this.setIngredientNameValue.bind(this);
     }
 
     componentDidMount() {
@@ -520,6 +523,20 @@ class UserHomePage extends React.Component {
             });
     }
 
+    setIngredientNameValue(event) {
+        this.setState({
+            searched_ingredient: event.target.value
+        });
+    }
+
+    async handleIngredientSearch() {
+        let response = await axios.post('/ingredient', {
+            'ingredient': this.state.searched_ingredient
+        });
+
+        console.log(response);
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -533,22 +550,38 @@ class UserHomePage extends React.Component {
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
-                        <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
+                        {/* <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder="Search for recipes ..."
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ 'aria-label': 'search' }}
+                                onChange={this.setApiRecipeNameValue}
+                                onBlur={this.setApiRecipeNameValue}
+                            />
                         </div>
-                        <InputBase
-                            placeholder="Search for recipes ..."
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                            onChange={this.setApiRecipeNameValue}
-                            onBlur={this.setApiRecipeNameValue}
-                        />
-                    </div>
-                    <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
+                        <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button> */}
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder="Search for recipes ..."
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ 'aria-label': 'search' }}
+                                onChange={this.setIngredientNameValue}
+                                onBlur={this.setIngredientNameValue}
+                            />
+                        </div>
+                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button>
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
