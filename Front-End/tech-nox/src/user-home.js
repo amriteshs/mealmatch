@@ -35,6 +35,8 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { deepOrange, green } from '@material-ui/core/colors';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -106,6 +108,13 @@ const useStyles = theme => ({
         borderColor:'orange',
         border:'1px solid orange',
     },
+    // ingrTabBtn:{
+    //     fontSize:11,
+    //     color:'',
+    //     backgroundColor:'black',
+    //     borderColor:'orange',
+    //     border:'1px solid orange',
+    // },
     cardsContaioner:{
         marginTop:'1rem'
     },
@@ -127,7 +136,7 @@ const useStyles = theme => ({
     selectedIngrDiv: {
         overflow: 'auto',
         padding: theme.spacing(1),
-        height: '50%'
+        height: '40%'
     },
     selectedMtDiv: {
         overflow: 'auto',
@@ -198,7 +207,8 @@ class UserHomePage extends React.Component {
             base_uri: 'https://spoonacular.com/recipeImages/',
             isShowCategory: true,
             isShowAllIngredients: false,
-            anchorEl: null
+            anchorEl: null,
+            isIngrInc: true
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -214,6 +224,8 @@ class UserHomePage extends React.Component {
         this.handleMenu = this.handleMenu.bind(this);
         this.handleMenuClose = this.handleMenuClose.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
+        this.handleIngredientInclusion = this.handleIngredientInclusion.bind(this);
+        this.handleIngredientExclusion = this.handleIngredientExclusion.bind(this);
     }
 
     componentDidMount() {
@@ -221,6 +233,18 @@ class UserHomePage extends React.Component {
         this.getCategories();
         this.getMealtypes();
         // this.getRecipe();
+    }
+
+    handleIngredientInclusion(event) {
+        this.setState({
+            isIngrInc: true
+        });
+    }
+
+    handleIngredientExclusion(event) {
+        this.setState({
+            isIngrInc: false
+        });
     }
 
     handleMenu = (event) => {
@@ -291,74 +315,143 @@ class UserHomePage extends React.Component {
     }
 
     handleIngredientCheckChange(event) {
-        let ingrList = {...this.state.ingredient_list};
-        let catList = {...this.state.category_list};
-        let ingrSelect = [...this.state.selected_ingredients];
+        if (this.state.isIngrInc) {
+            let ingrList = {...this.state.ingredient_list};
+            let catList = {...this.state.category_list};
+            let ingrSelect = [...this.state.selected_ingredients];
 
-        ingrList[event.target.value].checked = event.target.checked;
+            ingrList[event.target.value].checked = event.target.checked;
 
-        let ingrCategory = ingrList[event.target.value].category_name;
-        catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
+            let ingrCategory = ingrList[event.target.value].category_name;
+            catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
 
-        if (event.target.checked) {
-            let ingredient_details = ingrList[event.target.value];
-            ingredient_details.ingredient_name = event.target.value;
-            ingrSelect.push(ingredient_details);
+            if (event.target.checked) {
+                let ingredient_details = ingrList[event.target.value];
+                ingredient_details.ingredient_name = event.target.value;
+                ingrSelect.push(ingredient_details);
 
-            ingrSelect.sort(function(x, y) {
-                if (x.ingredient_name > y.ingredient_name) {
-                    return 1;
-                }
-                if (x.ingredient_name < y.ingredient_name) {
-                    return -1;
-                }
-                return 0;
+                ingrSelect.sort(function(x, y) {
+                    if (x.ingredient_name > y.ingredient_name) {
+                        return 1;
+                    }
+                    if (x.ingredient_name < y.ingredient_name) {
+                        return -1;
+                    }
+                    return 0;
+                });
+            } else {
+                ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.value);
+            }
+
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                selected_ingredients: ingrSelect
             });
         } else {
-            ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.value);
-        }
+            let ingrList = {...this.state.ingredient_list};
+            let catList = {...this.state.category_list};
+            let ingrSelect = [...this.state.selected_ingredients_exclude];
 
-        this.setState({
-            ingredient_list: ingrList,
-            category_list: catList,
-            selected_ingredients: ingrSelect
-        });
+            ingrList[event.target.value].checked = event.target.checked;
+
+            let ingrCategory = ingrList[event.target.value].category_name;
+            catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
+
+            if (event.target.checked) {
+                let ingredient_details = ingrList[event.target.value];
+                ingredient_details.ingredient_name = event.target.value;
+                ingrSelect.push(ingredient_details);
+
+                ingrSelect.sort(function(x, y) {
+                    if (x.ingredient_name > y.ingredient_name) {
+                        return 1;
+                    }
+                    if (x.ingredient_name < y.ingredient_name) {
+                        return -1;
+                    }
+                    return 0;
+                });
+            } else {
+                ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.value);
+            }
+
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                selected_ingredients_exclude: ingrSelect
+            });
+        }
     }
 
     handleIngredientCheckReset() {
-        let ingrList = {...this.state.ingredient_list};
-        let catList = {...this.state.category_list};
-        var ingrCategory = '';
+        if (this.state.isIngrInc) {
+            let ingrList = {...this.state.ingredient_list};
+            let catList = {...this.state.category_list};
 
-        this.state.selected_ingredients.forEach(ingredient => {
-            ingrList[ingredient.ingredient_name].checked = false;
-            catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
-        });
-        
-        this.setState({
-            ingredient_list: ingrList,
-            category_list: catList,
-            selected_ingredients: []
-        });
+            this.state.selected_ingredients.forEach(ingredient => {
+                ingrList[ingredient.ingredient_name].checked = false;
+                catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
+            });
+            
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                selected_ingredients: []
+            });
+        } else {
+            let ingrList = {...this.state.ingredient_list};
+            let catList = {...this.state.category_list};
+
+            this.state.selected_ingredients_exclude.forEach(ingredient => {
+                ingrList[ingredient.ingredient_name].checked = false;
+                catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
+            });
+            
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                selected_ingredients_exclude: []
+            });
+        }
     }
 
     handleIngredientDelete(obj) {
-        let ingrList = {...this.state.ingredient_list};
-        let catList = {...this.state.category_list};
-        let ingrSelect = [...this.state.selected_ingredients];
+        if (this.state.isIngrInc) {
+            let ingrList = {...this.state.ingredient_list};
+            let catList = {...this.state.category_list};
+            let ingrSelect = [...this.state.selected_ingredients];
 
-        ingrList[obj].checked = false;
+            ingrList[obj].checked = false;
 
-        let ingrCategory = ingrList[obj].category_name;
-        catList[ingrCategory].ingredients[obj].checked = false;
+            let ingrCategory = ingrList[obj].category_name;
+            catList[ingrCategory].ingredients[obj].checked = false;
 
-        ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
+            ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
-        this.setState({
-            ingredient_list: ingrList,
-            category_list: catList,
-            selected_ingredients: ingrSelect,
-        });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                selected_ingredients: ingrSelect,
+            });
+        } else {
+            let ingrList = {...this.state.ingredient_list};
+            let catList = {...this.state.category_list};
+            let ingrSelect = [...this.state.selected_ingredients_exclude];
+
+            ingrList[obj].checked = false;
+
+            let ingrCategory = ingrList[obj].category_name;
+            catList[ingrCategory].ingredients[obj].checked = false;
+
+            ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
+
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                selected_ingredients_exclude: ingrSelect,
+            });
+        }
     }
 
     handleCategorySelect(obj) {
@@ -507,49 +600,141 @@ class UserHomePage extends React.Component {
                     }
                 </div>
                 <Divider />
-                <div className={classes.selectedIngrDiv}>
-                    {!this.state.selected_ingredients.length ?
-                    (
-                        <Typography>You have not selected any ingredients.</Typography>
-                    ) : (
-                    <>
-                        <Grid container spacing={0} direction="row" justify="center" alignItems="center">
-                            <Grid item xs={4}>
-                                <Button
-                                    onClick={this.handleIngredientCheckReset}
-                                    className={classes.searchBtn}>
-                                        Clear
-                                </Button>
-                            </Grid>
-                            <Grid item xs={8}>
-                                {this.state.selected_ingredients.length === 1 ?
-                                    <Typography>1 ingredient selected.</Typography>
-                                :
-                                    <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
-                                }
-                            </Grid>
-                        {this.state.selected_ingredients.map((obj, index) => (
-                            <React.Fragment key={index}>
-                                <Grid item xs={3}>
-                                    <IconButton
-                                        name={obj.ingredient_name} value={index}
-                                        aria-label="delete" color="secondary"
-                                        onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
+                <Grid container spacing={0} direction="row" alignItems="center" justify="center">
+                    <Grid item xs={6}>
+                        {this.state.isIngrInc ? 
+                            <Button
+                                onClick={this.handleIngredientInclusion}
+                                style={{fontSize:10,borderRadius:'0px'}}
+                                fullWidth
+                                color="secondary"
+                            >
+                                    INGREDIENTS TO INCLUDE
+                            </Button>
+                        :
+                            <Button
+                                onClick={this.handleIngredientInclusion}
+                                style={{fontSize:10,borderRadius:'0px'}}
+                                variant="contained"
+                                fullWidth
+                                color="secondary"
+                            >
+                                    INGREDIENTS TO INCLUDE
+                            </Button>
+                        }
+                    </Grid>
+                    <Grid item xs={6}>
+                        {this.state.isIngrInc ? 
+                            <Button
+                                onClick={this.handleIngredientExclusion}
+                                style={{fontSize:10,borderRadius:'0px'}}
+                                variant="contained"
+                                fullWidth
+                                color="secondary"
+                            >
+                                    INGREDIENTS TO EXCLUDE
+                            </Button>
+                        :
+                            <Button
+                                onClick={this.handleIngredientExclusion}
+                                style={{fontSize:10,borderRadius:'0px'}}
+                                fullWidth
+                                color="secondary"
+                            >
+                                    INGREDIENTS TO EXCLUDE
+                            </Button>
+                        }
+                    </Grid>
+                </Grid>
+                {this.state.isIngrInc ?
+                    <div className={classes.selectedIngrDiv}>
+                        {!this.state.selected_ingredients.length ?
+                        (
+                            <Typography>You have not selected any ingredients for inclusion.</Typography>
+                        ) : (
+                        <>
+                            <Grid container spacing={0} direction="row" justify="center" alignItems="center">
+                                <Grid item xs={4}>
+                                    <Button
+                                        onClick={this.handleIngredientCheckReset}
+                                        className={classes.searchBtn}>
+                                            Clear
+                                    </Button>
                                 </Grid>
-                                <Grid item xs={9}>
-                                    <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
-                                        <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
-                                    </Tooltip>
+                                <Grid item xs={8}>
+                                    {this.state.selected_ingredients.length === 1 ?
+                                        <Typography>1 ingredient selected.</Typography>
+                                    :
+                                        <Typography>{this.state.selected_ingredients.length} ingredients selected.</Typography>
+                                    }
                                 </Grid>
-                            </React.Fragment>
-                        ))}
-                        </Grid>
-                    </>
-                    )}
-                </div>
+                            {this.state.selected_ingredients.map((obj, index) => (
+                                <React.Fragment key={index}>
+                                    <Grid item xs={3}>
+                                        <IconButton
+                                            name={obj.ingredient_name} value={index}
+                                            aria-label="delete" color="secondary"
+                                            onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
+                                            <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
+                                        </Tooltip>
+                                    </Grid>
+                                </React.Fragment>
+                            ))}
+                            </Grid>
+                        </>
+                        )}
+                    </div>
+                :
+                    <div className={classes.selectedIngrDiv}>
+                        {!this.state.selected_ingredients_exclude.length ?
+                        (
+                            <Typography>You have not selected any ingredients for exclusion.</Typography>
+                        ) : (
+                        <>
+                            <Grid container spacing={0} direction="row" justify="center" alignItems="center">
+                                <Grid item xs={4}>
+                                    <Button
+                                        onClick={this.handleIngredientCheckReset}
+                                        className={classes.searchBtn}>
+                                            Clear
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    {this.state.selected_ingredients_exclude.length === 1 ?
+                                        <Typography>1 ingredient selected.</Typography>
+                                    :
+                                        <Typography>{this.state.selected_ingredients_exclude.length} ingredients selected.</Typography>
+                                    }
+                                </Grid>
+                            {this.state.selected_ingredients_exclude.map((obj, index) => (
+                                <React.Fragment key={index}>
+                                    <Grid item xs={3}>
+                                        <IconButton
+                                            name={obj.ingredient_name} value={index}
+                                            aria-label="delete" color="secondary"
+                                            onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
+                                            <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
+                                        </Tooltip>
+                                    </Grid>
+                                </React.Fragment>
+                            ))}
+                            </Grid>
+                        </>
+                        )}
+                    </div>
+                }
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
