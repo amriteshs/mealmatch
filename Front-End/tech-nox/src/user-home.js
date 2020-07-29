@@ -561,7 +561,7 @@ class UserHomePage extends React.Component {
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
-                        {/* <div className={classes.search}>
+                        <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
@@ -576,8 +576,8 @@ class UserHomePage extends React.Component {
                                 onBlur={this.setApiRecipeNameValue}
                             />
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button> */}
-                        <div className={classes.search}>
+                        <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
+                        {/* <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
@@ -592,7 +592,7 @@ class UserHomePage extends React.Component {
                                 onBlur={this.setIngredientNameValue}
                             />
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button>
+                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button> */}
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
