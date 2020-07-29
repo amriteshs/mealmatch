@@ -40,8 +40,6 @@ import 'fontsource-roboto';
 import axios from 'axios';
 import RecipeReviewCard from './recipeCards';
 
-// switch
-import Switch from '@material-ui/core/Switch';
 
 const drawerWidth = 240;
 const topAppBarWidth = 64;
