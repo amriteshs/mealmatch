@@ -4,7 +4,7 @@ from flask import request
 from flask_restplus import Resource, fields
 from werkzeug.utils import secure_filename
 
-from flaskr import api, db_file, app
+from flaskr import api, db_file, UPLOAD_FOLDER
 from flaskr.db import db_connect
 
 
@@ -501,9 +501,11 @@ class UserRecipe(Resource):
             'message': 'Recipe deleted successfully'
         })), 200
 
-@api.route('/recipe_image')
+@api.route('/recipe_image/<id>')
 class RecipeImage(Resource):
-    def post(self):
+    @api.response(200, 'OK')
+    @api.doc(description='Add image for recipe contributed by user')
+    def post(self, id):
         file = request.files['image_file']
 
         conn = db_connect(db_file)
@@ -521,7 +523,37 @@ class RecipeImage(Resource):
         fname = f"{recipe_id}.{secure_filename(file.filename).split('.')[1]}"
 
         if file:
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], fname))
-            _path = os.path.abspath("<FILE PATH>")
-            #uf = str(uuid.uuid4())
-            # return redirect(url_for('index'))
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.makedirs(UPLOAD_FOLDER)
+
+            file.save(UPLOAD_FOLDER + '/' + fname)
+
+        return json.loads(json.dumps({
+            'message': 'Image added successfully'
+        })), 200
+
+    @api.response(200, 'OK')
+    @api.doc(description='Update image for recipe contributed by user')
+    def put(self, id):
+        file = request.files['image_file']
+
+        fname = f"{id}.{secure_filename(file.filename).split('.')[1]}"
+
+        if file:
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.makedirs(UPLOAD_FOLDER)
+
+            file.save(UPLOAD_FOLDER + '/' + fname)
+
+        return json.loads(json.dumps({
+            'message': 'Image updated successfully'
+        })), 200
+
+    @api.response(200, 'OK')
+    @api.doc(description='Delete image for recipe contributed by user')
+    def delete(self, id):
+        os.remove(UPLOAD_FOLDER + '/' + id + '.jpg')
+
+        return json.loads(json.dumps({
+            'message': 'Image deleted successfully'
+        })), 200

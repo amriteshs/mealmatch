@@ -14,15 +14,12 @@ db_file = 'flaskr/data.db'
 conn = db_init(db_file)
 conn.close()
 
-
-PROJECT_HOME = os.path.dirname(os.path.realpath(__file__))
-UPLOAD_FOLDER  = '{}/static/recipes'.format(PROJECT_HOME)
-ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
+UPLOAD_FOLDER = 'Front-end/tech-nox/src/static/recipes'
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 api = Api(app, default='MealMatch', title='MealMatch', description='MealMatch')
 
 

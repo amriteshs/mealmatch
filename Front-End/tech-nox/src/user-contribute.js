@@ -313,6 +313,14 @@ const useStyles = theme => ({
     catMtBtn: {
         textTransform: 'none',
         justifyContent: 'flex-start'
+    },
+    imgUploadBtn: {
+        padding: theme.spacing(1),
+        width: 200,
+        color:'orange',
+        backgroundColor:'black',
+        borderColor:'orange',
+        border:'1px solid orange'
     }
 });
 
@@ -350,7 +358,7 @@ class ContributePage extends React.Component {
             filterByIngredient: false,
             filterByMealtype: false,
             file: '',
-            imagePreviewURL: '',
+            imagePreviewUrl: '',
             isShowCategory: true,
             isShowAllIngredients: false,
             recipeErrorMessage: '',
@@ -975,6 +983,10 @@ class ContributePage extends React.Component {
             this.setState({
                 recipeErrorMessage: 'Recipe preparation time must be specified.'
             });
+        } else if (this.state.imagePreviewUrl === '') {
+            this.setState({
+                recipeErrorMessage: 'Recipe must have an image.'
+            });
         } else {
             const endpoint = '/recipe/' + this.state.username;
 
@@ -991,25 +1003,18 @@ class ContributePage extends React.Component {
                     'steps': this.state.recipe_steps_input,
                 });
 
-                console.log(response);
-
-                // event.preventDefault();
-                // // TODO: do something with -> this.state.file
-                // console.log('handle uploading-', this.state.file);
-
+                // save image
                 const data = new FormData();
                 data.append('image_file', this.state.file);
 
-                let img_response = await axios.post('/recipe_image', data, {
-                    headers: {
-                        'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                let img_response = await axios.post('/recipe_image/1', 
+                    data, 
+                    {
+                        headers: {
+                            'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
                     },
                     timeout: 30000,
                 });
-
-                // let img_response = await axios.post(endpoint, {
-                //     'recipe_image': this.state.file
-                // });
             } else if (this.state.isUpdatingRecipe) {
                 let response = await axios.put(endpoint, {
                     'username': this.state.username,
@@ -1024,7 +1029,20 @@ class ContributePage extends React.Component {
                     'steps': this.state.recipe_steps_input,
                 });
 
-                console.log(response);
+                // update image
+                const endpoint1 = '/recipe_image/' + this.state.selected_recipe_id;
+
+                const data = new FormData();
+                data.append('image_file', this.state.file);
+
+                let img_response = await axios.put(endpoint1, 
+                    data, 
+                    {
+                        headers: {
+                            'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                    },
+                    timeout: 30000,
+                });
             }
 
             this.setState({
@@ -1040,7 +1058,9 @@ class ContributePage extends React.Component {
                 selected_visibility: 'Public',
                 recipe_steps_input: [],
                 selected_mealtype: '',
-                selected_category: ''
+                selected_category: '',
+                file: '',
+                imagePreviewUrl: ''
             });
 
             this.getUserRecipes();
@@ -1074,7 +1094,9 @@ class ContributePage extends React.Component {
             selected_mealtype: '',
             selected_category: '',
             isShowAllIngredients: false,
-            isShowCategory: true
+            isShowCategory: true,
+            file: '',
+            imagePreviewUrl: ''
         });
 
         window.scrollTo(0, 0);
@@ -1105,7 +1127,9 @@ class ContributePage extends React.Component {
             selected_mealtype: '',
             selected_category: '',
             isShowCategory: true,
-            isShowAllIngredients: false
+            isShowAllIngredients: false,
+            file: '',
+            imagePreviewUrl: ''
         });
 
         window.scrollTo(0, 0);
@@ -1151,15 +1175,19 @@ class ContributePage extends React.Component {
             selected_category: '',
             selected_mealtype: '',
             isShowCategory: true,
-            isShowAllIngredients: false
+            isShowAllIngredients: false,
+            file: '',
+            imagePreviewUrl: ''
         });
 
         window.scrollTo(0, 0);
     }
 
     async handleRecipeDelete(obj) {
-        const endpoint = '/recipe/' + this.state.username;
+        const endpoint1 = '/recipe_image/' + obj;
+        let response1 = await axios.delete(endpoint1);
 
+        const endpoint = '/recipe/' + this.state.username;
         let response = await axios.delete(endpoint, {
             data: {
                 'recipe_id': obj
@@ -1345,18 +1373,34 @@ class ContributePage extends React.Component {
         
         let {imagePreviewUrl} = this.state;
         let $imagePreview = null;
-        if (imagePreviewUrl) {
-            $imagePreview = (<img
-                src={imagePreviewUrl}
-                className={classes.imageUpload}
-            />);
-        } else {
-            $imagePreview = (<img
-                src={require('./static/images/recipe_placeholder.jpg')}
-                alt="not available"
-                className={classes.imageUpload}
-            />)
-        };
+
+        if (this.state.isAddingRecipe) {
+            if (imagePreviewUrl) {
+                $imagePreview = (<img
+                    src={imagePreviewUrl}
+                    className={classes.imageUpload}
+                />);
+            } else {
+                $imagePreview = (<img
+                    src={require('./static/images/recipe_placeholder.jpg')}
+                    alt="not available"
+                    className={classes.imageUpload}
+                />)
+            };
+        } else if (this.state.isUpdatingRecipe) {
+            if (imagePreviewUrl) {
+                $imagePreview = (<img
+                    src={imagePreviewUrl}
+                    className={classes.imageUpload}
+                />);
+            } else {
+                $imagePreview = (<img
+                    src={require('./static/recipes/' + this.state.selected_recipe_id + '.jpg')}
+                    alt="not available"
+                    className={classes.imageUpload}
+                />)
+            };
+        }
 
         return (
             <div className={classes.root}>
@@ -1800,10 +1844,7 @@ class ContributePage extends React.Component {
                                             
                                             <CardMedia
                                                 className={classes.media}
-                                                // image={this.props.imageUrl}
-                                                image={require('./static/images/recipe_placeholder.jpg')}
-                                                // image={require('./static/recipes/' + recipe.recipe_id + '.jpg')}
-                                                // onerror={require('./static/images/recipe_placeholder.jpg')}
+                                                image={require('./static/recipes/' + recipe.recipe_id + '.jpg')}
                                                 alt="no image"
                                                 title={recipe.recipe_name}
                                             />
@@ -2245,16 +2286,9 @@ class ContributePage extends React.Component {
                                 <input
                                     type="file"
                                     onChange={this.handleRecipeImageChange}
-                                    className={classes.addStepBtn}
+                                    className={classes.imgUploadBtn}
                                     startIcon={<CloudUploadIcon />}
                                 />
-                                <Button
-                                    onClick={this.handleRecipeImageUpload}
-                                    className={classes.addStepBtn}
-                                    startIcon={<CloudUploadIcon />}
-                                >
-                                    Upload Image
-                                </Button>
                             </div>
                         </Container>
                     </>
