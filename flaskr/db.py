@@ -156,8 +156,8 @@ def populate_db(db_file):
         c = conn.cursor()
 
         mealtypes = [
-           'main course','side dish','dessert','appetizer','salad','bread',
-            'breakfast','soup','beverage','sauce','marinade','fingerfood','snack','drink'
+            'main course', 'side dish', 'dessert', 'appetizer', 'salad', 'bread', 'breakfast', 'soup',
+            'beverage', 'sauce', 'marinade', 'fingerfood', 'snack', 'drink'
         ]
 
         ingredient_categories = {

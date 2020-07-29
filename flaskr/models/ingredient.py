@@ -42,7 +42,9 @@ class Ingredient(Resource):
                 'ingredient_id': row[0],
                 'category_id': row[2],
                 'category_name': row[3],
-                'checked': False
+                'checked': False,
+                'selectIncl': False,
+                'selectExcl': False
             }
 
         return json.loads(json.dumps({
@@ -86,7 +88,9 @@ class Ingredient(Resource):
                 'ingredient_id': row[0],
                 'category_id': row[2],
                 'category_name': row[3],
-                'checked': False
+                'checked': False,
+                'selectIncl': False,
+                'selectExcl': False
             }
 
         return json.loads(json.dumps({
