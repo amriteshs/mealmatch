@@ -57,7 +57,7 @@ export default function OutlinedCard() {
         {/*Search Bar*/}
         <div className={classes.search}>
             <div className={classes.searchIcon}>
-            <SearchIcon /> <InputBase
+            {/* <SearchIcon /> <InputBase
               placeholder="Search for Ingrediant Categories..."
               classes={{
                 root: classes.inputRoot,
@@ -66,7 +66,7 @@ export default function OutlinedCard() {
               inputProps={{ 'aria-label': 'search' }}
               
 
-            />
+            /> */}
             <div>
           <Grid container>
               <Grid item  sm={6}>
