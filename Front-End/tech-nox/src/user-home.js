@@ -166,7 +166,7 @@ const useStyles = theme => ({
         backgroundColor: deepOrange[500],
     },
     catMtBtn: {
-        textTransform: 'none',
+        textTransform: 'capitalize',
         justifyContent: 'flex-start'
     },
     expandOpen: {

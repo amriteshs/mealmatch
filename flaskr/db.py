@@ -156,10 +156,8 @@ def populate_db(db_file):
         c = conn.cursor()
 
         mealtypes = [
-            'Breads', 'Breakfast', 'Cakes', 'Casseroles', 'Cookies', 'Desserts', 'Dinner', 'Dips', 'Drinks',
-            'Fish recipes', 'Grilling & BBQ', 'Kid Friendly', 'Meat recipes', 'Poultry recipes', 'Quick & Easy',
-            'Salad Dressings', 'Salads', 'Sandwiches', 'Sauces', 'Seafood recipes', 'Slow Cooker', 'Soups',
-            'Vegetarian recipes', 'Vegan recipes', 'Gluten free recipes', 'Lactose free recipes'
+            'main course', 'side dish', 'dessert', 'appetizer', 'salad', 'bread', 'breakfast', 'soup',
+            'beverage', 'sauce', 'marinade', 'fingerfood', 'snack', 'drink'
         ]
 
         ingredient_categories = {
