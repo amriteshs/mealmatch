@@ -18,7 +18,8 @@ class SignUpPage extends React.Component {
             password: '',
             firstName: '',
             lastName: '',
-            redirectToLogin: false
+            redirectToLogin: false,
+            errorMessage: ''
         }
     }
 
@@ -35,7 +36,9 @@ class SignUpPage extends React.Component {
                 this.setState({redirectToLogin: true})
             })
             .catch(error => {
-                console.log(error)
+                this.setState({
+                    errorMessage: '* ' + error.response.data.message
+                })
             });
     }
 
@@ -109,6 +112,11 @@ class SignUpPage extends React.Component {
                             inputProps={{maxLength:50}}
                             onBlur={this.setPassword.bind(this)}
                         />
+                        <DialogContentText 
+                            style={{marginTop:10,marginBottom:20,fontSize:13,color:'red'}}
+                        >
+                            <b>{this.state.errorMessage}</b>
+                        </DialogContentText>
                     </DialogContent>
                     <DialogActions>
                         <Button href='/login'>

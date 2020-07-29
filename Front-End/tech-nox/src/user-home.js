@@ -30,6 +30,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Collapse from '@material-ui/core/Collapse';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Box from '@material-ui/core/Box';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import { deepOrange, green } from '@material-ui/core/colors';
 
 import 'fontsource-roboto';
@@ -193,7 +197,8 @@ class UserHomePage extends React.Component {
             api_recipe_list: [],
             base_uri: 'https://spoonacular.com/recipeImages/',
             isShowCategory: true,
-            isShowAllIngredients: false
+            isShowAllIngredients: false,
+            anchorEl: null
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -206,6 +211,9 @@ class UserHomePage extends React.Component {
         this.updateCardState = this.updateCardState.bind(this);
         this.handleShowAllIngredients = this.handleShowAllIngredients.bind(this);
         this.handleBackToCategorySelect = this.handleBackToCategorySelect.bind(this);
+        this.handleMenu = this.handleMenu.bind(this);
+        this.handleMenuClose = this.handleMenuClose.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     componentDidMount() {
@@ -213,6 +221,22 @@ class UserHomePage extends React.Component {
         this.getCategories();
         this.getMealtypes();
         // this.getRecipe();
+    }
+
+    handleMenu = (event) => {
+        this.setState({
+            anchorEl: event.currentTarget
+        })
+    };
+    
+    handleMenuClose = () => {
+        this.setState({
+            anchorEl: null
+        })
+    };
+
+    handleLogout(nav) {
+        window.location.href = nav;
     }
 
     updateCardState = (name) => {
@@ -277,10 +301,21 @@ class UserHomePage extends React.Component {
         catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
 
         if (event.target.checked) {
-            ingrSelect.push(event.target.value);
-            ingrSelect.sort();
+            let ingredient_details = ingrList[event.target.value];
+            ingredient_details.ingredient_name = event.target.value;
+            ingrSelect.push(ingredient_details);
+
+            ingrSelect.sort(function(x, y) {
+                if (x.ingredient_name > y.ingredient_name) {
+                    return 1;
+                }
+                if (x.ingredient_name < y.ingredient_name) {
+                    return -1;
+                }
+                return 0;
+            });
         } else {
-            ingrSelect = ingrSelect.filter(x => x !== event.target.value);
+            ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.value);
         }
 
         this.setState({
@@ -295,11 +330,10 @@ class UserHomePage extends React.Component {
         let catList = {...this.state.category_list};
         var ingrCategory = '';
 
-        this.state.selected_ingredients.map((obj, index) => (
-            ingrList[obj].checked = false,
-            ingrCategory = ingrList[obj].category_name,
-            catList[ingrCategory].ingredients[obj].checked = false
-        ));
+        this.state.selected_ingredients.forEach(ingredient => {
+            ingrList[ingredient.ingredient_name].checked = false;
+            catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
+        });
         
         this.setState({
             ingredient_list: ingrList,
@@ -318,7 +352,7 @@ class UserHomePage extends React.Component {
         let ingrCategory = ingrList[obj].category_name;
         catList[ingrCategory].ingredients[obj].checked = false;
 
-        ingrSelect = ingrSelect.filter(x => x !== obj);
+        ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
         this.setState({
             ingredient_list: ingrList,
@@ -385,13 +419,45 @@ class UserHomePage extends React.Component {
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                    <Typography variant="h6" noWrap className={classes.title}>
-                        <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-                    </Typography>
-                    <Button color="inherit" >{this.state.username}</Button>
-                    <Button color="inherit" href={'/' + this.state.username + '/contribute'}>Contribute</Button>
-                    <Button color="inherit" href='/about'>About</Button>
-                    <Button color="inherit" href='/'>Logout</Button>
+                    <Box display='flex' flexGrow={1}>
+                        <Typography variant="h6" noWrap>
+                            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                        </Typography>
+                        <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
+                        <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                    </Box>
+                    <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={this.handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircleIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={this.state.anchorEl}
+                            getContentAnchorEl={null}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(this.state.anchorEl)}
+                            onClose={this.handleMenuClose}
+                        >
+                            <MenuItem style={{fontSize:14}}><b>{this.state.username}</b></MenuItem>
+                            <Divider/>
+                            <MenuItem style={{fontSize:14}} onClick={() => {this.handleLogout("/")}}>Logout</MenuItem>
+                        </Menu>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -405,13 +471,13 @@ class UserHomePage extends React.Component {
                 <List>
                     <ListItem button onClick={this.updateCardState.bind(this, "Ingredient Category")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.green} variant="rounded">C</Avatar>
+                            <Avatar className={classes.green} variant="rounded"><b>C</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Ingredient Category</b>} />
                     </ListItem>
                     <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.orange} variant="rounded">M</Avatar>
+                            <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Meal Type</b>} />
                     </ListItem>
@@ -466,16 +532,16 @@ class UserHomePage extends React.Component {
                             <React.Fragment key={index}>
                                 <Grid item xs={3}>
                                     <IconButton
-                                        name={obj} value={index}
+                                        name={obj.ingredient_name} value={index}
                                         aria-label="delete" color="secondary"
-                                        onClick={this.handleIngredientDelete.bind(this, obj)}
+                                        onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                     >
                                         <DeleteIcon />
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
-                                    <Tooltip arrow placement="bottom-start" title={"Category: " + this.state.ingredient_list[obj].category_name}>          
-                                        <Typography style={{fontSize:14}}>{obj}</Typography>
+                                    <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
+                                        <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
                                     </Tooltip>
                                 </Grid>
                             </React.Fragment>
@@ -496,7 +562,7 @@ class UserHomePage extends React.Component {
                                             {this.state.selected_category === '' ?
                                                 this.state.isShowAllIngredients ?
                                                     <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                        <b>Complete list of ingredients ({this.state.ingredient_count})</b>
+                                                        <b>Complete list of ingredients</b>
                                                     </Typography>
                                                 :
                                                     <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
@@ -504,7 +570,7 @@ class UserHomePage extends React.Component {
                                                     </Typography>
                                             :
                                                 <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                    <b>List of ingredients for category "<em>{this.state.selected_category}</em>" ({this.state.category_list[this.state.selected_category].ingredients})</b>
+                                                    <b>List of ingredients for category "<em>{this.state.selected_category}</em>"</b>
                                                 </Typography>
                                             }
                                         </Grid>
@@ -570,7 +636,7 @@ class UserHomePage extends React.Component {
                                                 <>
                                                 {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
                                                     <Grid item xs={3} key={key}>
-                                                        <FormControlLabel key={key} 
+                                                        <FormControlLabel 
                                                             control={
                                                                 <Checkbox checked={value.checked}
                                                                 onChange={this.handleIngredientCheckChange} 

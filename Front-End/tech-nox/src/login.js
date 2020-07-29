@@ -44,7 +44,7 @@ class LoginPage extends React.Component {
             })
             .catch(error => {
                 this.setState({
-                    errorMessage: error.response.data.message
+                    errorMessage: '* ' + error.response.data.message
                 })
             });
     }
@@ -107,6 +107,11 @@ class LoginPage extends React.Component {
                             inputProps={{maxLength:50}}
                             onBlur = {this.HandleOnBlur.bind(this)}
                         />
+                        <DialogContentText 
+                            style={{marginTop:10,marginBottom:20,fontSize:13,color:'red'}}
+                        >
+                            <b>{this.state.errorMessage}</b>
+                        </DialogContentText>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.LoginHandler}>

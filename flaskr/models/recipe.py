@@ -1,7 +1,10 @@
 import json
+import os
+from flask import request
 from flask_restplus import Resource, fields
+from werkzeug.utils import secure_filename
 
-from flaskr import api, db_file
+from flaskr import api, db_file, UPLOAD_FOLDER
 from flaskr.db import db_connect
 
 
@@ -496,4 +499,61 @@ class UserRecipe(Resource):
 
         return json.loads(json.dumps({
             'message': 'Recipe deleted successfully'
+        })), 200
+
+@api.route('/recipe_image/<id>')
+class RecipeImage(Resource):
+    @api.response(200, 'OK')
+    @api.doc(description='Add image for recipe contributed by user')
+    def post(self, id):
+        file = request.files['image_file']
+
+        conn = db_connect(db_file)
+        c = conn.cursor()
+
+        recipe_id = list(c.execute(
+            '''
+                SELECT MAX(a.id)
+                from Recipe a
+            '''
+        ))[0][0]
+
+        conn.close()
+
+        fname = f"{recipe_id}.{secure_filename(file.filename).split('.')[1]}"
+
+        if file:
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.makedirs(UPLOAD_FOLDER)
+
+            file.save(UPLOAD_FOLDER + '/' + fname)
+
+        return json.loads(json.dumps({
+            'message': 'Image added successfully'
+        })), 200
+
+    @api.response(200, 'OK')
+    @api.doc(description='Update image for recipe contributed by user')
+    def put(self, id):
+        file = request.files['image_file']
+
+        fname = f"{id}.{secure_filename(file.filename).split('.')[1]}"
+
+        if file:
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.makedirs(UPLOAD_FOLDER)
+
+            file.save(UPLOAD_FOLDER + '/' + fname)
+
+        return json.loads(json.dumps({
+            'message': 'Image updated successfully'
+        })), 200
+
+    @api.response(200, 'OK')
+    @api.doc(description='Delete image for recipe contributed by user')
+    def delete(self, id):
+        os.remove(UPLOAD_FOLDER + '/' + id + '.jpg')
+
+        return json.loads(json.dumps({
+            'message': 'Image deleted successfully'
         })), 200

@@ -20,6 +20,7 @@ import { useState, useEffect } from 'react';
 import Axios from "axios";
 import RecipeReviewCard from './recipeCards';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 import OutlinedCard from './Cads';
 import MealCard from './MealType';
 

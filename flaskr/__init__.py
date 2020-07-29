@@ -14,6 +14,9 @@ db_file = 'flaskr/data.db'
 conn = db_init(db_file)
 conn.close()
 
+UPLOAD_FOLDER = 'Front-end/tech-nox/src/static/recipes'
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
+
 app = Flask(__name__)
 app.config.from_object(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
@@ -25,20 +28,3 @@ from flaskr.models.ingredient import *
 from flaskr.models.user import *
 from flaskr.models.mealtype import *
 from flaskr.models.recipe import *
-
-# PROJECT_HOME = os.path.dirname(os.path.realpath(__file__))
-# UPLOAD_FOLDER  = '{}/uploads/'.format(PROJECT_HOME)
-
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# ALLOWED_EXTENSIONS = set(['jpg','png'])
-
-# @api.route("/recipe_image")
-# class ImageRecipe(Resource):
-#     def post(self):
-#         file = request.files['file']
-#         if file:
-
-#             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#             _path = os.path.abspath("<FILE PATH>")
-#             #uf = str(uuid.uuid4())
-#             return redirect(url_for('index'))
