@@ -423,6 +423,22 @@ class UserHomePage extends React.Component {
                         <Typography variant="h6" noWrap>
                             <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
                         </Typography>
+                        <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                            <SearchIcon />
+                        </div>
+                        <InputBase
+                            placeholder="Search for recipes ..."
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                            onChange={this.setApiRecipeNameValue}
+                            onBlur={this.setApiRecipeNameValue}
+                        />
+                    </div>
+                    <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
                     </Box>
@@ -683,8 +699,7 @@ class UserHomePage extends React.Component {
                             </CardContent>
                         </Card>
                     )}
-                    <div className={classes.searchBar}>
-                    <Toolbar>
+                    {/* <Toolbar>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -701,7 +716,7 @@ class UserHomePage extends React.Component {
                         />
                     </div>
                     <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
-                    </Toolbar>
+                    </Toolbar> */}
                     <div className={classes.cardsContaioner}>
                         <Grid container spacing={1}>
                         {this.state.api_recipe_list.map((recipe) =>
@@ -717,7 +732,6 @@ class UserHomePage extends React.Component {
                         )}
                         </Grid>
                     </div>
-                </div>
             </main>
             </div>
         );
