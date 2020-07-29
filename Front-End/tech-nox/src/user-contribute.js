@@ -391,7 +391,6 @@ class ContributePage extends React.Component {
         this.handleVisibilityUpdate = this.handleVisibilityUpdate.bind(this);
         this.handleFilterByIngredient = this.handleFilterByIngredient.bind(this);
         this.handleFilterByMealtype = this.handleFilterByMealtype.bind(this);
-        this.handleSelectMealtypeFilter = this.handleSelectMealtypeFilter.bind(this);
         this.updateCardState = this.updateCardState.bind(this);
         this.handleShowAllIngredients = this.handleShowAllIngredients.bind(this);
         this.handleBackToCategorySelect = this.handleBackToCategorySelect.bind(this);
@@ -542,7 +541,8 @@ class ContributePage extends React.Component {
         this.setState({
             ingredient_list: ingrList,
             category_list: catList,
-            selected_ingredients: ingrSelect
+            selected_ingredients: ingrSelect,
+            filterByIngredient: false
         });
     }
 
@@ -558,7 +558,8 @@ class ContributePage extends React.Component {
         this.setState({
             ingredient_list: ingrList,
             category_list: catList,
-            selected_ingredients: []
+            selected_ingredients: [],
+            filterByIngredient: false
         });
     }
 
@@ -578,6 +579,7 @@ class ContributePage extends React.Component {
             ingredient_list: ingrList,
             category_list: catList,
             selected_ingredients: ingrSelect,
+            filterByIngredient: false
         });
     }
 
@@ -603,13 +605,15 @@ class ContributePage extends React.Component {
 
     handleSingleMealtypeSelect(obj) {
         this.setState({
-            selected_mealtype: obj
+            selected_mealtype: obj,
+            filterByMealtype: false
         });
     }
 
     handleSingleMealtypeDelete() {
         this.setState({
-            selected_mealtype: ''
+            selected_mealtype: '',
+            filterByMealtype: false
         });
     }
 
@@ -1096,8 +1100,7 @@ class ContributePage extends React.Component {
                     selected_recipes: rcpFilter,
                     isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
                     openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    filterByMealtype: false,
-                    selected_mealtype: ''
+                    filterByMealtype: false
                 });
             } else {
                 // no filter
@@ -1105,44 +1108,37 @@ class ContributePage extends React.Component {
                     selected_recipes: this.state.user_recipe_list,
                     isCardExpanded: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
                     openRecipeDelete: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
-                    filterByMealtype: false,
-                    selected_mealtype: ''
+                    filterByMealtype: false
                 });
             }
         } else {
-            this.setState({
-                filterByMealtype: true
-            });
-        }
-    }
-
-    handleSelectMealtypeFilter(event) {
-        if (this.state.filterByIngredient) {
-            // filter by ingredient and mealtype
-            let rcpFilter1 = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === event.target.value));
-            let rcpFilter = [];
-            rcpFilter1.forEach(recipe =>  {
-                if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
-                    rcpFilter.push(recipe);
-                }
-            });
-
-            this.setState({
-                selected_recipes: rcpFilter,
-                isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                selected_mealtype: event.target.value
-            });
-        } else {
-            // filter by mealtype
-            let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === event.target.value));
-            
-            this.setState({
-                selected_recipes: rcpFilter,
-                isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                selected_mealtype: event.target.value
-            });
+            if (this.state.filterByIngredient) {
+                // filter by ingredient and mealtype
+                let rcpFilter1 = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
+                let rcpFilter = [];
+                rcpFilter1.forEach(recipe =>  {
+                    if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
+                        rcpFilter.push(recipe);
+                    }
+                });
+    
+                this.setState({
+                    selected_recipes: rcpFilter,
+                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    filterByMealtype: true
+                });
+            } else {
+                // filter by mealtype
+                let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
+                
+                this.setState({
+                    selected_recipes: rcpFilter,
+                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                    filterByMealtype: true
+                });
+            }
         }
     }
 
