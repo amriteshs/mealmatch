@@ -301,10 +301,21 @@ class UserHomePage extends React.Component {
         catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
 
         if (event.target.checked) {
-            ingrSelect.push(event.target.value);
-            ingrSelect.sort();
+            let ingredient_details = ingrList[event.target.value];
+            ingredient_details.ingredient_name = event.target.value;
+            ingrSelect.push(ingredient_details);
+
+            ingrSelect.sort(function(x, y) {
+                if (x.ingredient_name > y.ingredient_name) {
+                    return 1;
+                }
+                if (x.ingredient_name < y.ingredient_name) {
+                    return -1;
+                }
+                return 0;
+            });
         } else {
-            ingrSelect = ingrSelect.filter(x => x !== event.target.value);
+            ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.value);
         }
 
         this.setState({
@@ -319,11 +330,10 @@ class UserHomePage extends React.Component {
         let catList = {...this.state.category_list};
         var ingrCategory = '';
 
-        this.state.selected_ingredients.map((obj, index) => (
-            ingrList[obj].checked = false,
-            ingrCategory = ingrList[obj].category_name,
-            catList[ingrCategory].ingredients[obj].checked = false
-        ));
+        this.state.selected_ingredients.forEach(ingredient => {
+            ingrList[ingredient.ingredient_name].checked = false;
+            catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
+        });
         
         this.setState({
             ingredient_list: ingrList,
@@ -342,7 +352,7 @@ class UserHomePage extends React.Component {
         let ingrCategory = ingrList[obj].category_name;
         catList[ingrCategory].ingredients[obj].checked = false;
 
-        ingrSelect = ingrSelect.filter(x => x !== obj);
+        ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
         this.setState({
             ingredient_list: ingrList,
@@ -522,16 +532,16 @@ class UserHomePage extends React.Component {
                             <React.Fragment key={index}>
                                 <Grid item xs={3}>
                                     <IconButton
-                                        name={obj} value={index}
+                                        name={obj.ingredient_name} value={index}
                                         aria-label="delete" color="secondary"
-                                        onClick={this.handleIngredientDelete.bind(this, obj)}
+                                        onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                     >
                                         <DeleteIcon />
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
-                                    <Tooltip arrow placement="bottom-start" title={"Category: " + this.state.ingredient_list[obj].category_name}>          
-                                        <Typography style={{fontSize:14}}>{obj}</Typography>
+                                    <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
+                                        <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
                                     </Tooltip>
                                 </Grid>
                             </React.Fragment>
@@ -552,7 +562,7 @@ class UserHomePage extends React.Component {
                                             {this.state.selected_category === '' ?
                                                 this.state.isShowAllIngredients ?
                                                     <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                        <b>Complete list of ingredients ({this.state.ingredient_count})</b>
+                                                        <b>Complete list of ingredients</b>
                                                     </Typography>
                                                 :
                                                     <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
@@ -560,7 +570,7 @@ class UserHomePage extends React.Component {
                                                     </Typography>
                                             :
                                                 <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                    <b>List of ingredients for category "<em>{this.state.selected_category}</em>" ({this.state.category_list[this.state.selected_category].ingredients})</b>
+                                                    <b>List of ingredients for category "<em>{this.state.selected_category}</em>"</b>
                                                 </Typography>
                                             }
                                         </Grid>
@@ -626,7 +636,7 @@ class UserHomePage extends React.Component {
                                                 <>
                                                 {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
                                                     <Grid item xs={3} key={key}>
-                                                        <FormControlLabel key={key} 
+                                                        <FormControlLabel 
                                                             control={
                                                                 <Checkbox checked={value.checked}
                                                                 onChange={this.handleIngredientCheckChange} 

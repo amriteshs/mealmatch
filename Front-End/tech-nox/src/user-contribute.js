@@ -387,7 +387,6 @@ class ContributePage extends React.Component {
         this.handleRecipeStepReset = this.handleRecipeStepReset.bind(this);
         this.handleRecipeStepMoveUp = this.handleRecipeStepMoveUp.bind(this);
         this.handleRecipeStepMoveDown = this.handleRecipeStepMoveDown.bind(this);
-        this.handleRecipeImageUpload = this.handleRecipeImageUpload.bind(this);
         this.handleRecipeImageChange = this.handleRecipeImageChange.bind(this);
         this.handleVisibilitySelect = this.handleVisibilitySelect.bind(this);
         this.handleSaveRecipe = this.handleSaveRecipe.bind(this);
@@ -531,7 +530,6 @@ class ContributePage extends React.Component {
             ingredient_details.ingredient_name = event.target.value;
             ingredient_details.ingredient_qty = '';
             ingrSelect.push(ingredient_details);
-            console.log(ingrSelect);
 
             ingrSelect.sort(function(x, y) {
                 if (x.ingredient_name > y.ingredient_name) {
@@ -923,15 +921,6 @@ class ContributePage extends React.Component {
         this.setState({
             recipe_steps_input: recipeSteps
         });
-    }
-
-    handleRecipeImageUpload(event) {
-        event.preventDefault();
-        // TODO: do something with -> this.state.file
-        console.log('handle uploading-', this.state.file);
-        const endpoint = '/recipe_image';
-
-        axios.post(endpoint, this.state.file);
     }
 
     handleRecipeImageChange(event) {
