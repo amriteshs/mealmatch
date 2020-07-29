@@ -529,7 +529,7 @@ class UserHomePage extends React.Component {
                 <Toolbar>
                     <Box display='flex' flexGrow={1}>
                         <Typography variant="h6" noWrap>
-                            <span style={{color: "#FFA500"}}>M</span>eal<span style={{color: "#FFA500"}}> M</span>atch
+                            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
