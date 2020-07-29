@@ -42,8 +42,7 @@ const useStyles = makeStyles(theme => ({
   searchBar:{
     backgroundColor: 'black',
     height: '4rem',
-    borderRadius: '5px',
-    marginTop: '1rem'
+    borderRadius: '5px'
   },
   title: {
     flexGrow: 1,
@@ -52,6 +51,7 @@ const useStyles = makeStyles(theme => ({
     color: 'white',
   },
   search: {
+    flexGrow:2,
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
@@ -60,9 +60,9 @@ const useStyles = makeStyles(theme => ({
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    width: '20rem',
+    width: '100%',
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
+      marginLeft: theme.spacing(2),
       width: 'auto',
     },
   },
@@ -73,7 +73,7 @@ const useStyles = makeStyles(theme => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: '50ch',
+      width: '20ch',
     },
   },
   searchIcon: {
@@ -87,6 +87,7 @@ const useStyles = makeStyles(theme => ({
     color:'white'
   },
   searchBtn:{
+    flexGrow:0.5,
     color:'orange',
     backgroundColor:'black',
     borderColor:'orange',
@@ -162,14 +163,26 @@ export default function PermanentDrawerLeft() {
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-            <Box display='flex' flexGrow={1}>
-                <Typography variant="h6" noWrap>
-                    <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-                </Typography>
-                <Button color="inherit" style={{marginLeft:'5%'}} href='/'>Home</Button>
-            </Box>
-            <Button color="inherit" href='/about'>About</Button>
-            <Button color="inherit" href='/login'>Login</Button>
+          <Typography variant="h6" noWrap className={classes.title}>
+            <span style={{color: "#FFA500"}}>M</span>eal<span style={{color: "#FFA500"}}> M</span>atch
+          </Typography>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search for recipes ..."
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ 'aria-label': 'search' }}
+              onBlur={setRecipeNameValue}
+            />
+          </div>
+          <Button className={classes.searchBtn} onClick={getRecipe}>Search</Button>
+          <Button style={{flexGrow:1}} color="inherit" href='/login'>Login</Button>
+          <Button style={{flexGrow:1}} color="inherit" href='/about'>About</Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -208,25 +221,6 @@ export default function PermanentDrawerLeft() {
       <main className={classes.content}>
         <div className={classes.toolbar}/>
         {categoryShow?<OutlinedCard/>:<MealCard/>}
-        <div className={classes.searchBar}>
-        <Toolbar>
-        {/* This is the search bar */}
-        <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search for recipes ..."
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-              onBlur={setRecipeNameValue}
-            />
-          </div>
-          <Button className={classes.searchBtn} onClick={getRecipe}>Search</Button>
-        </Toolbar>
         <div className={classes.cardsContaioner}>
             <Grid container spacing={1}>
               {recipeList.map((recipe) =>
@@ -240,7 +234,6 @@ export default function PermanentDrawerLeft() {
                 />
               </Grid>)}
             </Grid>
-        </div>
         </div>
 
       </main>
