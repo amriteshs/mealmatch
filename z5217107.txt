@@ -55,3 +55,12 @@ Week6:
  Having selected ingrediets lists.
  Started connecting backed and front end.
  Had few issues while working in front end since I have no exprience in it. Though Team-mates helped a lot.
+ 
+ Week 7 and Week 8 
+ - started the sprint 2.
+ - Tasks decided were: working on the meal type and ingredient category.
+ - creating search bar for user and showing most recent and common recipies.
+ - As a contributor user should be able to share ingrediants and other details like time take to make a recipie and people it serves.
+ - Started to work on Cards from material UI. Then finally decided to implement Grid List from Material UI.
+ - for Icons used Avators from Material UI for Ingredian categories and meal type.
+ - After the 2nd demo prepared Retrospective doc and started imp[lementing UI changes for Ingrediant and Meal type as Maryam suggested that there should be only one Search bar for less comfusion and more smooth experience for user.
