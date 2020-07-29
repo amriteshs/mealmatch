@@ -59,14 +59,18 @@ class Category(Resource):
                         'ingredients': {
                             row[3]: {
                                 'ingredient_id': row[2],
-                                'checked': False
+                                'checked': False,
+                                'selectIncl': False,
+                                'selectExcl': False
                             }
                         }
                     }
                 else:
                     data['categories'][row[1]]['ingredients'][row[3]] = {
                         'ingredient_id': row[2],
-                        'checked': False
+                        'checked': False,
+                        'selectIncl': False,
+                        'selectExcl': False
                     }
 
         data['count'] = len(data['categories'])
@@ -116,7 +120,9 @@ class Category(Resource):
 
                 data['ingredients'][row[3]] = {
                     'ingredient_id': row[2],
-                    'checked': False
+                    'checked': False,
+                    'selectIncl': False,
+                    'selectExcl': False
                 }
 
             return json.loads(json.dumps(data)), 200

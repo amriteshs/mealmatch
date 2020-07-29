@@ -322,9 +322,11 @@ class UserHomePage extends React.Component {
             let ingrSelect = [...this.state.selected_ingredients];
 
             ingrList[event.target.value].checked = event.target.checked;
+            ingrList[event.target.value].selectIncl = event.target.checked;
 
             let ingrCategory = ingrList[event.target.value].category_name;
             catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
+            catList[ingrCategory].ingredients[event.target.value].selectIncl = event.target.checked;
 
             if (event.target.checked) {
                 let ingredient_details = ingrList[event.target.value];
@@ -355,9 +357,11 @@ class UserHomePage extends React.Component {
             let ingrSelect = [...this.state.selected_ingredients_exclude];
 
             ingrList[event.target.value].checked = event.target.checked;
+            ingrList[event.target.value].selectExcl = event.target.checked;
 
             let ingrCategory = ingrList[event.target.value].category_name;
             catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
+            catList[ingrCategory].ingredients[event.target.value].selectExcl = event.target.checked;
 
             if (event.target.checked) {
                 let ingredient_details = ingrList[event.target.value];
@@ -392,7 +396,10 @@ class UserHomePage extends React.Component {
 
             this.state.selected_ingredients.forEach(ingredient => {
                 ingrList[ingredient.ingredient_name].checked = false;
+                ingrList[ingredient.ingredient_name].selectIncl = false;
+
                 catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
+                catList[ingredient.category_name].ingredients[ingredient.ingredient_name].selectIncl = false;
             });
             
             this.setState({
@@ -406,7 +413,10 @@ class UserHomePage extends React.Component {
 
             this.state.selected_ingredients_exclude.forEach(ingredient => {
                 ingrList[ingredient.ingredient_name].checked = false;
+                ingrList[ingredient.ingredient_name].selectExcl = false;
+
                 catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
+                catList[ingredient.category_name].ingredients[ingredient.ingredient_name].selectExcl = false;
             });
             
             this.setState({
@@ -424,9 +434,11 @@ class UserHomePage extends React.Component {
             let ingrSelect = [...this.state.selected_ingredients];
 
             ingrList[obj].checked = false;
+            ingrList[obj].selectIncl = false;
 
             let ingrCategory = ingrList[obj].category_name;
             catList[ingrCategory].ingredients[obj].checked = false;
+            catList[ingrCategory].ingredients[obj].selectIncl = false;
 
             ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
@@ -441,9 +453,11 @@ class UserHomePage extends React.Component {
             let ingrSelect = [...this.state.selected_ingredients_exclude];
 
             ingrList[obj].checked = false;
+            ingrList[obj].selectExcl = false;
 
             let ingrCategory = ingrList[obj].category_name;
             catList[ingrCategory].ingredients[obj].checked = false;
+            catList[ingrCategory].ingredients[obj].selectExcl = false;
 
             ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
@@ -804,23 +818,69 @@ class UserHomePage extends React.Component {
                                 <Divider className={classes.dividerStyle}/>
                                 <div className={classes.ingrView}>
                                     <Grid container spacing={0}>
-                                        {this.state.isShowAllIngredients ? 
-                                            <>
-                                            {Object.entries(this.state.ingredient_list).map(([key, value]) => (
-                                                <Grid item key={key} xs={3}>
-                                                    <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                    <FormControlLabel key={key} 
-                                                        control={
-                                                            <Checkbox checked={value.checked}
-                                                            onChange={this.handleIngredientCheckChange} 
-                                                            name={key} value={key} color="primary" 
-                                                        />}
-                                                        label={key}
-                                                    />
-                                                    </Tooltip>
-                                                </Grid>
-                                            ))}
-                                            </>
+                                        {this.state.isShowAllIngredients ?
+                                            this.state.isIngrInc ?
+                                                <>
+                                                {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                                    <Grid item key={key} xs={3}>
+                                                        {value.selectExcl ?
+                                                            <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
+                                                            <FormControlLabel key={key} 
+                                                                control={
+                                                                    <Checkbox checked={value.checked}
+                                                                    onChange={this.handleIngredientCheckChange} 
+                                                                    name={key} value={key} color="primary" 
+                                                                    disabled
+                                                                />}
+                                                                label={key}
+                                                            />
+                                                            </Tooltip>
+                                                        :
+                                                            <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
+                                                            <FormControlLabel key={key} 
+                                                                control={
+                                                                    <Checkbox checked={value.checked}
+                                                                    onChange={this.handleIngredientCheckChange} 
+                                                                    name={key} value={key} color="primary" 
+                                                                />}
+                                                                label={key}
+                                                            />
+                                                            </Tooltip>
+                                                        }
+                                                    </Grid>
+                                                ))}
+                                                </>
+                                            :
+                                                <>
+                                                {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                                    <Grid item key={key} xs={3}>
+                                                        {value.selectIncl ?
+                                                            <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
+                                                            <FormControlLabel key={key} 
+                                                                control={
+                                                                    <Checkbox checked={value.checked}
+                                                                    onChange={this.handleIngredientCheckChange} 
+                                                                    name={key} value={key} color="primary" 
+                                                                    disabled
+                                                                />}
+                                                                label={key}
+                                                            />
+                                                            </Tooltip>
+                                                        :
+                                                            <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
+                                                            <FormControlLabel key={key} 
+                                                                control={
+                                                                    <Checkbox checked={value.checked}
+                                                                    onChange={this.handleIngredientCheckChange} 
+                                                                    name={key} value={key} color="primary" 
+                                                                />}
+                                                                label={key}
+                                                            />
+                                                            </Tooltip>
+                                                        }
+                                                    </Grid>
+                                                ))}
+                                                </>
                                         :
                                             this.state.selected_category === '' ?
                                                 <>
@@ -835,20 +895,60 @@ class UserHomePage extends React.Component {
                                                 <Grid item xs={4}></Grid>
                                                 </>
                                             :
-                                                <>
-                                                {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
-                                                    <Grid item xs={3} key={key}>
-                                                        <FormControlLabel 
-                                                            control={
-                                                                <Checkbox checked={value.checked}
-                                                                onChange={this.handleIngredientCheckChange} 
-                                                                name={key} value={key} color="primary" 
-                                                            />}
-                                                            label={key}
-                                                        />
-                                                    </Grid>
-                                                ))}
-                                                </>
+                                                this.state.isIngrInc ?
+                                                    <>
+                                                    {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
+                                                        <Grid item xs={3} key={key}>
+                                                            {value.selectExcl ?
+                                                                <FormControlLabel 
+                                                                    control={
+                                                                        <Checkbox checked={value.checked}
+                                                                        onChange={this.handleIngredientCheckChange} 
+                                                                        name={key} value={key} color="primary" 
+                                                                        disabled
+                                                                    />}
+                                                                    label={key}
+                                                                />
+                                                            :
+                                                                <FormControlLabel 
+                                                                    control={
+                                                                        <Checkbox checked={value.checked}
+                                                                        onChange={this.handleIngredientCheckChange} 
+                                                                        name={key} value={key} color="primary" 
+                                                                    />}
+                                                                    label={key}
+                                                                />
+                                                            }
+                                                        </Grid>
+                                                    ))}
+                                                    </>
+                                                :
+                                                    <>
+                                                    {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
+                                                        <Grid item xs={3} key={key}>
+                                                            {value.selectIncl ?
+                                                                <FormControlLabel 
+                                                                    control={
+                                                                        <Checkbox checked={value.checked}
+                                                                        onChange={this.handleIngredientCheckChange} 
+                                                                        name={key} value={key} color="primary" 
+                                                                        disabled
+                                                                    />}
+                                                                    label={key}
+                                                                />
+                                                            :
+                                                                <FormControlLabel 
+                                                                    control={
+                                                                        <Checkbox checked={value.checked}
+                                                                        onChange={this.handleIngredientCheckChange} 
+                                                                        name={key} value={key} color="primary" 
+                                                                    />}
+                                                                    label={key}
+                                                                />
+                                                            }
+                                                        </Grid>
+                                                    ))}
+                                                    </>   
                                         }
                                     </Grid>
                                 </div>
