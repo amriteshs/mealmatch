@@ -50,7 +50,33 @@ WEEK 6:
 - Managed code reviews for pull requests raised by fellow teammates and analysed the ongoing progress.
 
 
+WEEK 7:
+- Started front end work in React by developing functionality for recipe image to be added by the contributor.
+- Started working on documentation of various project details, databases, features and architecture to include in the final report.
+- Prepared pitch for progressive demonstration in Week 8 covering recipe search feature, meal contribute feature, ingrediet selection
+and about page among the main features.
+- Generated sample data to do appropriate testing of the website and to check the flow of data between front end and back end.
+- Conducted code review for a teammate to speciaaly check Meal Contribute section.
 
+
+WEEK 8:
+- Created About page in the Front End in MealMatch website.
+- Added "why mealmatch" section to illustrate the need for using this product and letting instilling confidence among the users.
+- Assembled details about contributing members, their aspirations and project experience (along with their images) to do team profiling.
+- Created Acknowledgements section to honour the refernces and resources used for building this project.
+- Added readme page containing project title, description, usage, requirements, team and future scope.
+- Third sprint completed with all the allotted tasks.
+- Discussed implementation of novel features like deselecting an ingredient based on allergy, favourite recipes and recipe sharing.
+
+
+WEEK 9:
+- Created suggested ingredients feature which would suggest the user with related ingredients when he adds some to his basket
+- Completed retrospective for the demonstration in week8 (Demo A) and discussed with fellow teammates how to improve work process flow 
+to complete more goals in the limited timeframe.
+- Initiated multiple team meetings to wind up the project as the submission date comes close.
+- Documented backend database portion for the report submission reflecting usage, methodology, initiation, working etc.
+- Generated more data to check website working and updated profile and acknowledgement sections.
+- Initiated planning for the final presentation adhering to the guidelines given.
 
 
 
