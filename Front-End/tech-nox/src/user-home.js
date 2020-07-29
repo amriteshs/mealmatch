@@ -42,6 +42,7 @@ import 'fontsource-roboto';
 import axios from 'axios';
 import RecipeReviewCard from './recipeCards';
 
+
 const drawerWidth = 240;
 const topAppBarWidth = 64;
 
@@ -514,10 +515,26 @@ class UserHomePage extends React.Component {
                 <Toolbar>
                     <Box display='flex' flexGrow={1}>
                         <Typography variant="h6" noWrap>
-                            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                            <span style={{color: "#FFA500"}}>M</span>eal<span style={{color: "#FFA500"}}> M</span>atch
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                        <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                            <SearchIcon />
+                        </div>
+                        <InputBase
+                            placeholder="Search for recipes ..."
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                            onChange={this.setApiRecipeNameValue}
+                            onBlur={this.setApiRecipeNameValue}
+                        />
+                    </div>
+                    <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
@@ -868,8 +885,7 @@ class UserHomePage extends React.Component {
                             </CardContent>
                         </Card>
                     )}
-                    <div className={classes.searchBar}>
-                    <Toolbar>
+                    {/* <Toolbar>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -886,7 +902,7 @@ class UserHomePage extends React.Component {
                         />
                     </div>
                     <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
-                    </Toolbar>
+                    </Toolbar> */}
                     <div className={classes.cardsContaioner}>
                         <Grid container spacing={1}>
                         {this.state.api_recipe_list.map((recipe) =>
@@ -902,7 +918,6 @@ class UserHomePage extends React.Component {
                         )}
                         </Grid>
                     </div>
-                </div>
             </main>
             </div>
         );
