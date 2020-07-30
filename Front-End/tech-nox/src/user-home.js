@@ -761,7 +761,7 @@ class UserHomePage extends React.Component {
             })
             .catch(error => {
                 this.setState({
-                    suggested_ingredients: [],
+                    suggested_ingredients: {},
                     isShowIngrSuggest: true
                 });
             });
