@@ -339,12 +339,13 @@ class ContributePage extends React.Component {
             user_recipe_list: [],
             searched_ingredient: '',
             selected_ingredients: [],
-            selected_ingredients_exclude: [],
             selected_category: '',
             selected_mealtype: '',
             selected_mealtype1: '',
             selected_mealtypes: [],
             selected_recipes: [],
+            searched_recipe: '',
+            ingredient_search_results: {},
             selected_visibility: 'Public',
             selected_recipe_id: -1,
             recipe_name_input: '',
@@ -363,13 +364,13 @@ class ContributePage extends React.Component {
             isShowAllIngredients: false,
             recipeErrorMessage: '',
             anchorEl: null,
-            openRecipeDelete: []
+            openRecipeDelete: [],
+            isShowIngrSearch: false
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
         this.handleIngredientCheckReset = this.handleIngredientCheckReset.bind(this);
         this.handleIngredientDelete = this.handleIngredientDelete.bind(this);
-        // this.handleIngredientSearch = this.handleIngredientSearch.bind(this);
         this.handleCategorySelect = this.handleCategorySelect.bind(this);
         this.handleMealtypeSelect = this.handleMealtypeSelect.bind(this);
         this.handleMealtypeDelete = this.handleMealtypeDelete.bind(this);
@@ -408,6 +409,10 @@ class ContributePage extends React.Component {
         this.handleLogout = this.handleLogout.bind(this);
         this.handleDeleteDialogOpen = this.handleDeleteDialogOpen.bind(this);
         this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
+        this.setIngredientNameValue = this.setIngredientNameValue.bind(this);
+        this.handleIngredientSearch = this.handleIngredientSearch.bind(this);
+        this.setRecipeNameValue = this.setRecipeNameValue.bind(this);
+        this.handleRecipeSearch = this.handleRecipeSearch.bind(this);
     }
 
     componentDidMount() {
@@ -450,11 +455,13 @@ class ContributePage extends React.Component {
     updateCardState = (name) => {
         if (name === "Ingredient Category") {
             this.setState({
-                isShowCategory: true
+                isShowCategory: true,
+                isShowIngrSearch: false
             });
         } else {
             this.setState({
-                isShowCategory: false
+                isShowCategory: false,
+                isShowIngrSearch: false
             });
         }
     }
@@ -518,12 +525,17 @@ class ContributePage extends React.Component {
     handleIngredientCheckChange(event) {
         let ingrList = {...this.state.ingredient_list};
         let catList = {...this.state.category_list};
+        let ingrSearchList = {...this.state.ingredient_search_results};
         let ingrSelect = [...this.state.selected_ingredients];
 
         ingrList[event.target.value].checked = event.target.checked;
 
         let ingrCategory = ingrList[event.target.value].category_name;
         catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
+
+        if (this.state.isShowIngrSearch && ingrSearchList.hasOwnProperty(event.target.value)) {
+            ingrSearchList[event.target.value].checked = event.target.checked;
+        }
 
         if (event.target.checked) {
             let ingredient_details = ingrList[event.target.value];
@@ -556,6 +568,7 @@ class ContributePage extends React.Component {
                     ingredient_list: ingrList,
                     category_list: catList,
                     selected_ingredients: ingrSelect,
+                    ingredient_search_results: ingrSearchList,
                     filterByIngredient: false
                 });
             } else {
@@ -567,6 +580,7 @@ class ContributePage extends React.Component {
                     ingredient_list: ingrList,
                     category_list: catList,
                     selected_ingredients: ingrSelect,
+                    ingredient_search_results: ingrSearchList,
                     filterByIngredient: false
                 });
             }
@@ -575,6 +589,7 @@ class ContributePage extends React.Component {
                 ingredient_list: ingrList,
                 category_list: catList,
                 selected_ingredients: ingrSelect,
+                ingredient_search_results: ingrSearchList,
                 filterByIngredient: false
             });
         }
@@ -583,10 +598,15 @@ class ContributePage extends React.Component {
     handleIngredientCheckReset() {
         let ingrList = {...this.state.ingredient_list};
         let catList = {...this.state.category_list};
+        let ingrSearchList = {...this.state.ingredient_search_results};
 
         this.state.selected_ingredients.forEach(ingredient => {
             ingrList[ingredient.ingredient_name].checked = false;
             catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
+
+            if (this.state.isShowIngrSearch && ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
+                ingrSearchList[ingredient.ingredient_name].checked = false;
+            }
         });
         
         if (!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) {
@@ -601,6 +621,7 @@ class ContributePage extends React.Component {
                     ingredient_list: ingrList,
                     category_list: catList,
                     selected_ingredients: [],
+                    ingredient_search_results: ingrSearchList,
                     filterByIngredient: false
                 });
             } else {
@@ -612,6 +633,7 @@ class ContributePage extends React.Component {
                     ingredient_list: ingrList,
                     category_list: catList,
                     selected_ingredients: [],
+                    ingredient_search_results: ingrSearchList,
                     filterByIngredient: false
                 });
             }
@@ -620,6 +642,7 @@ class ContributePage extends React.Component {
                 ingredient_list: ingrList,
                 category_list: catList,
                 selected_ingredients: [],
+                ingredient_search_results: ingrSearchList,
                 filterByIngredient: false
             });
         }
@@ -628,12 +651,17 @@ class ContributePage extends React.Component {
     handleIngredientDelete(obj) {
         let ingrList = {...this.state.ingredient_list};
         let catList = {...this.state.category_list};
+        let ingrSearchList = {...this.state.ingredient_search_results};
         let ingrSelect = [...this.state.selected_ingredients];
 
         ingrList[obj].checked = false;
 
         let ingrCategory = ingrList[obj].category_name;
         catList[ingrCategory].ingredients[obj].checked = false;
+
+        if (this.state.isShowIngrSearch && ingrSearchList.hasOwnProperty(obj)) {
+            ingrSearchList[obj].checked = false;
+        }
 
         ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
@@ -649,6 +677,7 @@ class ContributePage extends React.Component {
                     ingredient_list: ingrList,
                     category_list: catList,
                     selected_ingredients: ingrSelect,
+                    ingredient_search_results: ingrSearchList,
                     filterByIngredient: false
                 });
             } else {
@@ -660,6 +689,7 @@ class ContributePage extends React.Component {
                     ingredient_list: ingrList,
                     category_list: catList,
                     selected_ingredients: ingrSelect,
+                    ingredient_search_results: ingrSearchList,
                     filterByIngredient: false
                 });
             }
@@ -668,6 +698,7 @@ class ContributePage extends React.Component {
                 ingredient_list: ingrList,
                 category_list: catList,
                 selected_ingredients: ingrSelect,
+                ingredient_search_results: ingrSearchList,
                 filterByIngredient: false
             });
         }
@@ -683,7 +714,9 @@ class ContributePage extends React.Component {
     handleBackToCategorySelect() {
         this.setState({
             selected_category: '',
-            isShowAllIngredients: false
+            isShowAllIngredients: false,
+            isShowIngrSearch: false,
+            ingredient_search_results: {}
         })
     }
 
@@ -930,13 +963,17 @@ class ContributePage extends React.Component {
         let file = event.target.files[0];
 
         reader.onloadend = () => {
-            this.setState({
-                file: file,
-                imagePreviewUrl: reader.result
-            });
+            if (file !== '') {
+                this.setState({
+                    file: file,
+                    imagePreviewUrl: reader.result
+                });
+            }
         }
 
-        reader.readAsDataURL(file);
+        if (file !== '') {
+            reader.readAsDataURL(file);
+        }
     }
 
     async handleSaveRecipe() {
@@ -1044,6 +1081,9 @@ class ContributePage extends React.Component {
                 recipe_people_served_input: 1,
                 selected_mealtypes: [],
                 selected_ingredients: [],
+                searched_ingredient: '',
+                ingredient_search_results: {},
+                isShowIngrSearch: false,
                 selected_visibility: 'Public',
                 recipe_steps_input: [],
                 selected_mealtype: '',
@@ -1080,6 +1120,9 @@ class ContributePage extends React.Component {
             selected_visibility: 'Public',
             selected_ingredients: [],
             recipe_steps_input: [],
+            searched_ingredient: '',
+            ingredient_search_results: {},
+            isShowIngrSearch: false,
             selected_mealtype: '',
             selected_category: '',
             isShowAllIngredients: false,
@@ -1112,6 +1155,9 @@ class ContributePage extends React.Component {
             selected_mealtypes: [],
             selected_visibility: 'Public',
             selected_ingredients: [],
+            searched_ingredient: '',
+            ingredient_search_results: {},
+            isShowIngrSearch: false,
             recipe_steps_input: [],
             selected_mealtype: '',
             selected_category: '',
@@ -1161,6 +1207,9 @@ class ContributePage extends React.Component {
             recipe_steps_input: temp_steps,
             ingredient_list: ingrList,
             category_list: catList,
+            searched_ingredient: '',
+            ingredient_search_results: {},
+            isShowIngrSearch: false,
             selected_category: '',
             selected_mealtype: '',
             isShowCategory: true,
@@ -1357,6 +1406,43 @@ class ContributePage extends React.Component {
         window.location.href = nav;
     }
 
+    setIngredientNameValue(event) {
+        this.setState({
+            searched_ingredient: event.target.value
+        });
+    }
+
+    async handleIngredientSearch(event) {
+        let response = await axios.post('/ingredient', {
+            'ingredient': this.state.searched_ingredient
+        });
+
+        let ingrSearchList = response.data.ingredients;
+    
+        this.state.selected_ingredients.forEach(ingredient => {
+            if (ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
+                ingrSearchList[ingredient.ingredient_name].checked = true;
+            }
+        });
+
+        this.setState({
+            ingredient_search_results: response.data.ingredients,
+            ingredient_search_count: response.data.count,
+            isShowCategory: true,
+            isShowIngrSearch: true
+        });
+    }
+
+    setRecipeNameValue(event) {
+        this.setState({
+            searched_recipe: event.target.value
+        });
+    }
+
+    handleRecipeSearch(event) {
+
+    }
+
     render() {
         const { classes } = this.props;
         
@@ -1402,6 +1488,42 @@ class ContributePage extends React.Component {
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                        {!this.state.isAddingRecipe && !this.state.isUpdatingRecipe &&
+                            <>
+                            {/* <div className={classes.search}>
+                                <div className={classes.searchIcon}>
+                                    <SearchIcon />
+                                </div>
+                                <InputBase
+                                    placeholder="Search for recipes ..."
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    onChange={this.setApiRecipeNameValue}
+                                    onBlur={this.setApiRecipeNameValue}
+                                />
+                            </div>
+                            <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button> */}
+                            <div className={classes.search}>
+                                <div className={classes.searchIcon}>
+                                    <SearchIcon />
+                                </div>
+                                <InputBase
+                                    placeholder="Search for ingredients ..."
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    onChange={this.setIngredientNameValue}
+                                    onBlur={this.setIngredientNameValue}
+                                />
+                            </div>
+                            <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button>
+                            </>
+                        }
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
@@ -1599,22 +1721,27 @@ class ContributePage extends React.Component {
                                 <div>
                                     <Grid container direction="row" justify="center" alignItems="center">
                                         <Grid item xs={8}>
-                                            {this.state.selected_category === '' ?
-                                                this.state.isShowAllIngredients ?
-                                                    <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                        <b>Complete list of ingredients</b>
-                                                    </Typography>
+                                            {this.state.isShowIngrSearch ?
+                                                <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                                    <b>Ingredient search results for "<em>{this.state.searched_ingredient}</em>"</b>
+                                                </Typography>
+                                            :
+                                                this.state.selected_category === '' ?
+                                                    this.state.isShowAllIngredients ?
+                                                        <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                                            <b>Complete list of ingredients</b>
+                                                        </Typography>
+                                                    :
+                                                        <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                                            <b>Select an ingredient category</b>
+                                                        </Typography>
                                                 :
                                                     <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                        <b>Select an ingredient category</b>
+                                                        <b>List of ingredients for category "<em>{this.state.selected_category}</em>"</b>
                                                     </Typography>
-                                            :
-                                                <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                    <b>List of ingredients for category "<em>{this.state.selected_category}</em>"</b>
-                                                </Typography>
                                             }
                                         </Grid>
-                                        {this.state.isShowAllIngredients ?
+                                        {(this.state.isShowAllIngredients || this.state.isShowIngrSearch) ?
                                             <Grid item xs={4}>
                                                 <Button className={classes.backCatBtn} onClick={this.handleBackToCategorySelect}>
                                                     Back
@@ -1642,16 +1769,19 @@ class ContributePage extends React.Component {
                                 <Divider className={classes.dividerStyle1}/>
                                 <div className={classes.ingrView}>
                                     <Grid container spacing={0}>
-                                        {this.state.isShowAllIngredients ? 
+                                        {this.state.isShowIngrSearch ?
+                                            !Object.keys(this.state.ingredient_search_results).length ?
+                                                <Typography style={{fontSize:14,marginTop:10}}><em><b>No results found.</b></em></Typography>
+                                        :
                                             <>
-                                            {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                            {Object.entries(this.state.ingredient_search_results).map(([key, value]) => (
                                                 <Grid item key={key} xs={3}>
                                                     <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
                                                     <FormControlLabel key={key} 
                                                         control={
                                                             <Checkbox checked={value.checked}
                                                             onChange={this.handleIngredientCheckChange} 
-                                                            name={key} value={key} color="primary" 
+                                                            name={key} value={key} color="primary"
                                                         />}
                                                         label={key}
                                                     />
@@ -1660,22 +1790,11 @@ class ContributePage extends React.Component {
                                             ))}
                                             </>
                                         :
-                                            this.state.selected_category === '' ?
+                                            this.state.isShowAllIngredients ? 
                                                 <>
-                                                {Object.entries(this.state.category_list).map(([key, value]) => (
-                                                    <Grid item key={key} xs={4}>
-                                                        <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleCategorySelect.bind(this, key)}>
-                                                            <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/categories/" + value.category_id + ".png")}/>
-                                                            {key}
-                                                        </Button>
-                                                    </Grid>
-                                                ))}
-                                                <Grid item xs={4}></Grid>
-                                                </>
-                                            :
-                                                <>
-                                                {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
-                                                    <Grid item xs={3} key={key}>
+                                                {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                                    <Grid item key={key} xs={3}>
+                                                        <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
                                                         <FormControlLabel key={key} 
                                                             control={
                                                                 <Checkbox checked={value.checked}
@@ -1684,9 +1803,38 @@ class ContributePage extends React.Component {
                                                             />}
                                                             label={key}
                                                         />
+                                                        </Tooltip>
                                                     </Grid>
                                                 ))}
                                                 </>
+                                            :
+                                                this.state.selected_category === '' ?
+                                                    <>
+                                                    {Object.entries(this.state.category_list).map(([key, value]) => (
+                                                        <Grid item key={key} xs={4}>
+                                                            <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleCategorySelect.bind(this, key)}>
+                                                                <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/categories/" + value.category_id + ".png")}/>
+                                                                {key}
+                                                            </Button>
+                                                        </Grid>
+                                                    ))}
+                                                    <Grid item xs={4}></Grid>
+                                                    </>
+                                                :
+                                                    <>
+                                                    {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
+                                                        <Grid item xs={3} key={key}>
+                                                            <FormControlLabel key={key} 
+                                                                control={
+                                                                    <Checkbox checked={value.checked}
+                                                                    onChange={this.handleIngredientCheckChange} 
+                                                                    name={key} value={key} color="primary" 
+                                                                />}
+                                                                label={key}
+                                                            />
+                                                        </Grid>
+                                                    ))}
+                                                    </>
                                         }
                                     </Grid>
                                 </div>

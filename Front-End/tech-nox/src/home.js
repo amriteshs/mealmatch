@@ -595,15 +595,6 @@ class UserHomePage extends React.Component {
                 }
             }
         });
-        Object.entries(ingrSearchList).map(([key, value]) => {
-            if (this.state.selected_ingredients.some(x => x.ingredient_name === key)) {
-                value.checked = true;
-                value.selectIncl = true;
-            } else if (this.state.selected_ingredients_exclude.some(x => x.ingredient_name === key)) {
-                value.checked = true;
-                value.selectExcl = true;
-            }
-        });
 
         this.setState({
             ingredient_search_results: response.data.ingredients,
