@@ -1478,7 +1478,7 @@ class ContributePage extends React.Component {
                 />);
             } else {
                 $imagePreview = (<img
-                    src={require('./static/images/recipe_placeholder.jpg')}
+                    src={require('./static/images/plate.png')}
                     alt="not available"
                     className={classes.imageUpload}
                 />)
@@ -1491,7 +1491,7 @@ class ContributePage extends React.Component {
                 />);
             } else {
                 $imagePreview = (<img
-                    src={require('./static/recipes/' + this.state.selected_recipe_id + '.jpg')}
+                    src={require('./static/images/plate.png' + this.state.selected_recipe_id + '.jpg')}
                     alt="not available"
                     className={classes.imageUpload}
                 />)
@@ -1731,7 +1731,7 @@ class ContributePage extends React.Component {
                 {this.state.isShowCategory ? (
                         <Card variant="outlined">
                             <CardContent>
-                                <div>
+                                <div>static
                                     <Grid container direction="row" justify="center" alignItems="center">
                                         <Grid item xs={8}>
                                             {this.state.isShowIngrSearch ?
@@ -1994,7 +1994,7 @@ class ContributePage extends React.Component {
                                             
                                             <CardMedia
                                                 className={classes.media}
-                                                image={require('./static/recipes/' + recipe.recipe_id + '.jpg')}
+                                                image={require('./static/images/plate.png' + recipe.recipe_id + '.jpg')}
                                                 alt="no image"
                                                 title={recipe.recipe_name}
                                             />
