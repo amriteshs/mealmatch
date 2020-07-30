@@ -626,7 +626,7 @@ class UserHomePage extends React.Component {
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
-                        {/* <div className={classes.search}>
+                        <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
@@ -641,8 +641,8 @@ class UserHomePage extends React.Component {
                                 onBlur={this.setApiRecipeNameValue}
                             />
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button> */}
-                        <div className={classes.search}>
+                        <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
+                        {/* <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
@@ -657,7 +657,7 @@ class UserHomePage extends React.Component {
                                 onBlur={this.setIngredientNameValue}
                             />
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button>
+                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button> */}
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
@@ -1068,7 +1068,7 @@ class UserHomePage extends React.Component {
                                                     {Object.entries(this.state.category_list).map(([key, value]) => (
                                                         <Grid item key={key} xs={4}>
                                                             <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleCategorySelect.bind(this, key)}>
-                                                                <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./milk.png")}/>
+                                                                <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/categories/" + value.category_id + ".png")}/>
                                                                 {key}
                                                             </Button>
                                                         </Grid>
@@ -1150,12 +1150,12 @@ class UserHomePage extends React.Component {
                                             <Grid item key={key} xs={4}>
                                                 {this.state.selected_mealtype === '' ?
                                                     <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
-                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
+                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/mealtypes/" + value.mealtype_id + ".png")}/>
                                                         {key}
                                                     </Button>
                                                 :
                                                     <Button fullWidth className={classes.catMtBtn} disabled value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
-                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
+                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/mealtypes/" + value.mealtype_id + ".png")}/>
                                                         {key}
                                                     </Button>
                                                 }

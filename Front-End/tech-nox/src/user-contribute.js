@@ -1665,7 +1665,7 @@ class ContributePage extends React.Component {
                                                 {Object.entries(this.state.category_list).map(([key, value]) => (
                                                     <Grid item key={key} xs={4}>
                                                         <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleCategorySelect.bind(this, key)}>
-                                                            <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./milk.png")}/>
+                                                            <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/categories/" + value.category_id + ".png")}/>
                                                             {key}
                                                         </Button>
                                                     </Grid>
@@ -1707,12 +1707,12 @@ class ContributePage extends React.Component {
                                             <Grid item key={key} xs={4}>
                                                 {(this.state.selected_mealtype !== '' || this.state.isAddingRecipe || this.state.isUpdatingRecipe) ?
                                                     <Button fullWidth disabled className={classes.catMtBtn} value={key} onClick={this.handleSingleMealtypeSelect.bind(this, key)}>
-                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
+                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/mealtypes/" + value.mealtype_id + ".png")}/>
                                                         {key}
                                                     </Button>
                                                 :
                                                     <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleSingleMealtypeSelect.bind(this, key)}>
-                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
+                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/mealtypes/" + value.mealtype_id + ".png")}/>
                                                         {key}
                                                     </Button>
                                                 }
