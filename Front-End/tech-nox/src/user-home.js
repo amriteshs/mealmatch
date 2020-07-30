@@ -92,7 +92,7 @@ const useStyles = theme => ({
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-            width: '25ch',
+            width: '40ch',
         },
     },
     searchIcon: {
@@ -113,10 +113,14 @@ const useStyles = theme => ({
     },
     searchSelect: {
         paddingLeft:5,
-        backgroundColor:'#EEEDEE',
+        // backgroundColor:'#EEEDEE',
         fontSize:13,
         height:'100%',
-        float:'right'
+        float:'right',
+        color:'black',
+        backgroundColor:'orange',
+        // borderColor:'orange',
+        // border:'1px solid orange',
     },
     cardsContaioner:{
         height: '100%',
@@ -601,7 +605,7 @@ class UserHomePage extends React.Component {
     //     // all recipes are fetched here
     //     const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
     //     let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
-        
+
     //     var ctr = 0;
     //     this.state.selected_ingredients.forEach(ingredient => {
     //         if (ctr === this.state.selected_ingredients.length) {
@@ -635,10 +639,10 @@ class UserHomePage extends React.Component {
                 console.log(error);
             });
     }
-    
+
     handleRecipeMealtypeFilter() {
         let rcpFilter = this.state.contributed_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
-        
+
         this.setState({
             contributed_recipe_list: rcpFilter,
             filterByIngredient: false
@@ -704,9 +708,9 @@ class UserHomePage extends React.Component {
             let response = await axios.post('/ingredient', {
                 'ingredient': this.state.searched_ingredient
             });
-    
+
             let ingrSearchList = response.data.ingredients;
-        
+
             this.state.selected_ingredients.forEach(ingredient => {
                 if (ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
                     ingrSearchList[ingredient.ingredient_name].checked = true;
@@ -720,7 +724,7 @@ class UserHomePage extends React.Component {
                     ingrSearchList[ingredient.ingredient_name].selectExcl = true;
                 }
             });
-    
+
             this.setState({
                 ingredient_search_results: ingrSearchList,
                 ingredient_search_count: response.data.count,
@@ -743,7 +747,7 @@ class UserHomePage extends React.Component {
                         ingrSuggestList[ingredient.ingredient_name].selectIncl = true;
                     }
                 });
-    
+
                 this.state.selected_ingredients_exclude.forEach(ingredient => {
                     if (ingrSuggestList.hasOwnProperty(ingredient.ingredient_name)) {
                         ingrSuggestList[ingredient.ingredient_name].checked = true;
@@ -878,7 +882,7 @@ class UserHomePage extends React.Component {
                             <Grid item xs={3}>
                                 <IconButton
                                     value={this.state.selected_mealtype}
-                                    aria-label="delete" color="secondary"
+                                    aria-label="delete" color="orange"
                                     onClick={this.handleMealtypeDelete}
                                 >
                                     <DeleteIcon />
@@ -896,19 +900,20 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{fontSize:10,borderRadius:'0px'}}
+                                style={{color:"black",fontSize:10,borderRadius:'0px',backgroundColor:"orange"}}
                                 fullWidth
-                                color="secondary"
+                                variant="contained"
+
+                                // color="secondary"
                             >
                                     INGREDIENTS TO INCLUDE
                             </Button>
                         :
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{fontSize:10,borderRadius:'0px'}}
-                                variant="contained"
+                                style={{color:"black",backgroundColor:"white",fontSize:10,borderRadius:'0px'}}
                                 fullWidth
-                                color="secondary"
+                                // color="secondary"
                             >
                                     INGREDIENTS TO INCLUDE
                             </Button>
@@ -918,19 +923,19 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{fontSize:10,borderRadius:'0px'}}
-                                variant="contained"
+                                style={{color:"black", fontSize:10,borderRadius:'0px',backgroundColor:"white"}}
                                 fullWidth
-                                color="secondary"
+
                             >
                                     INGREDIENTS TO EXCLUDE
                             </Button>
                         :
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{fontSize:10,borderRadius:'0px'}}
+                                style={{color:"black", fontSize:10,borderRadius:'0px',backgroundColor:"#FFA500"}}
                                 fullWidth
-                                color="secondary"
+                                variant="contained"
+
                             >
                                     INGREDIENTS TO EXCLUDE
                             </Button>
@@ -964,7 +969,7 @@ class UserHomePage extends React.Component {
                                     <Grid item xs={3}>
                                         <IconButton
                                             name={obj.ingredient_name} value={index}
-                                            aria-label="delete" color="secondary"
+                                            aria-label="delete" color="orange"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
                                             <DeleteIcon />
@@ -1008,7 +1013,7 @@ class UserHomePage extends React.Component {
                                     <Grid item xs={3}>
                                         <IconButton
                                             name={obj.ingredient_name} value={index}
-                                            aria-label="delete" color="secondary"
+                                            aria-label="delete" color="orange"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
                                             <DeleteIcon />
@@ -1107,11 +1112,11 @@ class UserHomePage extends React.Component {
                                                     <Grid item key={key} xs={3}>
                                                         {value.selectExcl ?
                                                             <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                            <FormControlLabel key={key} 
+                                                            <FormControlLabel key={key}
                                                                 control={
                                                                     <Checkbox checked={value.checked}
-                                                                    onChange={this.handleIngredientCheckChange} 
-                                                                    name={key} value={key} color="primary" 
+                                                                    onChange={this.handleIngredientCheckChange}
+                                                                    name={key} value={key} color="primary"
                                                                     disabled
                                                                 />}
                                                                 label={key}
@@ -1119,11 +1124,11 @@ class UserHomePage extends React.Component {
                                                             </Tooltip>
                                                         :
                                                             <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                            <FormControlLabel key={key} 
+                                                            <FormControlLabel key={key}
                                                                 control={
                                                                     <Checkbox checked={value.checked}
-                                                                    onChange={this.handleIngredientCheckChange} 
-                                                                    name={key} value={key} color="primary" 
+                                                                    onChange={this.handleIngredientCheckChange}
+                                                                    name={key} value={key} color="primary"
                                                                 />}
                                                                 label={key}
                                                             />
@@ -1143,11 +1148,11 @@ class UserHomePage extends React.Component {
                                                             <Grid item key={key} xs={3}>
                                                                 {value.selectExcl ?
                                                                     <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                                    <FormControlLabel key={key} 
+                                                                    <FormControlLabel key={key}
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                             disabled
                                                                         />}
                                                                         label={key}
@@ -1155,11 +1160,11 @@ class UserHomePage extends React.Component {
                                                                     </Tooltip>
                                                                 :
                                                                     <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                                    <FormControlLabel key={key} 
+                                                                    <FormControlLabel key={key}
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1174,11 +1179,11 @@ class UserHomePage extends React.Component {
                                                             <Grid item key={key} xs={3}>
                                                                 {value.selectIncl ?
                                                                     <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                                    <FormControlLabel key={key} 
+                                                                    <FormControlLabel key={key}
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                             disabled
                                                                         />}
                                                                         label={key}
@@ -1186,11 +1191,11 @@ class UserHomePage extends React.Component {
                                                                     </Tooltip>
                                                                 :
                                                                     <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                                    <FormControlLabel key={key} 
+                                                                    <FormControlLabel key={key}
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1372,16 +1377,16 @@ class UserHomePage extends React.Component {
                         <Divider className={classes.dividerStyle1} />
                         <FormControl component="fieldset">
                             <RadioGroup style={{fontSize:12}} aria-label="filter" name="filter" value={this.state.recipeFilter} onChange={this.handleRecipeFilterChange}>
-                                <FormControlLabel value="noFilter" control={<Radio />} label="Show all recipes" />
+                                <FormControlLabel value="noFilter" control={<Radio style={{color: "orange"}}/>} label="Show all recipes" />
                                 {(this.state.selected_ingredients.length || this.state.selected_ingredients_exclude.length) ?
-                                    <FormControlLabel value="filterByIngredients" control={<Radio />} label="Search by selected ingredients" />
+                                    <FormControlLabel value="filterByIngredients" control={<Radio style={{color: "orange"}}/>} label="Search by selected ingredients" />
                                 :
-                                    <FormControlLabel disabled value="filterByIngredients" control={<Radio />} label="Search by selected ingredients" />
+                                    <FormControlLabel disabled value="filterByIngredients" control={<Radio style={{color: "orange"}}/>} label="Search by selected ingredients" />
                                 }
                                 {this.state.selected_mealtype !== '' ?
-                                    <FormControlLabel value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
+                                    <FormControlLabel value="filterByMealtype" control={<Radio style={{color: "orange"}}/>} label="Search by selected meal type" />
                                 :
-                                    <FormControlLabel disabled value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
+                                    <FormControlLabel disabled value="filterByMealtype" control={<Radio style={{color: "orange"}}/>} label="Search by selected meal type" />
                                 }
                             </RadioGroup>
                         </FormControl>
