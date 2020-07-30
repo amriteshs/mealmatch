@@ -38,6 +38,8 @@ import { deepOrange, green } from '@material-ui/core/colors';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -109,7 +111,13 @@ const useStyles = theme => ({
         border:'1px solid orange',
     },
     cardsContaioner:{
-        marginTop:'1rem'
+        height: '100%',
+        marginTop: theme.spacing(2),
+        backgroundColor: 'white',
+        border: '1px solid grey',
+        borderRadius: '3px',
+        padding: theme.spacing(2),
+        overflow: 'auto'
     },
     drawer: {
         width: drawerWidth,
@@ -139,6 +147,10 @@ const useStyles = theme => ({
     dividerStyle: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1)
+    },
+    dividerStyle1: {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2)
     },
     backCatBtn: {
         color:'orange',
@@ -206,7 +218,8 @@ class UserHomePage extends React.Component {
             isIngrInc: true,
             isShowIngrSearch: false,
             includePublicRecipes: false,
-            searchParam: 'recipes'
+            searchParam: 'recipes',
+            recipeFilter: 'noFilter'
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -226,6 +239,7 @@ class UserHomePage extends React.Component {
         this.handleSearchParamChange = this.handleSearchParamChange.bind(this);
         this.getSearchResults = this.getSearchResults.bind(this);
         this.setSearchValue = this.setSearchValue.bind(this);
+        this.handleRecipeFilterChange = this.handleRecipeFilterChange.bind(this);
     }
 
     componentDidMount() {
@@ -601,6 +615,12 @@ class UserHomePage extends React.Component {
                 searched_ingredient: event.target.value
             });
         }
+    }
+
+    handleRecipeFilterChange(event) {
+        this.setState({
+            recipeFilter: event.target.value
+        })
     }
 
     async getSearchResults() {
@@ -1195,37 +1215,37 @@ class UserHomePage extends React.Component {
                             </CardContent>
                         </Card>
                     )}
-                    {/* <Toolbar>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            placeholder="Search for recipes ..."
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                            onChange={this.setApiRecipeNameValue}
-                            onBlur={this.setApiRecipeNameValue}
-                        />
-                    </div>
-                    <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
-                    </Toolbar> */}
                     <div className={classes.cardsContaioner}>
+                        <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>RECIPES</b></Typography>
+                        <Divider className={classes.dividerStyle1} />
+                        <FormControl component="fieldset">
+                            <RadioGroup style={{fontSize:12}} aria-label="filter" name="filter" value={this.state.recipeFilter} onChange={this.handleRecipeFilterChange}>
+                                <FormControlLabel value="noFilter" control={<Radio />} label="Show all recipes" />
+                                {(this.state.selected_ingredients.length || this.state.selected_ingredients_exclude.length) ?
+                                    <FormControlLabel value="filterByIngredients" control={<Radio />} label="Search by selected ingredients" />
+                                :
+                                    <FormControlLabel disabled value="filterByIngredients" control={<Radio />} label="Search by selected ingredients" />
+                                }
+                                {this.state.selected_mealtype !== '' ?
+                                    <FormControlLabel value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
+                                :
+                                    <FormControlLabel disabled value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
+                                }
+                            </RadioGroup>
+                        </FormControl>
+                        <Divider className={classes.dividerStyle1} />
                         <Grid container spacing={1}>
-                        {this.state.api_recipe_list.map((recipe) =>
-                            <Grid item sm={4}>
-                                <RecipeReviewCard
-                                    title={recipe.title}
-                                    imageUrl={this.state.base_uri + recipe.image}
-                                    source={recipe.sourceUrl}
-                                    time={recipe.readyInMinutes}
-                                    serves={recipe.servings}
-                                />
-                            </Grid>
-                        )}
+                            {this.state.api_recipe_list.map((recipe) =>
+                                <Grid item sm={4}>
+                                    <RecipeReviewCard
+                                        title={recipe.title}
+                                        imageUrl={this.state.base_uri + recipe.image}
+                                        source={recipe.sourceUrl}
+                                        time={recipe.readyInMinutes}
+                                        serves={recipe.servings}
+                                    />
+                                </Grid>
+                            )}
                         </Grid>
                     </div>
             </main>
