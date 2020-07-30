@@ -110,6 +110,13 @@ const useStyles = theme => ({
         borderColor:'orange',
         border:'1px solid orange',
     },
+    searchSelect: {
+        paddingLeft:5,
+        backgroundColor:'#EEEDEE',
+        fontSize:13,
+        height:'100%',
+        float:'right'
+    },
     cardsContaioner:{
         height: '100%',
         marginTop: theme.spacing(2),
@@ -696,7 +703,7 @@ class UserHomePage extends React.Component {
                                 <NativeSelect
                                     value={this.state.searchParam}
                                     onChange={this.handleSearchParamChange}
-                                    style={{paddingLeft:5,backgroundColor:'#DDDDDD',fontSize:13,height:'100%',float:'right'}}
+                                    className={classes.searchSelect}
                                     name="name"
                                     inputProps={{
                                         id: 'name-native-error',
