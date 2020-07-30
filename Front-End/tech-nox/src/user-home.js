@@ -41,6 +41,7 @@ import Tab from '@material-ui/core/Tab';
 import 'fontsource-roboto';
 import axios from 'axios';
 import RecipeReviewCard from './recipeCards';
+import IngredientCard from './ingredicard';
 
 
 const drawerWidth = 240;
@@ -207,6 +208,7 @@ class UserHomePage extends React.Component {
             selected_recipes: [],
             api_recipe_name: '',
             api_recipe_list: [],
+            api_ingrecipe_list: [],
             base_uri: 'https://spoonacular.com/recipeImages/',
             isShowCategory: true,
             isShowAllIngredients: false,
@@ -239,7 +241,7 @@ class UserHomePage extends React.Component {
         this.getIngredients();
         this.getCategories();
         this.getMealtypes();
-        // this.getRecipe();
+        this.getRecipe();
     }
 
     handleIngredientInclusion(event) {
@@ -553,14 +555,14 @@ class UserHomePage extends React.Component {
         })
     }
 
-    setApiRecipeNameValue(event) {
+    /*setApiRecipeNameValue(event) {
         this.setState({
             api_recipe_name: event.target.value
         });
     }
 
     getRecipe = () => {
-        // all recipes are fetched here
+    // all recipes are fetched here
         const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
         const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
@@ -576,8 +578,48 @@ class UserHomePage extends React.Component {
         this.setState({
             searched_ingredient: event.target.value
         });
+    }*/
+//testing
+
+    setApiRecipeNameValue(event) {
+        this.setState({
+            api_recipe: event.target.value
+        });
     }
 
+    getRecipe = () => {
+        // all recipes are fetched here
+        const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
+        let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
+        
+        var ctr = 0;
+        this.state.selected_ingredients.forEach(ingredient => {
+            if (ctr === this.state.selected_ingredients.length) {
+                URL += (ingredient.ingredient_name.replace(" ",""));
+            } else {
+                URL += (ingredient.ingredient_name.replace(" ","") + ",+");
+            }
+            ctr+=1;
+        });
+
+        URL = URL.slice(0,-2);
+
+        axios.get(URL)
+            .then(response => {
+                this.setState({
+                    api_ingrecipe_list: response.data
+                })
+                console.log(response.data)
+            });
+    }
+
+    setIngredientNameValue(event) {
+        this.setState({
+            searched_ingredient: event.target.value
+        });
+    }
+
+//
     async handleIngredientSearch() {
         let response = await axios.post('/ingredient', {
             'ingredient': this.state.searched_ingredient
@@ -655,7 +697,7 @@ class UserHomePage extends React.Component {
                             />
                         </div>
                         <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
-                        {/* <div className={classes.search}>
+                        {/*<div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
@@ -670,7 +712,7 @@ class UserHomePage extends React.Component {
                                 onBlur={this.setIngredientNameValue}
                             />
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button> */}
+                            <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button>*/}
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
@@ -1199,7 +1241,7 @@ class UserHomePage extends React.Component {
                     </Toolbar> */}
                     <div className={classes.cardsContaioner}>
                         <Grid container spacing={1}>
-                        {this.state.api_recipe_list.map((recipe) =>
+                        {this.state.api_recipe_list && this.state.api_recipe_list.map((recipe) =>
                             <Grid item sm={4}>
                                 <RecipeReviewCard
                                     title={recipe.title}
@@ -1207,6 +1249,18 @@ class UserHomePage extends React.Component {
                                     source={recipe.sourceUrl}
                                     time={recipe.readyInMinutes}
                                     serves={recipe.servings}
+                                />
+                            </Grid>
+                        )}
+                         {this.state.api_ingrecipe_list && this.state.api_ingrecipe_list.map((recipe) =>
+
+                            <Grid item sm={4}>
+                                <IngredientCard
+                                    title={recipe.title}
+                                    imageUrl={recipe.image}
+                                    likes={recipe.likes}
+                                    missed={recipe.missedIngredients}
+
                                 />
                             </Grid>
                         )}
