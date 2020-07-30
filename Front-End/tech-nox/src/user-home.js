@@ -1178,6 +1178,8 @@ class UserHomePage extends React.Component {
                                     title={recipe.title}
                                     imageUrl={recipe.image}
                                     likes={recipe.likes}
+                                    missed={recipe.missedIngredients}
+
                                 />
                             </Grid>
                         )}
