@@ -35,8 +35,9 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { deepOrange, green } from '@material-ui/core/colors';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import NativeSelect from '@material-ui/core/NativeSelect';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -52,8 +53,6 @@ const useStyles = theme => ({
         fontFamily: 'Roboto'
     },
     appBar: {
-        // width: `calc(100% - ${drawerWidth}px)`,
-        // marginLeft: drawerWidth,
         backgroundColor:'black'
     },
     searchBar:{
@@ -90,7 +89,7 @@ const useStyles = theme => ({
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-            width: '50ch',
+            width: '25ch',
         },
     },
     searchIcon: {
@@ -109,13 +108,6 @@ const useStyles = theme => ({
         borderColor:'orange',
         border:'1px solid orange',
     },
-    // ingrTabBtn:{
-    //     fontSize:11,
-    //     color:'',
-    //     backgroundColor:'black',
-    //     borderColor:'orange',
-    //     border:'1px solid orange',
-    // },
     cardsContaioner:{
         marginTop:'1rem'
     },
@@ -212,7 +204,9 @@ class UserHomePage extends React.Component {
             isShowAllIngredients: false,
             anchorEl: null,
             isIngrInc: true,
-            isShowIngrSearch: false
+            isShowIngrSearch: false,
+            includePublicRecipes: false,
+            searchParam: 'recipes'
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -221,7 +215,6 @@ class UserHomePage extends React.Component {
         this.handleCategorySelect = this.handleCategorySelect.bind(this);
         this.handleMealtypeSelect = this.handleMealtypeSelect.bind(this);
         this.handleMealtypeDelete = this.handleMealtypeDelete.bind(this);
-        this.setApiRecipeNameValue = this.setApiRecipeNameValue.bind(this);
         this.updateCardState = this.updateCardState.bind(this);
         this.handleShowAllIngredients = this.handleShowAllIngredients.bind(this);
         this.handleBackToCategorySelect = this.handleBackToCategorySelect.bind(this);
@@ -230,15 +223,17 @@ class UserHomePage extends React.Component {
         this.handleLogout = this.handleLogout.bind(this);
         this.handleIngredientInclusion = this.handleIngredientInclusion.bind(this);
         this.handleIngredientExclusion = this.handleIngredientExclusion.bind(this);
-        this.handleIngredientSearch = this.handleIngredientSearch.bind(this);
-        this.setIngredientNameValue = this.setIngredientNameValue.bind(this);
+        this.handleSearchParamChange = this.handleSearchParamChange.bind(this);
+        this.getSearchResults = this.getSearchResults.bind(this);
+        this.setSearchValue = this.setSearchValue.bind(this);
     }
 
     componentDidMount() {
         this.getIngredients();
         this.getCategories();
         this.getMealtypes();
-        // this.getRecipe();
+        this.getSearchResults();
+        this.getPublicContributedRecipes();
     }
 
     handleIngredientInclusion(event) {
@@ -552,60 +547,107 @@ class UserHomePage extends React.Component {
         })
     }
 
-    setApiRecipeNameValue(event) {
-        this.setState({
-            api_recipe_name: event.target.value
-        });
-    }
-
-    getRecipe = () => {
-        // all recipes are fetched here
-        const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
-        const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
-
-        axios.get(URL)
+    async getPublicContributedRecipes() {
+        await axios.get('/recipe')
             .then(response => {
                 this.setState({
-                    api_recipe_list: response.data.results
-                })
+                    contributed_recipe_list: response.data.recipes,
+                    selected_recipes: response.data.recipes
+                });
+            })
+            .catch(error => {
+                console.log(error);
             });
     }
 
-    setIngredientNameValue(event) {
+    handleRecipeMealtypeFilter() {
+        let rcpFilter = this.state.contributed_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
+    
         this.setState({
-            searched_ingredient: event.target.value
-        });
+            contributed_recipe_list: rcpFilter,
+            filterByIngredient: false
+        })
     }
 
-    async handleIngredientSearch() {
-        let response = await axios.post('/ingredient', {
-            'ingredient': this.state.searched_ingredient
-        });
-
-        let ingrSearchList = response.data.ingredients;
-    
-        this.state.selected_ingredients.forEach(ingredient => {
-            if (ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
-                if (ingredient.selectIncl) {
-                    ingrSearchList[ingredient.ingredient_name].checked = true;
-                    ingrSearchList[ingredient.ingredient_name].selectIncl = true;
-                } else if (ingredient.selectExcl) {
-                    ingrSearchList[ingredient.ingredient_name].checked = true;
-                    ingrSearchList[ingredient.ingredient_name].selectExcl = true;
+    handleRecipeIngredientFilter() {
+        let rcpFilter = [];
+        this.state.contributed_recipe_list.forEach(recipe =>  {
+            if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length) {
+                if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
+                    rcpFilter.push(recipe);
                 }
             }
         });
 
         this.setState({
-            ingredient_search_results: response.data.ingredients,
-            ingredient_search_count: response.data.count,
-            isShowCategory: true,
-            isShowIngrSearch: true
+            contributed_recipe_list: rcpFilter,
+            filterByMealtype: false
+        })
+    }
+
+    handleSearchParamChange(event) {
+        this.setState({
+            searchParam: event.target.value,
         });
+    }
+
+    setSearchValue(event) {
+        if (this.state.searchParam === 'recipes') {
+            this.setState({
+                api_recipe_name: event.target.value
+            });
+        } else if (this.state.searchParam === 'ingredients') {
+            this.setState({
+                searched_ingredient: event.target.value
+            });
+        }
+    }
+
+    async getSearchResults() {
+        if (this.state.searchParam === 'recipes') {
+            // all recipes are fetched here
+            const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
+            const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
+
+            // axios.get(URL)
+            //     .then(response => {
+            //         this.setState({
+            //             api_recipe_list: response.data.results,
+            //             isShowCategory: true,
+            //             isShowIngrSearch: false
+            //         });
+            //     });
+        } else if (this.state.searchParam === 'ingredients') {
+            let response = await axios.post('/ingredient', {
+                'ingredient': this.state.searched_ingredient
+            });
+    
+            let ingrSearchList = response.data.ingredients;
+        
+            this.state.selected_ingredients.forEach(ingredient => {
+                if (ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
+                    if (ingredient.selectIncl) {
+                        ingrSearchList[ingredient.ingredient_name].checked = true;
+                        ingrSearchList[ingredient.ingredient_name].selectIncl = true;
+                    } else if (ingredient.selectExcl) {
+                        ingrSearchList[ingredient.ingredient_name].checked = true;
+                        ingrSearchList[ingredient.ingredient_name].selectExcl = true;
+                    }
+                }
+            });
+    
+            this.setState({
+                ingredient_search_results: response.data.ingredients,
+                ingredient_search_count: response.data.count,
+                isShowCategory: true,
+                isShowIngrSearch: true
+            });
+        }
     }
 
     render() {
         const { classes } = this.props;
+
         return (
             <div className={classes.root}>
             <CssBaseline />
@@ -621,34 +663,30 @@ class UserHomePage extends React.Component {
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
-                            <InputBase
-                                placeholder="Search for recipes ..."
-                                classes={{
-                                    root: classes.inputRoot,
-                                    input: classes.inputInput,
-                                }}
-                                inputProps={{ 'aria-label': 'search' }}
-                                onChange={this.setApiRecipeNameValue}
-                                onBlur={this.setApiRecipeNameValue}
-                            />
+                                <InputBase
+                                    placeholder="Search..."
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    onChange={this.setSearchValue}
+                                    onBlur={this.setSearchValue}
+                                />
+                                <NativeSelect
+                                    value={this.state.searchParam}
+                                    onChange={this.handleSearchParamChange}
+                                    style={{paddingLeft:5,backgroundColor:'#DDDDDD',fontSize:13,height:'100%',float:'right'}}
+                                    name="name"
+                                    inputProps={{
+                                        id: 'name-native-error',
+                                    }}
+                                >
+                                    <option value="recipes">Recipes</option>
+                                    <option value="ingredients">Ingredients</option>
+                                </NativeSelect>
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button>
-                        {/* <div className={classes.search}>
-                            <div className={classes.searchIcon}>
-                                <SearchIcon />
-                            </div>
-                            <InputBase
-                                placeholder="Search for ingredients ..."
-                                classes={{
-                                    root: classes.inputRoot,
-                                    input: classes.inputInput,
-                                }}
-                                inputProps={{ 'aria-label': 'search' }}
-                                onChange={this.setIngredientNameValue}
-                                onBlur={this.setIngredientNameValue}
-                            />
-                        </div>
-                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button> */}
+                        <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
