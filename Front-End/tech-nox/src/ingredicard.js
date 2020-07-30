@@ -69,8 +69,15 @@ export default function IngredientCard(props) {
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
             <div>
-                You also need to have the following Ingredients:
-                {props.Ingredients}
+            You also need to have <strong title={
+              props.missed && props.missed.map((item,index)=>{
+                if(props.missed.length==index+1){
+                  return item.name 
+                }else{
+                  return item.name + ' '
+                }
+              })
+            }>{props.missed.length}</strong> more ingredients.   
             </div>
         </Typography>
       </CardContent>

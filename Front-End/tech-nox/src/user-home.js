@@ -512,13 +512,23 @@ class UserHomePage extends React.Component {
         })
     }
 
-    /*setApiRecipeNameValue(event) {
+    setApiRecipeNameValue(event) {
         this.setState({
             api_recipe_name: event.target.value
         });
+        console.log(event.target.value)
     }
+    /*
+    
 
-    getRecipe = () => {
+    setIngredientNameValue(event) {
+        this.setState({
+            searched_ingredient: event.target.value
+        });
+    }*/
+//testing
+
+getRecipe = () => {
     // all recipes are fetched here
         const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
         const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
@@ -531,44 +541,31 @@ class UserHomePage extends React.Component {
             });
     }
 
-    setIngredientNameValue(event) {
-        this.setState({
-            searched_ingredient: event.target.value
-        });
-    }*/
-//testing
-
-    setApiRecipeNameValue(event) {
-        this.setState({
-            api_recipe: event.target.value
-        });
-    }
-
-    getRecipe = () => {
-        // all recipes are fetched here
-        const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
-        let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
+    // getIngredientRecipe = () => {
+    //     // all recipes are fetched here
+    //     const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
+    //     let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
         
-        var ctr = 0;
-        this.state.selected_ingredients.forEach(ingredient => {
-            if (ctr === this.state.selected_ingredients.length) {
-                URL += (ingredient.ingredient_name.replace(" ",""));
-            } else {
-                URL += (ingredient.ingredient_name.replace(" ","") + ",+");
-            }
-            ctr+=1;
-        });
+    //     var ctr = 0;
+    //     this.state.selected_ingredients.forEach(ingredient => {
+    //         if (ctr === this.state.selected_ingredients.length) {
+    //             URL += (ingredient.ingredient_name.replace(" ",""));
+    //         } else {
+    //             URL += (ingredient.ingredient_name.replace(" ","") + ",+");
+    //         }
+    //         ctr+=1;
+    //     });
 
-        URL = URL.slice(0,-2);
+    //     URL = URL.slice(0,-2);
 
-        axios.get(URL)
-            .then(response => {
-                this.setState({
-                    api_ingrecipe_list: response.data
-                })
-                console.log(response.data)
-            });
-    }
+    //     axios.get(URL)
+    //         .then(response => {
+    //             this.setState({
+    //                 api_ingrecipe_list: response.data
+    //             })
+    //             console.log(response.data)
+    //         });
+    // }
 
     setIngredientNameValue(event) {
         this.setState({
@@ -576,7 +573,6 @@ class UserHomePage extends React.Component {
         });
     }
 
-//
     async handleIngredientSearch() {
         let response = await axios.post('/ingredient', {
             'ingredient': this.state.searched_ingredient
@@ -614,7 +610,6 @@ class UserHomePage extends React.Component {
                                     input: classes.inputInput,
                                 }}
                                 inputProps={{ 'aria-label': 'search' }}
-                                onChange={this.setApiRecipeNameValue}
                                 onBlur={this.setApiRecipeNameValue}
                             />
                         </div>
@@ -1178,6 +1173,7 @@ class UserHomePage extends React.Component {
                                     title={recipe.title}
                                     imageUrl={recipe.image}
                                     likes={recipe.likes}
+                                    missed={recipe.missedIngredients}
                                 />
                             </Grid>
                         )}
