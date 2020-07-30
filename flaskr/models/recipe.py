@@ -71,7 +71,8 @@ class PublicRecipe(Resource):
                     'visibility': 'Public',
                     'mealtypes': [],
                     'ingredients': [],
-                    'steps': []
+                    'steps': [],
+                    'expanded': False
                 }
 
                 # Retrieve basic recipe information

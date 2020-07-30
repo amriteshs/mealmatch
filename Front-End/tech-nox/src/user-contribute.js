@@ -55,6 +55,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
 import Avatar from '@material-ui/core/Avatar';
+import NativeSelect from '@material-ui/core/NativeSelect';
 
 import 'fontsource-roboto';
 import axios from 'axios';
@@ -114,7 +115,7 @@ const useStyles = theme => ({
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-            width: '50ch',
+            width: '25ch',
         },
     },
     searchIcon: {
@@ -321,6 +322,13 @@ const useStyles = theme => ({
         backgroundColor:'black',
         borderColor:'orange',
         border:'1px solid orange'
+    },
+    searchSelect: {
+        paddingLeft:5,
+        backgroundColor:'#EEEDEE',
+        fontSize:13,
+        height:'100%',
+        float:'right'
     }
 });
 
@@ -409,10 +417,13 @@ class ContributePage extends React.Component {
         this.handleLogout = this.handleLogout.bind(this);
         this.handleDeleteDialogOpen = this.handleDeleteDialogOpen.bind(this);
         this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
-        this.setIngredientNameValue = this.setIngredientNameValue.bind(this);
-        this.handleIngredientSearch = this.handleIngredientSearch.bind(this);
-        this.setRecipeNameValue = this.setRecipeNameValue.bind(this);
-        this.handleRecipeSearch = this.handleRecipeSearch.bind(this);
+        // this.setIngredientNameValue = this.setIngredientNameValue.bind(this);
+        // this.handleIngredientSearch = this.handleIngredientSearch.bind(this);
+        // this.setRecipeNameValue = this.setRecipeNameValue.bind(this);
+        // this.handleRecipeSearch = this.handleRecipeSearch.bind(this);
+        this.handleSearchParamChange = this.handleSearchParamChange.bind(this);
+        this.setSearchValue = this.setSearchValue.bind(this);
+        this.getSearchResults = this.getSearchResults.bind(this);
     }
 
     componentDidMount() {
@@ -1402,49 +1413,55 @@ class ContributePage extends React.Component {
         window.location.href = nav;
     }
 
-    setIngredientNameValue(event) {
+    handleSearchParamChange(event) {
         this.setState({
-            searched_ingredient: event.target.value
+            searchParam: event.target.value,
         });
     }
 
-    async handleIngredientSearch(event) {
-        let response = await axios.post('/ingredient', {
-            'ingredient': this.state.searched_ingredient
-        });
-
-        let ingrSearchList = response.data.ingredients;
-    
-        this.state.selected_ingredients.forEach(ingredient => {
-            if (ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
-                ingrSearchList[ingredient.ingredient_name].checked = true;
-            }
-        });
-
-        this.setState({
-            ingredient_search_results: response.data.ingredients,
-            ingredient_search_count: response.data.count,
-            isShowCategory: true,
-            isShowIngrSearch: true
-        });
+    setSearchValue(event) {
+        if (this.state.searchParam === 'recipes') {
+            this.setState({
+                searched_recipe: event.target.value
+            });
+        } else if (this.state.searchParam === 'ingredients') {
+            this.setState({
+                searched_ingredient: event.target.value
+            });
+        }
     }
 
-    setRecipeNameValue(event) {
-        this.setState({
-            searched_recipe: event.target.value
-        });
-    }
-
-    handleRecipeSearch(event) {
-        let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.recipe_name.toLowerCase().includes(this.state.searched_recipe));
+    async getSearchResults() {
+        if (this.state.searchParam === 'recipes') {
+            let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.recipe_name.toLowerCase().includes(this.state.searched_recipe));
             
-        this.setState({
-            selected_recipes: rcpFilter,
-            isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-            openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-            filterByIngredient: false,
-            filterByMealtype: false
-        });
+            this.setState({
+                selected_recipes: rcpFilter,
+                isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+                filterByIngredient: false,
+                filterByMealtype: false
+            });
+        } else if (this.state.searchParam === 'ingredients') {
+            let response = await axios.post('/ingredient', {
+                'ingredient': this.state.searched_ingredient
+            });
+    
+            let ingrSearchList = response.data.ingredients;
+        
+            this.state.selected_ingredients.forEach(ingredient => {
+                if (ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
+                    ingrSearchList[ingredient.ingredient_name].checked = true;
+                }
+            });
+    
+            this.setState({
+                ingredient_search_results: response.data.ingredients,
+                ingredient_search_count: response.data.count,
+                isShowCategory: true,
+                isShowIngrSearch: true
+            });
+        }
     }
 
     render() {
@@ -1491,39 +1508,35 @@ class ContributePage extends React.Component {
                             <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
-                        <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                        <Button color="inherit" style={{marginLeft:'1%',marginRight:'4%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
-                            <InputBase
-                                placeholder="Search for recipes ..."
-                                classes={{
-                                    root: classes.inputRoot,
-                                    input: classes.inputInput,
-                                }}
-                                inputProps={{ 'aria-label': 'search' }}
-                                onChange={this.setRecipeNameValue}
-                                onBlur={this.setRecipeNameValue}
-                            />
+                                <InputBase
+                                    placeholder="Search..."
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    onChange={this.setSearchValue}
+                                    onBlur={this.setSearchValue}
+                                />
+                                <NativeSelect
+                                    value={this.state.searchParam}
+                                    onChange={this.handleSearchParamChange}
+                                    className={classes.searchSelect}
+                                    name="name"
+                                    inputProps={{
+                                        id: 'name-native-error',
+                                    }}
+                                >
+                                    <option value="recipes">Recipes</option>
+                                    <option value="ingredients">Ingredients</option>
+                                </NativeSelect>
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.handleRecipeSearch}>Search</Button>
-                        {/* <div className={classes.search}>
-                            <div className={classes.searchIcon}>
-                                <SearchIcon />
-                            </div>
-                            <InputBase
-                                placeholder="Search for ingredients ..."
-                                classes={{
-                                    root: classes.inputRoot,
-                                    input: classes.inputInput,
-                                }}
-                                inputProps={{ 'aria-label': 'search' }}
-                                onChange={this.setIngredientNameValue}
-                                onBlur={this.setIngredientNameValue}
-                            />
-                        </div>
-                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button> */}
+                        <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
