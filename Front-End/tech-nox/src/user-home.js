@@ -154,7 +154,7 @@ const useStyles = theme => ({
         borderColor:'orange',
         border:'1px solid orange',
         marginRight: theme.spacing(1),
-        float: 'right'        
+        float: 'right'
     },
     showIngrBtn: {
         color:'orange',
@@ -212,7 +212,8 @@ class UserHomePage extends React.Component {
             isShowAllIngredients: false,
             anchorEl: null,
             isIngrInc: true,
-            isShowIngrSearch: false
+            isShowIngrSearch: false,
+            suggested_ingredients: [],
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -258,7 +259,7 @@ class UserHomePage extends React.Component {
             anchorEl: event.currentTarget
         })
     };
-    
+
     handleMenuClose = () => {
         this.setState({
             anchorEl: null
@@ -428,7 +429,7 @@ class UserHomePage extends React.Component {
                     ingrSearchList[ingredient.ingredient_name].selectIncl = false;
                 }
             });
-            
+
             this.setState({
                 ingredient_list: ingrList,
                 category_list: catList,
@@ -452,7 +453,7 @@ class UserHomePage extends React.Component {
                     ingrSearchList[ingredient.ingredient_name].selectExcl = false;
                 }
             });
-            
+
             this.setState({
                 ingredient_list: ingrList,
                 category_list: catList,
@@ -604,6 +605,27 @@ class UserHomePage extends React.Component {
         });
     }
 
+    async getSuggestedIngredients() {
+      const endpoint = '/suggested-ingredients';
+
+      let response = await axios.post(endpoint, {
+          'cart_ingredients': this.state.selected_ingredients
+      })
+      .then(response => {
+        console.log(response.data.ingredients);
+          // if (flag) {
+          //   console.log(response)}
+          this.setState({
+              suggested_ingredients: response.data.ingredients
+          });
+          // if (flag) {
+          //   console.log(this.state.ingredients)}
+      })
+      .catch(error => {
+          console.log(error)
+      });
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -733,7 +755,7 @@ class UserHomePage extends React.Component {
                 <Divider />
                 <Grid container spacing={0} direction="row" alignItems="center" justify="center">
                     <Grid item xs={6}>
-                        {this.state.isIngrInc ? 
+                        {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientInclusion}
                                 style={{fontSize:10,borderRadius:'0px'}}
@@ -755,7 +777,7 @@ class UserHomePage extends React.Component {
                         }
                     </Grid>
                     <Grid item xs={6}>
-                        {this.state.isIngrInc ? 
+                        {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientExclusion}
                                 style={{fontSize:10,borderRadius:'0px'}}
@@ -811,7 +833,7 @@ class UserHomePage extends React.Component {
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
-                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
+                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>
                                             <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
                                         </Tooltip>
                                     </Grid>
@@ -855,7 +877,7 @@ class UserHomePage extends React.Component {
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
-                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
+                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>
                                             <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
                                         </Tooltip>
                                     </Grid>
@@ -997,11 +1019,11 @@ class UserHomePage extends React.Component {
                                                         <Grid item key={key} xs={3}>
                                                             {value.selectExcl ?
                                                                 <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                                <FormControlLabel key={key} 
+                                                                <FormControlLabel key={key}
                                                                     control={
                                                                         <Checkbox checked={value.checked}
-                                                                        onChange={this.handleIngredientCheckChange} 
-                                                                        name={key} value={key} color="primary" 
+                                                                        onChange={this.handleIngredientCheckChange}
+                                                                        name={key} value={key} color="primary"
                                                                         disabled
                                                                     />}
                                                                     label={key}
@@ -1009,11 +1031,11 @@ class UserHomePage extends React.Component {
                                                                 </Tooltip>
                                                             :
                                                                 <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                                <FormControlLabel key={key} 
+                                                                <FormControlLabel key={key}
                                                                     control={
                                                                         <Checkbox checked={value.checked}
-                                                                        onChange={this.handleIngredientCheckChange} 
-                                                                        name={key} value={key} color="primary" 
+                                                                        onChange={this.handleIngredientCheckChange}
+                                                                        name={key} value={key} color="primary"
                                                                     />}
                                                                     label={key}
                                                                 />
@@ -1028,11 +1050,11 @@ class UserHomePage extends React.Component {
                                                         <Grid item key={key} xs={3}>
                                                             {value.selectIncl ?
                                                                 <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                                <FormControlLabel key={key} 
+                                                                <FormControlLabel key={key}
                                                                     control={
                                                                         <Checkbox checked={value.checked}
-                                                                        onChange={this.handleIngredientCheckChange} 
-                                                                        name={key} value={key} color="primary" 
+                                                                        onChange={this.handleIngredientCheckChange}
+                                                                        name={key} value={key} color="primary"
                                                                         disabled
                                                                     />}
                                                                     label={key}
@@ -1040,11 +1062,11 @@ class UserHomePage extends React.Component {
                                                                 </Tooltip>
                                                             :
                                                                 <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                                <FormControlLabel key={key} 
+                                                                <FormControlLabel key={key}
                                                                     control={
                                                                         <Checkbox checked={value.checked}
-                                                                        onChange={this.handleIngredientCheckChange} 
-                                                                        name={key} value={key} color="primary" 
+                                                                        onChange={this.handleIngredientCheckChange}
+                                                                        name={key} value={key} color="primary"
                                                                     />}
                                                                     label={key}
                                                                 />
@@ -1072,21 +1094,21 @@ class UserHomePage extends React.Component {
                                                         {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
                                                             <Grid item xs={3} key={key}>
                                                                 {value.selectExcl ?
-                                                                    <FormControlLabel 
+                                                                    <FormControlLabel
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                             disabled
                                                                         />}
                                                                         label={key}
                                                                     />
                                                                 :
-                                                                    <FormControlLabel 
+                                                                    <FormControlLabel
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1099,28 +1121,28 @@ class UserHomePage extends React.Component {
                                                         {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
                                                             <Grid item xs={3} key={key}>
                                                                 {value.selectIncl ?
-                                                                    <FormControlLabel 
+                                                                    <FormControlLabel
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                             disabled
                                                                         />}
                                                                         label={key}
                                                                     />
                                                                 :
-                                                                    <FormControlLabel 
+                                                                    <FormControlLabel
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                         />}
                                                                         label={key}
                                                                     />
                                                                 }
                                                             </Grid>
                                                         ))}
-                                                        </>   
+                                                        </>
                                         }
                                     </Grid>
                                 </div>
@@ -1132,7 +1154,7 @@ class UserHomePage extends React.Component {
                                 <div>
                                     <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
                                         <b>Select a meal type</b>
-                                    </Typography>          
+                                    </Typography>
                                 </div>
                                 <Divider className={classes.dividerStyle}/>
                                 <div className={classes.ingrView}>
