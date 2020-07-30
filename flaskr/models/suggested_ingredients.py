@@ -38117,8 +38117,7 @@ unavailable_ingredients = ['alligator', 'amberjack', 'angel food', 'aniseed', 'a
 
 # function for ingredient suggestions
 def ingredient_suggestion(user_ingredient_list):
-
-    user_ingredients = [ingredient for ingredient in user_ingredients if ingredient not in unavailable_ingredients]
+    user_ingredient_list = [ingredient for ingredient in user_ingredients if ingredient not in unavailable_ingredients]
 
     def intersection(lst1, lst2):
         temp = set(lst2)
@@ -38150,20 +38149,25 @@ suggested_ingredients_model = api.model('suggested_ingredients_details', {
     'cart_ingredients': fields.Raw
 })
 
-@api.expect(suggested_ingredients_model)
 @api.route('/suggested-ingredients')
 class SuggestedIngredients(Resource):
     @api.response(200, 'OK')
     @api.doc(description='Suggest ingredients to the user')
-    def post(self, username):
+    @api.expect(suggested_ingredients_model)
+    def post(self):
         '''Suggest ingredients to the user'''
         ingredients = api.payload['cart_ingredients']
-        if flag:
-            print(ingredients)
+        print(ingredients)
+
+        if not ingredients:
+            return json.loads(json.dumps({
+                'count': 0,
+                'ingredients': []
+            })), 200
 
         user_ingredients = []
         for ingredient_fields in ingredients:
-            user_ingredients.append(i["ingredient_name"])
+            user_ingredients.append(ingredient_fields["ingredient_name"])
 
         suggested_ingredients = ingredient_suggestion(user_ingredients)
 

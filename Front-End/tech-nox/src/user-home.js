@@ -224,6 +224,7 @@ class UserHomePage extends React.Component {
             anchorEl: null,
             isIngrInc: true,
             isShowIngrSearch: false,
+            isShowIngrSuggest: false,
             includePublicRecipes: false,
             searchParam: 'recipes',
             recipeFilter: 'noFilter',
@@ -267,6 +268,7 @@ class UserHomePage extends React.Component {
 
     handleIngredientExclusion(event) {
         this.setState({
+            isShowIngrSuggest: false,
             isIngrInc: false
         });
     }
@@ -566,6 +568,7 @@ class UserHomePage extends React.Component {
             selected_category: '',
             isShowAllIngredients: false,
             isShowIngrSearch: false,
+            isShowIngrSuggest: false,
             ingredient_search_results: {}
         })
     }
@@ -675,18 +678,20 @@ class UserHomePage extends React.Component {
     }
 
     async getSuggestedIngredients() {
-        const endpoint = '/suggested-ingredients';
-
-        let response = await axios.post(endpoint, {
+        let response = await axios.post('/suggested-ingredients', {
                 'cart_ingredients': this.state.selected_ingredients
             })
             .then(response => {
                 this.setState({
-                    suggested_ingredients: response.data.ingredients
+                    suggested_ingredients: response.data.ingredients,
+                    isShowIngrSuggest: true
                 });
             })
             .catch(error => {
-                console.log(error)
+                this.setState({
+                    suggested_ingredients: [],
+                    isShowIngrSuggest: true
+                });
             });
     }
 
@@ -957,42 +962,52 @@ class UserHomePage extends React.Component {
                             <CardContent>
                                 <div>
                                     <Grid container direction="row" justify="center" alignItems="center">
-                                        <Grid item xs={8}>
-                                            {this.state.isShowIngrSearch ?
+                                        <Grid item xs={6}>
+                                            {this.state.isShowIngrSuggest ?
                                                 <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                    <b>Ingredient search results for "<em>{this.state.searched_ingredient}</em>"</b>
+                                                    <b>Ingredients suggested based on your selections</b>
                                                 </Typography>
                                             :
-                                                this.state.selected_category === '' ?
-                                                    this.state.isShowAllIngredients ?
-                                                        <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                            <b>Complete list of ingredients</b>
-                                                        </Typography>
+                                                this.state.isShowIngrSearch ?
+                                                    <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                                        <b>Ingredient search results for "<em>{this.state.searched_ingredient}</em>"</b>
+                                                    </Typography>
+                                                :
+                                                    this.state.selected_category === '' ?
+                                                        this.state.isShowAllIngredients ?
+                                                            <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                                                <b>Complete list of ingredients</b>
+                                                            </Typography>
+                                                        :
+                                                            <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
+                                                                <b>Select an ingredient category</b>
+                                                            </Typography>
                                                     :
                                                         <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                            <b>Select an ingredient category</b>
+                                                            <b>List of ingredients for category "<em>{this.state.selected_category}</em>"</b>
                                                         </Typography>
-                                                :
-                                                    <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                        <b>List of ingredients for category "<em>{this.state.selected_category}</em>"</b>
-                                                    </Typography>
                                             }
                                         </Grid>
-                                        {(this.state.isShowAllIngredients || this.state.isShowIngrSearch) ?
-                                            <Grid item xs={4}>
+                                        {(this.state.isShowAllIngredients || this.state.isShowIngrSearch || this.state.isShowIngrSuggest) ?
+                                            <Grid item xs={6}>
                                                 <Button className={classes.backCatBtn} onClick={this.handleBackToCategorySelect}>
                                                     Back
                                                 </Button>
                                             </Grid>
                                         :
                                             this.state.selected_category === '' ?
-                                                <Grid item xs={4}>
+                                                <Grid item xs={6}>
                                                     <Button className={classes.showIngrBtn} onClick={this.handleShowAllIngredients}>
                                                         View All Ingredients
                                                     </Button>
+                                                    {this.state.isIngrInc &&
+                                                        <Button className={classes.backCatBtn} onClick={this.getSuggestedIngredients}>
+                                                            Suggest Ingredients
+                                                        </Button>
+                                                    }
                                                 </Grid>
                                             :
-                                                <Grid item xs={4}>
+                                                <Grid item xs={6}>
                                                     <Button className={classes.showIngrBtn} onClick={this.handleShowAllIngredients}>
                                                         View All Ingredients
                                                     </Button>
