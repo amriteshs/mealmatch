@@ -38101,7 +38101,7 @@ recipe_list = [['garlic'],
 
 # path = "/Users/sahilpunchhi/Documents/Github/capstone-project-technox/flaskr/models"
 # os.chdir(path)
-flag = True
+flag = False
 
 user_ingredients = []
 unavailable_ingredients = ['alligator', 'amberjack', 'angel food', 'aniseed', 'apple sauce', 'asparagus', 'balsamic glaze', 'barramundi', 'bbq rub', 'bean sprouts', 'beef ribs', 'beef suet', 'berries', 'biscotti biscuit', 'biscuits', 'bitters', 'black beans', 'blackberry preserves', 'bloody mary', 'blueberry jam', 'bluefish', 'bocconcini cheese', 'bourbon', 'bran', 'bratwurst', 'bread crumbs', 'bread flour', 'breadsticks', 'brick cheese', 'brie', 'brownie mix', 'butterscotch', 'cacao', 'caesar dressing', 'calamari', 'camembert cheese', 'cannellini beans', 'cashew', 'cassia', 'celery soup', 'challah', 'cheddar', 'cherry jam', 'cheshire cheese', 'chia seeds', 'chicken giblets', 'chicken roast', 'chicken soup', 'chicken tenders', 'chicken thighs', 'chicken wings', 'chili beans', 'chilli jam', 'chinese broccoli', 'chinese five spice', 'chips', 'chocolate chips', 'chocolate cookies', 'chocolate morsels', 'chocolate powder', 'chocolate pudding', 'chocolate wafer', 'ciabatta', 'ciclon', 'coconut flour', 'cookie dough', 'corn chips', 'corn tortillas', 'cornflour', 'cornstarch', 'couscous', 'crabapples', 'craisins', 'cream gravy', 'cream of wheat', 'creme de cassis', 'creme de menthe', 'creme fraiche', 'crescent roll dough', 'cress', 'croissants', 'croutons', 'curacao', 'deer', 'doritos', 'double gloucester cheese', 'doughnut', 'dulse', 'edam cheese', 'elk', 'emmenthaler cheese', 'fava beans', 'feta', 'fish fillets', 'flax', 'flour', 'flour tortillas', 'foie gras', 'french beans', 'frozen vegetables', 'fudge', 'garlic herb cheese', 'giblet gravy', 'goat milk', 'gram flour', 'grape jelly', 'grape seed oil', 'great northern beans', 'green beans', 'grouse', 'gruyere', 'gummy worms', 'half and half', 'halloumi', 'hemp milk', 'herbs', 'herring', 'hummus', 'irish cream', 'italian dressing', 'italian herbs', 'italian spice', 'jalapeno jelly', 'jarlsberg cheese', 'john dory', 'kidney beans', 'kool aid', 'lady fingers', 'lamb chops', 'lamb liver', 'lancashire cheese', 'lemon balm', 'lemon jelly', 'lemon sole', 'lima beans', 'lingonberry', 'longhorn cheese', 'macadamia', 'macaroni cheese mix', 'macaroon', 'malt extract', 'manchego', 'mandarin', 'mango powder', 'marlin', 'marrow bones', 'marsala', 'matcha powder', 'mayonnaise', 'micro greens', 'mint jelly', 'molasses', 'monterey jack cheese', 'mountain dew', 'mozzarella', 'multigrain bread', 'mushroom gravy', 'mustard greens', 'navy beans', 'neufchatel', 'non dairy creamer', 'olive', 'orange jelly', 'oreo', 'ostrich', 'pancetta', 'parmesan', 'pasta', 'pastrami', 'peach preserves', 'peas', 'pepperjack cheese', 'pepsi', 'perch', 'persimmons', 'pigeon', 'pimiento', 'pine nut', 'pinto beans', 'pistachio oil', 'pizza cheese', 'polenta', 'pompano', 'pork chops', 'pork gravy', 'pork ribs', 'portobello mushroom', 'potato chips', 'potato flakes', 'prawns', 'pretzel', 'provolone', 'prunes', 'pudding mix', 'queso fresco cheese', 'quince jelly', 'raclette cheese', 'ramen', 'raspberry liquor', 'red beans', 'red leicester cheese', 'red onion', 'red pepper jelly', 'refried beans', 'rice flour', 'ricotta', 'rocket', 'rolled oats', 'romano', 'salad greens', 'saltines', 'sardines', 'sausage gravy', 'schnapps', 'sea bass', 'sea urchin', 'self rising flour', 'sesame dressing', 'snap peas', 'snow peas', 'soft cheese', 'soppressata', 'sorghum flour', 'soya oil', 'soya sauce', 'soybeans', 'split peas', 'star fruit', 'sultanas', 'sun dried tomato', 'tabasco', 'tangelos', 'tapioca flour', 'teriyaki', 'thousand island', 'tilapia', 'tomato gravy', 'turkey liver', 'turmeric', 'tzatziki sauce', 'veal chops', 'velveeta', 'watercress', 'wensleydale cheese', 'whisky', 'whole wheat flour', 'wild boar', 'worcestershire', 'yeast flake', 'yogurt']
@@ -38117,7 +38117,8 @@ unavailable_ingredients = ['alligator', 'amberjack', 'angel food', 'aniseed', 'a
 
 # function for ingredient suggestions
 def ingredient_suggestion(user_ingredient_list):
-    user_ingredient_list = [ingredient for ingredient in user_ingredients if ingredient not in unavailable_ingredients]
+
+    user_ingredient_list = [ingredient for ingredient in user_ingredient_list if ingredient not in unavailable_ingredients]
 
     def intersection(lst1, lst2):
         temp = set(lst2)
@@ -38126,22 +38127,67 @@ def ingredient_suggestion(user_ingredient_list):
 
     suggested_ingredient_dict = defaultdict(int)
 
-    for recipe in recipe_list:
-        if len(intersection(user_ingredient_list,recipe)) == len(user_ingredient_list):
-            # print(recipe)
-            for ingredient in [x for x in recipe if x not in user_ingredient_list]:
-                suggested_ingredient_dict[ingredient] += 1
+    if len(user_ingredient_list) <= 3:
+        for recipe in recipe_list:
+            if len(intersection(user_ingredient_list,recipe)) == len(user_ingredient_list):
+                # print(recipe)
+                for ingredient in [x for x in recipe if x not in user_ingredient_list]:
+                    suggested_ingredient_dict[ingredient] += 1
+    elif len(user_ingredient_list) <= 5:
+        for recipe in recipe_list:
+            if abs(len(intersection(user_ingredient_list,recipe)) - len(user_ingredient_list)) <= 1 :
+                # print(recipe)
+                for ingredient in [x for x in recipe if x not in user_ingredient_list]:
+                    suggested_ingredient_dict[ingredient] += 1
+    elif len(user_ingredient_list) <= 7:
+        for recipe in recipe_list:
+            if abs(len(intersection(user_ingredient_list,recipe)) - len(user_ingredient_list)) <= 2 :
+                # print(recipe)
+                for ingredient in [x for x in recipe if x not in user_ingredient_list]:
+                    suggested_ingredient_dict[ingredient] += 1
+    elif len(user_ingredient_list) <= 9:
+        for recipe in recipe_list:
+            if abs(len(intersection(user_ingredient_list,recipe)) - len(user_ingredient_list)) <= 4 :
+                # print(recipe)
+                for ingredient in [x for x in recipe if x not in user_ingredient_list]:
+                    suggested_ingredient_dict[ingredient] += 1
+    else:
+        for recipe in recipe_list:
+            if len(intersection(user_ingredient_list,recipe)) >= 5 :
+                # print(recipe)
+                for ingredient in [x for x in recipe if x not in user_ingredient_list]:
+                    suggested_ingredient_dict[ingredient] += 1
+
+
 
     suggested_ingredient_dict = {k: v for k, v in sorted(suggested_ingredient_dict.items(), key=lambda item: item[1], reverse=True)}
+    if flag:
+        print("suggested_ingredient_dict is")
+        print(suggested_ingredient_dict)
     if suggested_ingredient_dict:
-        if len(suggested_ingredient_dict) >= 5:
-            suggested_ingredients = list(suggested_ingredient_dict.keys())[:5]
+        if len(suggested_ingredient_dict) >= 8:
+            suggested_ingredients = list(suggested_ingredient_dict.keys())[:8]
         else:
             k = len(suggested_ingredient_dict)
             suggested_ingredients = list(suggested_ingredient_dict.keys())[:k]
     if flag:
         print(suggested_ingredients)
-    return suggested_ingredients
+    if suggested_ingredients:
+        return suggested_ingredients
+    else:
+        for recipe in recipe_list:
+            for ingredient in [x for x in recipe if x not in user_ingredient_list]:
+                suggested_ingredient_dict[ingredient] += 1
+        if suggested_ingredient_dict:
+            if len(suggested_ingredient_dict) >= 8:
+                suggested_ingredients = list(suggested_ingredient_dict.keys())[:8]
+            else:
+                k = len(suggested_ingredient_dict)
+                suggested_ingredients = list(suggested_ingredient_dict.keys())[:k]
+        if flag:
+            print(suggested_ingredients)
+        return suggested_ingredients
+
 
 
 
@@ -38157,7 +38203,6 @@ class SuggestedIngredients(Resource):
     def post(self):
         '''Suggest ingredients to the user'''
         ingredients = api.payload['cart_ingredients']
-        print(ingredients)
 
         if not ingredients:
             return json.loads(json.dumps({
@@ -38169,7 +38214,9 @@ class SuggestedIngredients(Resource):
         for ingredient_fields in ingredients:
             user_ingredients.append(ingredient_fields["ingredient_name"])
 
+
         suggested_ingredients = ingredient_suggestion(user_ingredients)
+
 
         conn = db_connect(db_file)
         c = conn.cursor()
