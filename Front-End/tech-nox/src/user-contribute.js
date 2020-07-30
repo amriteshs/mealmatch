@@ -1436,7 +1436,15 @@ class ContributePage extends React.Component {
     }
 
     handleRecipeSearch(event) {
-
+        let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.recipe_name.toLowerCase().includes(this.state.searched_recipe));
+            
+        this.setState({
+            selected_recipes: rcpFilter,
+            isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+            openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
+            filterByIngredient: false,
+            filterByMealtype: false
+        });
     }
 
     render() {
@@ -1484,7 +1492,7 @@ class ContributePage extends React.Component {
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
-                        {/* <div className={classes.search}>
+                        <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
@@ -1495,12 +1503,12 @@ class ContributePage extends React.Component {
                                     input: classes.inputInput,
                                 }}
                                 inputProps={{ 'aria-label': 'search' }}
-                                onChange={this.setApiRecipeNameValue}
-                                onBlur={this.setApiRecipeNameValue}
+                                onChange={this.setRecipeNameValue}
+                                onBlur={this.setRecipeNameValue}
                             />
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button> */}
-                        <div className={classes.search}>
+                        <Button className={classes.searchBtn} onClick={this.handleRecipeSearch}>Search</Button>
+                        {/* <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
@@ -1515,7 +1523,7 @@ class ContributePage extends React.Component {
                                 onBlur={this.setIngredientNameValue}
                             />
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button>
+                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button> */}
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
