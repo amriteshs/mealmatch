@@ -696,7 +696,8 @@ class UserHomePage extends React.Component {
             //         this.setState({
             //             api_recipe_list: response.data.results,
             //             isShowCategory: true,
-            //             isShowIngrSearch: false
+            //             isShowIngrSearch: false,
+            //             recipeFilter: 'noFilter'
             //         });
             //     });
         } else if (this.state.searchParam === 'ingredients') {
