@@ -155,7 +155,7 @@ const useStyles = theme => ({
         borderColor:'orange',
         border:'1px solid orange',
         marginRight: theme.spacing(1),
-        float: 'right'        
+        float: 'right'
     },
     showIngrBtn: {
         color:'orange',
@@ -214,7 +214,8 @@ class UserHomePage extends React.Component {
             isShowAllIngredients: false,
             anchorEl: null,
             isIngrInc: true,
-            isShowIngrSearch: false
+            isShowIngrSearch: false,
+            suggested_ingredients: [],
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -260,7 +261,7 @@ class UserHomePage extends React.Component {
             anchorEl: event.currentTarget
         })
     };
-    
+
     handleMenuClose = () => {
         this.setState({
             anchorEl: null
@@ -328,6 +329,7 @@ class UserHomePage extends React.Component {
         if (this.state.isIngrInc) {
             let ingrList = {...this.state.ingredient_list};
             let catList = {...this.state.category_list};
+            let ingrSearchList = {...this.state.ingredient_search_results};
             let ingrSelect = [...this.state.selected_ingredients];
 
             ingrList[event.target.value].checked = event.target.checked;
@@ -337,6 +339,11 @@ class UserHomePage extends React.Component {
             catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
             catList[ingrCategory].ingredients[event.target.value].selectIncl = event.target.checked;
 
+            if (this.state.isShowIngrSearch && ingrSearchList.hasOwnProperty(event.target.value)) {
+                ingrSearchList[event.target.value].checked = event.target.checked;
+                ingrSearchList[event.target.value].selectIncl = event.target.checked;
+            }
+
             if (event.target.checked) {
                 let ingredient_details = ingrList[event.target.value];
                 ingredient_details.ingredient_name = event.target.value;
@@ -358,11 +365,13 @@ class UserHomePage extends React.Component {
             this.setState({
                 ingredient_list: ingrList,
                 category_list: catList,
+                ingredient_search_results: ingrSearchList,
                 selected_ingredients: ingrSelect
             });
         } else {
             let ingrList = {...this.state.ingredient_list};
             let catList = {...this.state.category_list};
+            let ingrSearchList = {...this.state.ingredient_search_results};
             let ingrSelect = [...this.state.selected_ingredients_exclude];
 
             ingrList[event.target.value].checked = event.target.checked;
@@ -372,6 +381,11 @@ class UserHomePage extends React.Component {
             catList[ingrCategory].ingredients[event.target.value].checked = event.target.checked;
             catList[ingrCategory].ingredients[event.target.value].selectExcl = event.target.checked;
 
+            if (this.state.isShowIngrSearch && ingrSearchList.hasOwnProperty(event.target.value)) {
+                ingrSearchList[event.target.value].checked = event.target.checked;
+                ingrSearchList[event.target.value].selectExcl = event.target.checked;
+            }
+
             if (event.target.checked) {
                 let ingredient_details = ingrList[event.target.value];
                 ingredient_details.ingredient_name = event.target.value;
@@ -393,6 +407,7 @@ class UserHomePage extends React.Component {
             this.setState({
                 ingredient_list: ingrList,
                 category_list: catList,
+                ingredient_search_results: ingrSearchList,
                 selected_ingredients_exclude: ingrSelect
             });
         }
@@ -402,6 +417,7 @@ class UserHomePage extends React.Component {
         if (this.state.isIngrInc) {
             let ingrList = {...this.state.ingredient_list};
             let catList = {...this.state.category_list};
+            let ingrSearchList = {...this.state.ingredient_search_results};
 
             this.state.selected_ingredients.forEach(ingredient => {
                 ingrList[ingredient.ingredient_name].checked = false;
@@ -409,16 +425,23 @@ class UserHomePage extends React.Component {
 
                 catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
                 catList[ingredient.category_name].ingredients[ingredient.ingredient_name].selectIncl = false;
+
+                if (this.state.isShowIngrSearch && ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
+                    ingrSearchList[ingredient.ingredient_name].checked = false;
+                    ingrSearchList[ingredient.ingredient_name].selectIncl = false;
+                }
             });
-            
+
             this.setState({
                 ingredient_list: ingrList,
                 category_list: catList,
+                ingredient_search_results: ingrSearchList,
                 selected_ingredients: []
             });
         } else {
             let ingrList = {...this.state.ingredient_list};
             let catList = {...this.state.category_list};
+            let ingrSearchList = {...this.state.ingredient_search_results};
 
             this.state.selected_ingredients_exclude.forEach(ingredient => {
                 ingrList[ingredient.ingredient_name].checked = false;
@@ -426,11 +449,17 @@ class UserHomePage extends React.Component {
 
                 catList[ingredient.category_name].ingredients[ingredient.ingredient_name].checked = false;
                 catList[ingredient.category_name].ingredients[ingredient.ingredient_name].selectExcl = false;
+
+                if (this.state.isShowIngrSearch && ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
+                    ingrSearchList[ingredient.ingredient_name].checked = false;
+                    ingrSearchList[ingredient.ingredient_name].selectExcl = false;
+                }
             });
-            
+
             this.setState({
                 ingredient_list: ingrList,
                 category_list: catList,
+                ingredient_search_results: ingrSearchList,
                 selected_ingredients_exclude: []
             });
         }
@@ -440,10 +469,16 @@ class UserHomePage extends React.Component {
         if (this.state.isIngrInc) {
             let ingrList = {...this.state.ingredient_list};
             let catList = {...this.state.category_list};
+            let ingrSearchList = {...this.state.ingredient_search_results};
             let ingrSelect = [...this.state.selected_ingredients];
 
             ingrList[obj].checked = false;
             ingrList[obj].selectIncl = false;
+
+            if (this.state.isShowIngrSearch && ingrSearchList.hasOwnProperty(obj)) {
+                ingrSearchList[obj].checked = false;
+                ingrSearchList[obj].selectIncl = false;
+            }
 
             let ingrCategory = ingrList[obj].category_name;
             catList[ingrCategory].ingredients[obj].checked = false;
@@ -454,15 +489,22 @@ class UserHomePage extends React.Component {
             this.setState({
                 ingredient_list: ingrList,
                 category_list: catList,
+                ingredient_search_results: ingrSearchList,
                 selected_ingredients: ingrSelect,
             });
         } else {
             let ingrList = {...this.state.ingredient_list};
             let catList = {...this.state.category_list};
+            let ingrSearchList = {...this.state.ingredient_search_results};
             let ingrSelect = [...this.state.selected_ingredients_exclude];
 
             ingrList[obj].checked = false;
             ingrList[obj].selectExcl = false;
+
+            if (this.state.isShowIngrSearch && ingrSearchList.hasOwnProperty(obj)) {
+                ingrSearchList[obj].checked = false;
+                ingrSearchList[obj].selectExcl = false;
+            }
 
             let ingrCategory = ingrList[obj].category_name;
             catList[ingrCategory].ingredients[obj].checked = false;
@@ -473,6 +515,7 @@ class UserHomePage extends React.Component {
             this.setState({
                 ingredient_list: ingrList,
                 category_list: catList,
+                ingredient_search_results: ingrSearchList,
                 selected_ingredients_exclude: ingrSelect,
             });
         }
@@ -578,12 +621,47 @@ getRecipe = () => {
             'ingredient': this.state.searched_ingredient
         });
 
+        let ingrSearchList = response.data.ingredients;
+    
+        this.state.selected_ingredients.forEach(ingredient => {
+            if (ingrSearchList.hasOwnProperty(ingredient.ingredient_name)) {
+                if (ingredient.selectIncl) {
+                    ingrSearchList[ingredient.ingredient_name].checked = true;
+                    ingrSearchList[ingredient.ingredient_name].selectIncl = true;
+                } else if (ingredient.selectExcl) {
+                    ingrSearchList[ingredient.ingredient_name].checked = true;
+                    ingrSearchList[ingredient.ingredient_name].selectExcl = true;
+                }
+            }
+        });
+
         this.setState({
             ingredient_search_results: response.data.ingredients,
             ingredient_search_count: response.data.count,
             isShowCategory: true,
             isShowIngrSearch: true
         });
+    }
+
+    async getSuggestedIngredients() {
+      const endpoint = '/suggested-ingredients';
+
+      let response = await axios.post(endpoint, {
+          'cart_ingredients': this.state.selected_ingredients
+      })
+      .then(response => {
+        console.log(response.data.ingredients);
+          // if (flag) {
+          //   console.log(response)}
+          this.setState({
+              suggested_ingredients: response.data.ingredients
+          });
+          // if (flag) {
+          //   console.log(this.state.ingredients)}
+      })
+      .catch(error => {
+          console.log(error)
+      });
     }
 
     render() {
@@ -619,7 +697,7 @@ getRecipe = () => {
                                 <SearchIcon />
                             </div>
                             <InputBase
-                                placeholder="Search for recipes ..."
+                                placeholder="Search for ingredients ..."
                                 classes={{
                                     root: classes.inputRoot,
                                     input: classes.inputInput,
@@ -714,7 +792,7 @@ getRecipe = () => {
                 <Divider />
                 <Grid container spacing={0} direction="row" alignItems="center" justify="center">
                     <Grid item xs={6}>
-                        {this.state.isIngrInc ? 
+                        {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientInclusion}
                                 style={{fontSize:10,borderRadius:'0px'}}
@@ -736,7 +814,7 @@ getRecipe = () => {
                         }
                     </Grid>
                     <Grid item xs={6}>
-                        {this.state.isIngrInc ? 
+                        {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientExclusion}
                                 style={{fontSize:10,borderRadius:'0px'}}
@@ -792,7 +870,7 @@ getRecipe = () => {
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
-                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
+                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>
                                             <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
                                         </Tooltip>
                                     </Grid>
@@ -836,7 +914,7 @@ getRecipe = () => {
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
-                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>          
+                                        <Tooltip arrow placement="bottom-start" title={"Category: " + obj.category_name}>
                                             <Typography style={{fontSize:14}}>{obj.ingredient_name}</Typography>
                                         </Tooltip>
                                     </Grid>
@@ -858,7 +936,7 @@ getRecipe = () => {
                                         <Grid item xs={8}>
                                             {this.state.isShowIngrSearch ?
                                                 <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
-                                                    <b>List of ingredients that begin with "<em>{this.state.searched_ingredient}</em>"</b>
+                                                    <b>Ingredient search results for "<em>{this.state.searched_ingredient}</em>"</b>
                                                 </Typography>
                                             :
                                                 this.state.selected_category === '' ?
@@ -905,73 +983,12 @@ getRecipe = () => {
                                 <div className={classes.ingrView}>
                                     <Grid container spacing={0}>
                                         {this.state.isShowIngrSearch ?
-                                            this.state.isIngrInc ?
-                                                <>
-                                                {Object.entries(this.state.ingredient_search_results).map(([key, value]) => (
-                                                    <Grid item key={key} xs={3}>
-                                                        {value.selectExcl ?
-                                                            <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                            <FormControlLabel key={key} 
-                                                                control={
-                                                                    <Checkbox checked={value.checked}
-                                                                    onChange={this.handleIngredientCheckChange} 
-                                                                    name={key} value={key} color="primary" 
-                                                                    disabled
-                                                                />}
-                                                                label={key}
-                                                            />
-                                                            </Tooltip>
-                                                        :
-                                                            <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                            <FormControlLabel key={key} 
-                                                                control={
-                                                                    <Checkbox checked={value.checked}
-                                                                    onChange={this.handleIngredientCheckChange} 
-                                                                    name={key} value={key} color="primary" 
-                                                                />}
-                                                                label={key}
-                                                            />
-                                                            </Tooltip>
-                                                        }
-                                                    </Grid>
-                                                ))}
-                                                </>
+                                            !Object.keys(this.state.ingredient_search_results).length ?
+                                                <Typography style={{fontSize:14,marginTop:10}}><em><b>No results found.</b></em></Typography>
                                             :
-                                                <>
-                                                {Object.entries(this.state.ingredient_search_results).map(([key, value]) => (
-                                                    <Grid item key={key} xs={3}>
-                                                        {value.selectIncl ?
-                                                            <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                            <FormControlLabel key={key} 
-                                                                control={
-                                                                    <Checkbox checked={value.checked}
-                                                                    onChange={this.handleIngredientCheckChange} 
-                                                                    name={key} value={key} color="primary" 
-                                                                    disabled
-                                                                />}
-                                                                label={key}
-                                                            />
-                                                            </Tooltip>
-                                                        :
-                                                            <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
-                                                            <FormControlLabel key={key} 
-                                                                control={
-                                                                    <Checkbox checked={value.checked}
-                                                                    onChange={this.handleIngredientCheckChange} 
-                                                                    name={key} value={key} color="primary" 
-                                                                />}
-                                                                label={key}
-                                                            />
-                                                            </Tooltip>
-                                                        }
-                                                    </Grid>
-                                                ))}
-                                                </>
-                                        :
-                                            this.state.isShowAllIngredients ?
                                                 this.state.isIngrInc ?
                                                     <>
-                                                    {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                                    {Object.entries(this.state.ingredient_search_results).map(([key, value]) => (
                                                         <Grid item key={key} xs={3}>
                                                             {value.selectExcl ?
                                                                 <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
@@ -1002,7 +1019,7 @@ getRecipe = () => {
                                                     </>
                                                 :
                                                     <>
-                                                    {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                                    {Object.entries(this.state.ingredient_search_results).map(([key, value]) => (
                                                         <Grid item key={key} xs={3}>
                                                             {value.selectIncl ?
                                                                 <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
@@ -1031,13 +1048,77 @@ getRecipe = () => {
                                                         </Grid>
                                                     ))}
                                                     </>
+                                        :
+                                            this.state.isShowAllIngredients ?
+                                                this.state.isIngrInc ?
+                                                    <>
+                                                    {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                                        <Grid item key={key} xs={3}>
+                                                            {value.selectExcl ?
+                                                                <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
+                                                                <FormControlLabel key={key}
+                                                                    control={
+                                                                        <Checkbox checked={value.checked}
+                                                                        onChange={this.handleIngredientCheckChange}
+                                                                        name={key} value={key} color="primary"
+                                                                        disabled
+                                                                    />}
+                                                                    label={key}
+                                                                />
+                                                                </Tooltip>
+                                                            :
+                                                                <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
+                                                                <FormControlLabel key={key}
+                                                                    control={
+                                                                        <Checkbox checked={value.checked}
+                                                                        onChange={this.handleIngredientCheckChange}
+                                                                        name={key} value={key} color="primary"
+                                                                    />}
+                                                                    label={key}
+                                                                />
+                                                                </Tooltip>
+                                                            }
+                                                        </Grid>
+                                                    ))}
+                                                    </>
+                                                :
+                                                    <>
+                                                    {Object.entries(this.state.ingredient_list).map(([key, value]) => (
+                                                        <Grid item key={key} xs={3}>
+                                                            {value.selectIncl ?
+                                                                <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
+                                                                <FormControlLabel key={key}
+                                                                    control={
+                                                                        <Checkbox checked={value.checked}
+                                                                        onChange={this.handleIngredientCheckChange}
+                                                                        name={key} value={key} color="primary"
+                                                                        disabled
+                                                                    />}
+                                                                    label={key}
+                                                                />
+                                                                </Tooltip>
+                                                            :
+                                                                <Tooltip arrow placement="right-start" title={"Category: " + value.category_name}>
+                                                                <FormControlLabel key={key}
+                                                                    control={
+                                                                        <Checkbox checked={value.checked}
+                                                                        onChange={this.handleIngredientCheckChange}
+                                                                        name={key} value={key} color="primary"
+                                                                    />}
+                                                                    label={key}
+                                                                />
+                                                                </Tooltip>
+                                                            }
+                                                        </Grid>
+                                                    ))}
+                                                    </>
                                             :
                                                 this.state.selected_category === '' ?
                                                     <>
                                                     {Object.entries(this.state.category_list).map(([key, value]) => (
                                                         <Grid item key={key} xs={4}>
                                                             <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleCategorySelect.bind(this, key)}>
-                                                                <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./milk.png")}/>
+                                                                <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/categories/" + value.category_id + ".png")}/>
                                                                 {key}
                                                             </Button>
                                                         </Grid>
@@ -1050,21 +1131,21 @@ getRecipe = () => {
                                                         {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
                                                             <Grid item xs={3} key={key}>
                                                                 {value.selectExcl ?
-                                                                    <FormControlLabel 
+                                                                    <FormControlLabel
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                             disabled
                                                                         />}
                                                                         label={key}
                                                                     />
                                                                 :
-                                                                    <FormControlLabel 
+                                                                    <FormControlLabel
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1077,28 +1158,28 @@ getRecipe = () => {
                                                         {Object.entries(this.state.category_list[this.state.selected_category].ingredients).map(([key, value]) => (
                                                             <Grid item xs={3} key={key}>
                                                                 {value.selectIncl ?
-                                                                    <FormControlLabel 
+                                                                    <FormControlLabel
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                             disabled
                                                                         />}
                                                                         label={key}
                                                                     />
                                                                 :
-                                                                    <FormControlLabel 
+                                                                    <FormControlLabel
                                                                         control={
                                                                             <Checkbox checked={value.checked}
-                                                                            onChange={this.handleIngredientCheckChange} 
-                                                                            name={key} value={key} color="primary" 
+                                                                            onChange={this.handleIngredientCheckChange}
+                                                                            name={key} value={key} color="primary"
                                                                         />}
                                                                         label={key}
                                                                     />
                                                                 }
                                                             </Grid>
                                                         ))}
-                                                        </>   
+                                                        </>
                                         }
                                     </Grid>
                                 </div>
@@ -1110,7 +1191,7 @@ getRecipe = () => {
                                 <div>
                                     <Typography style={{fontSize:15}} color="textSecondary" gutterBottom>
                                         <b>Select a meal type</b>
-                                    </Typography>          
+                                    </Typography>
                                 </div>
                                 <Divider className={classes.dividerStyle}/>
                                 <div className={classes.ingrView}>
@@ -1119,12 +1200,12 @@ getRecipe = () => {
                                             <Grid item key={key} xs={4}>
                                                 {this.state.selected_mealtype === '' ?
                                                     <Button fullWidth className={classes.catMtBtn} value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
-                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
+                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/mealtypes/" + value.mealtype_id + ".png")}/>
                                                         {key}
                                                     </Button>
                                                 :
                                                     <Button fullWidth className={classes.catMtBtn} disabled value={key} onClick={this.handleMealtypeSelect.bind(this, key)}>
-                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./breakfast.png")}/>
+                                                        <Avatar style={{marginRight:10}} alt="Remy Sharp" src={require("./static/mealtypes/" + value.mealtype_id + ".png")}/>
                                                         {key}
                                                     </Button>
                                                 }

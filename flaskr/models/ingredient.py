@@ -80,6 +80,26 @@ class Ingredient(Resource):
             , (ingredient + '%',)
         ))
 
+        query1 = list(c.execute(
+            f'''
+                SELECT IC.ingredient_id, IC.ingredient_name, Category.id, Category.name
+                FROM
+                    (
+  	                    SELECT Ingredient.id AS ingredient_id, Ingredient.name AS ingredient_name, Ingredient_Category.category_id AS category_id
+                        FROM Ingredient
+                        LEFT JOIN Ingredient_Category
+  	                    ON Ingredient.id = Ingredient_Category.ingredient_id
+                        WHERE Ingredient.name LIKE ?
+                    ) AS IC
+                LEFT JOIN Category
+                ON Category.id = IC.category_id
+                ORDER BY IC.ingredient_name, Category.name
+            '''
+            , ('% ' + ingredient + '%',)
+        ))
+
+        query.extend(query1)
+
         conn.close()
 
         data = {}
