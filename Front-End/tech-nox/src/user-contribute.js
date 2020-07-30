@@ -1081,7 +1081,6 @@ class ContributePage extends React.Component {
                 recipe_people_served_input: 1,
                 selected_mealtypes: [],
                 selected_ingredients: [],
-                searched_ingredient: '',
                 ingredient_search_results: {},
                 isShowIngrSearch: false,
                 selected_visibility: 'Public',
@@ -1119,9 +1118,8 @@ class ContributePage extends React.Component {
             selected_mealtypes: [],
             selected_visibility: 'Public',
             selected_ingredients: [],
-            recipe_steps_input: [],
-            searched_ingredient: '',
             ingredient_search_results: {},
+            recipe_steps_input: [],
             isShowIngrSearch: false,
             selected_mealtype: '',
             selected_category: '',
@@ -1155,7 +1153,6 @@ class ContributePage extends React.Component {
             selected_mealtypes: [],
             selected_visibility: 'Public',
             selected_ingredients: [],
-            searched_ingredient: '',
             ingredient_search_results: {},
             isShowIngrSearch: false,
             recipe_steps_input: [],
@@ -1207,10 +1204,9 @@ class ContributePage extends React.Component {
             recipe_steps_input: temp_steps,
             ingredient_list: ingrList,
             category_list: catList,
-            searched_ingredient: '',
-            ingredient_search_results: {},
             isShowIngrSearch: false,
             selected_category: '',
+            ingredient_search_results: {},
             selected_mealtype: '',
             isShowCategory: true,
             isShowAllIngredients: false,
@@ -1488,42 +1484,38 @@ class ContributePage extends React.Component {
                         </Typography>
                         <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
                         <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
-                        {!this.state.isAddingRecipe && !this.state.isUpdatingRecipe &&
-                            <>
-                            {/* <div className={classes.search}>
-                                <div className={classes.searchIcon}>
-                                    <SearchIcon />
-                                </div>
-                                <InputBase
-                                    placeholder="Search for recipes ..."
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                    onChange={this.setApiRecipeNameValue}
-                                    onBlur={this.setApiRecipeNameValue}
-                                />
+                        {/* <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
                             </div>
-                            <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button> */}
-                            <div className={classes.search}>
-                                <div className={classes.searchIcon}>
-                                    <SearchIcon />
-                                </div>
-                                <InputBase
-                                    placeholder="Search for ingredients ..."
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                    onChange={this.setIngredientNameValue}
-                                    onBlur={this.setIngredientNameValue}
-                                />
+                            <InputBase
+                                placeholder="Search for recipes ..."
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ 'aria-label': 'search' }}
+                                onChange={this.setApiRecipeNameValue}
+                                onBlur={this.setApiRecipeNameValue}
+                            />
+                        </div>
+                        <Button className={classes.searchBtn} onClick={this.getRecipe}>Search</Button> */}
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
                             </div>
-                            <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button>
-                            </>
-                        }
+                            <InputBase
+                                placeholder="Search for ingredients ..."
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ 'aria-label': 'search' }}
+                                onChange={this.setIngredientNameValue}
+                                onBlur={this.setIngredientNameValue}
+                            />
+                        </div>
+                        <Button className={classes.searchBtn} onClick={this.handleIngredientSearch}>Search</Button>
                     </Box>
                     <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
