@@ -58,6 +58,9 @@ const useStyles = theme => ({
         display: "flex",
         fontFamily: 'Roboto'
     },
+    root1: {
+        maxWidth: 345
+    },
     appBar: {
         backgroundColor:'black'
     },
@@ -227,10 +230,10 @@ class UserHomePage extends React.Component {
             selected_category: '',
             selected_mealtype: '',
             selected_mealtypes: [],
-            selected_recipes: [],
+            suggested_ingredients: {},
             api_recipe_name: '',
+            contributed_recipe_list: [],
             api_recipe_list: [],
-            api_ingrecipe_list: [],
             base_uri: 'https://spoonacular.com/recipeImages/',
             isShowCategory: true,
             isShowAllIngredients: false,
@@ -240,9 +243,7 @@ class UserHomePage extends React.Component {
             isShowIngrSuggest: false,
             includePublicRecipes: false,
             searchParam: 'recipes',
-            recipeFilter: 'noFilter',
-            suggested_ingredients: {},
-            user_recipe_list: []
+            recipeFilter: 'noFilter'
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -272,8 +273,8 @@ class UserHomePage extends React.Component {
         this.getCategories();
         this.getMealtypes();
         this.getSearchResults();
-        this.getPublicRecipes();
-        // this.getRecipe();
+        this.getContributedRecipes();
+        this.getApiRecipes();
     }
 
     handleIngredientInclusion(event) {
@@ -411,7 +412,8 @@ class UserHomePage extends React.Component {
                     recipeFilter: 'noFilter'
                 });
 
-                this.getPublicRecipes();
+                this.getContributedRecipes();
+                this.getApiRecipes();
             } else {
                 this.setState({
                     ingredient_list: ingrList,
@@ -422,7 +424,8 @@ class UserHomePage extends React.Component {
                 });
 
                 if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getPublicRecipes();
+                    this.getContributedRecipes();
+                    this.getApiRecipes();
                 }
             }
         } else {
@@ -470,7 +473,8 @@ class UserHomePage extends React.Component {
                     recipeFilter: 'noFilter'
                 });
 
-                this.getPublicRecipes();
+                this.getContributedRecipes();
+                this.getApiRecipes();
             } else {
                 this.setState({
                     ingredient_list: ingrList,
@@ -480,7 +484,8 @@ class UserHomePage extends React.Component {
                 });
 
                 if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getPublicRecipes();
+                    this.getContributedRecipes();
+                    this.getApiRecipes();
                 }
             }
         }
@@ -521,7 +526,8 @@ class UserHomePage extends React.Component {
                     recipeFilter: 'noFilter'
                 });
 
-                this.getPublicRecipes();
+                this.getContributedRecipes();
+                this.getApiRecipes();
             } else {
                 this.setState({
                     ingredient_list: ingrList,
@@ -532,7 +538,8 @@ class UserHomePage extends React.Component {
                 });
 
                 if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getPublicRecipes();
+                    this.getContributedRecipes();
+                    this.getApiRecipes();
                 }
             }
         } else {
@@ -562,7 +569,8 @@ class UserHomePage extends React.Component {
                     recipeFilter: 'noFilter'
                 });
 
-                this.getPublicRecipes();
+                this.getContributedRecipes();
+                this.getApiRecipes();
             } else {
                 this.setState({
                     ingredient_list: ingrList,
@@ -572,7 +580,8 @@ class UserHomePage extends React.Component {
                 });
 
                 if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getPublicRecipes();
+                    this.getContributedRecipes();
+                    this.getApiRecipes();
                 }
             }
         }
@@ -615,7 +624,8 @@ class UserHomePage extends React.Component {
                     recipeFilter: 'noFilter'
                 });
 
-                this.getPublicRecipes();
+                this.getContributedRecipes();
+                this.getApiRecipes();
             } else {
                 this.setState({
                     ingredient_list: ingrList,
@@ -626,7 +636,8 @@ class UserHomePage extends React.Component {
                 });
 
                 if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getPublicRecipes();
+                    this.getContributedRecipes();
+                    this.getApiRecipes();
                 }
             }
         } else {
@@ -658,7 +669,8 @@ class UserHomePage extends React.Component {
                     recipeFilter: 'noFilter'
                 });
 
-                this.getPublicRecipes();
+                this.getContributedRecipes();
+                this.getApiRecipes();
             } else {
                 this.setState({
                     ingredient_list: ingrList,
@@ -668,7 +680,8 @@ class UserHomePage extends React.Component {
                 });
 
                 if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getPublicRecipes();
+                    this.getContributedRecipes();
+                    this.getApiRecipes();
                 }
             }
         }
@@ -693,7 +706,8 @@ class UserHomePage extends React.Component {
                 recipeFilter: 'noFilter'
             });
 
-            this.getPublicRecipes();
+            this.getContributedRecipes();
+            this.getApiRecipes();
         } else {
             this.setState({
                 selected_mealtype: ''
@@ -718,46 +732,18 @@ class UserHomePage extends React.Component {
         })
     }
 
-    // getIngredientRecipe = () => {
-    //     // all recipes are fetched here
-    //     const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
-    //     let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
-
-    //     var ctr = 0;
-    //     this.state.selected_ingredients.forEach(ingredient => {
-    //         if (ctr === this.state.selected_ingredients.length) {
-    //             URL += (ingredient.ingredient_name.replace(" ",""));
-    //         } else {
-    //             URL += (ingredient.ingredient_name.replace(" ","") + ",+");
-    //         }
-    //         ctr+=1;
-    //     });
-
-    //     URL = URL.slice(0,-2);
-
-    //     axios.get(URL)
-    //         .then(response => {
-    //             this.setState({
-    //                 api_ingrecipe_list: response.data
-    //             })
-    //             console.log(response.data)
-    //         });
-    // }
-
-    async getPublicRecipes() {
+    async getContributedRecipes() {
         await axios.get('/recipe')
             .then(response => {
                 if (this.state.recipeFilter === 'noFilter') {
                     this.setState({
-                        user_recipe_list: response.data.recipes,
-                        selected_recipes: response.data.recipes
+                        contributed_recipe_list: response.data.recipes
                     });
                 } else if (this.state.recipeFilter === 'filterByMealtype') {
                     let rcpFilter = response.data.recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
 
                     this.setState({
-                        user_recipe_list: response.data.recipes,
-                        selected_recipes: rcpFilter
+                        contributed_recipe_list: rcpFilter
                     })
                 } else if (this.state.recipeFilter === 'filterByIngredients') {
                     let rcpFilter = [];
@@ -770,14 +756,56 @@ class UserHomePage extends React.Component {
                     });
 
                     this.setState({
-                        user_recipe_list: response.data.recipes,
-                        selected_recipes: rcpFilter
+                        contributed_recipe_list: rcpFilter
                     })
                 }
             })
             .catch(error => {
                 console.log(error);
             });
+    }
+
+    async getApiRecipes() {
+        if (this.state.recipeFilter === 'noFilter') {
+            // fetch all recipes
+            const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
+            const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10';
+
+            axios.get(URL)
+                .then(response => {
+                    this.setState({
+                        api_recipe_list: response.data.results,
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        api_recipe_list: [],
+                    });
+                });
+        } else if (this.state.recipeFilter === 'filterByMealtype') {
+            // fetch recipes by meal type
+        } else if (this.state.recipeFilter === 'filterByIngredients') {
+            // fetch recipes by ingredients
+            const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
+            let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
+            this.state.selected_ingredients.forEach(ingredient => {
+                URL += (ingredient.ingredient_name.replace(" ","") + ",+");
+            });
+            URL = URL.slice(0,-2);
+            
+            axios.get(URL)
+                .then(response => {
+                    console.log(response.data);
+                    this.setState({
+                        api_recipe_list: response.data
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        api_recipe_list: [],
+                    });
+                });
+        }
     }
 
     handleSearchParamChange(event) {
@@ -803,7 +831,8 @@ class UserHomePage extends React.Component {
             recipeFilter: event.target.value
         })
 
-        this.getPublicRecipes();
+        this.getContributedRecipes();
+        this.getApiRecipes();
     }
 
     async getSearchResults() {
@@ -812,15 +841,23 @@ class UserHomePage extends React.Component {
             const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
-            // axios.get(URL)
-            //     .then(response => {
-            //         this.setState({
-            //             api_recipe_list: response.data.results,
-            //             isShowCategory: true,
-            //             isShowIngrSearch: false,
-            //             recipeFilter: 'noFilter'
-            //         });
-            //     });
+            axios.get(URL)
+                .then(response => {
+                    this.setState({
+                        api_recipe_list: response.data.results,
+                        isShowCategory: true,
+                        isShowIngrSearch: false,
+                        recipeFilter: 'noFilter'
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        api_recipe_list: [],
+                        isShowCategory: true,
+                        isShowIngrSearch: false,
+                        recipeFilter: 'noFilter'
+                    });
+                });
         } else if (this.state.searchParam === 'ingredients') {
             let response = await axios.post('/ingredient', {
                 'ingredient': this.state.searched_ingredient
@@ -890,11 +927,11 @@ class UserHomePage extends React.Component {
     }
 
     handlePublicRecipeCardExpand = index => event => {
-        let rcpSelected = [...this.state.selected_recipes];
+        let rcpSelected = [...this.state.contributed_recipe_list];
         rcpSelected[index].expanded = !rcpSelected[index].expanded;
 
         this.setState({
-            selected_recipes: rcpSelected
+            contributed_recipe_list: rcpSelected
         });
     }
 
@@ -1042,20 +1079,17 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{color:"black",fontSize:10,borderRadius:'0px',backgroundColor:"orange"}}
+                                style={{color:"black",backgroundColor:"white",fontSize:10,borderRadius:'0px'}}
                                 fullWidth
-                                variant="contained"
-
-                                // color="secondary"
                             >
                                     INGREDIENTS TO INCLUDE
-                            </Button>
+                            </Button>   
                         :
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{color:"black",backgroundColor:"white",fontSize:10,borderRadius:'0px'}}
+                                style={{color:"white",fontSize:10,borderRadius:'0px',backgroundColor:"#FF7600"}}
                                 fullWidth
-                                // color="secondary"
+                                variant="contained"
                             >
                                     INGREDIENTS TO INCLUDE
                             </Button>
@@ -1065,8 +1099,9 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{color:"black", fontSize:10,borderRadius:'0px',backgroundColor:"white"}}
+                                style={{color:"white",fontSize:10,borderRadius:'0px',backgroundColor:"#FF7600"}}
                                 fullWidth
+                                variant="contained"
 
                             >
                                     INGREDIENTS TO EXCLUDE
@@ -1074,10 +1109,8 @@ class UserHomePage extends React.Component {
                         :
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{color:"black", fontSize:10,borderRadius:'0px',backgroundColor:"#FFA500"}}
+                                style={{color:"black", fontSize:10,borderRadius:'0px',backgroundColor:"white"}}
                                 fullWidth
-                                variant="contained"
-
                             >
                                     INGREDIENTS TO EXCLUDE
                             </Button>
@@ -1523,20 +1556,20 @@ class UserHomePage extends React.Component {
                                 {(this.state.selected_ingredients.length || this.state.selected_ingredients_exclude.length) ?
                                     <FormControlLabel value="filterByIngredients" control={<Radio style={{color: "orange"}}/>} label="Search by selected ingredients" />
                                 :
-                                    <FormControlLabel disabled value="filterByIngredients" control={<Radio style={{color: "orange"}}/>} label="Search by selected ingredients" />
+                                    <FormControlLabel disabled value="filterByIngredients" control={<Radio />} label="Search by selected ingredients" />
                                 }
                                 {this.state.selected_mealtype !== '' ?
                                     <FormControlLabel value="filterByMealtype" control={<Radio style={{color: "orange"}}/>} label="Search by selected meal type" />
                                 :
-                                    <FormControlLabel disabled value="filterByMealtype" control={<Radio style={{color: "orange"}}/>} label="Search by selected meal type" />
+                                    <FormControlLabel disabled value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
                                 }
                             </RadioGroup>
                         </FormControl>
                         <Divider className={classes.dividerStyle1} />
                         <Grid container spacing={1}>
-                            {this.state.selected_recipes.map((recipe, index) =>
+                            {this.state.contributed_recipe_list.map((recipe, index) =>
                                 <Grid item sm={4} key={index}>
-                                    <Card>
+                                    <Card className={classes.root1}>
                                         <CardHeader
                                             title=
                                                 {<div
@@ -1545,8 +1578,7 @@ class UserHomePage extends React.Component {
                                                 >
                                                     {recipe.recipe_name}
                                                 </div>}
-                                        />
-                                        
+                                        />          
                                         <CardMedia
                                             className={classes.media}
                                             image={require('./static/recipes/' + recipe.recipe_id + '.jpg')}
@@ -1622,28 +1654,42 @@ class UserHomePage extends React.Component {
                                     </Card>
                                 </Grid>
                             )}
-                            {this.state.api_recipe_list && this.state.api_recipe_list.map((recipe) =>
-                                <Grid item sm={4}>
-                                    <RecipeReviewCard
-                                        title={recipe.title}
-                                        imageUrl={this.state.base_uri + recipe.image}
-                                        source={recipe.sourceUrl}
-                                        time={recipe.readyInMinutes}
-                                        serves={recipe.servings}
-                                    />
-                                </Grid>
-                            )}
-                            {this.state.api_ingrecipe_list && this.state.api_ingrecipe_list.map((recipe) =>
-
-                                <Grid item sm={4}>
-                                    <IngredientCard
-                                        title={recipe.title}
-                                        imageUrl={recipe.image}
-                                        likes={recipe.likes}
-                                        missed={recipe.missedIngredients}
-                                    />
-                                </Grid>
-                            )}
+                            {this.state.recipeFilter === 'noFilter' ? 
+                                this.state.api_recipe_list.map((recipe, index) =>
+                                    <Grid item sm={4} key={index}>
+                                        <RecipeReviewCard
+                                            title={recipe.title}
+                                            imageUrl={this.state.base_uri + recipe.image}
+                                            source={recipe.sourceUrl}
+                                            time={recipe.readyInMinutes}
+                                            serves={recipe.servings}
+                                        />
+                                    </Grid>
+                                )
+                            :
+                                this.state.recipeFilter === 'filterByIngredients' ?
+                                    this.state.api_recipe_list.map((recipe, index) =>
+                                        <Grid item sm={4} key={index}>
+                                            <IngredientCard
+                                                title={recipe.title}
+                                                imageUrl={recipe.image}
+                                                likes={recipe.likes}
+                                                missed={recipe.missedIngredients}
+                                            />
+                                        </Grid>
+                                    )
+                                :
+                                    this.state.api_recipe_list.map((recipe, index) =>
+                                        <Grid item sm={4} key={index}>
+                                            <IngredientCard
+                                                title={recipe.title}
+                                                imageUrl={recipe.image}
+                                                likes={recipe.likes}
+                                                missed={recipe.missedIngredients}
+                                            />
+                                        </Grid>
+                                    )
+                            }
                         </Grid>
                     </div>
             </main>
