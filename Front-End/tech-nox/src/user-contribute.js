@@ -2010,7 +2010,7 @@ class ContributePage extends React.Component {
                                             
                                             <CardMedia
                                                 className={classes.media}
-                                                image={require('./static/images/' + recipe.recipe_id + '.jpg')}
+                                                image={require('./static/recipes/' + recipe.recipe_id + '.jpg')}
                                                 alt="no image"
                                                 title={recipe.recipe_name}
                                             />

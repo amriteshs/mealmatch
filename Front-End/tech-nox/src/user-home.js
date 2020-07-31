@@ -231,7 +231,8 @@ class UserHomePage extends React.Component {
             includePublicRecipes: false,
             searchParam: 'recipes',
             recipeFilter: 'noFilter',
-            suggested_ingredients: {}
+            suggested_ingredients: {},
+            user_recipe_list: {}
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -260,7 +261,7 @@ class UserHomePage extends React.Component {
         this.getCategories();
         this.getMealtypes();
         this.getSearchResults();
-        this.getPublicContributedRecipes();
+        this.getPublicRecipes();
         // this.getRecipe();
     }
 
@@ -624,42 +625,40 @@ class UserHomePage extends React.Component {
     //         });
     // }
 
-    async getPublicContributedRecipes() {
+    async getPublicRecipes() {
         await axios.get('/recipe')
             .then(response => {
-                this.setState({
-                    contributed_recipe_list: response.data.recipes,
-                    selected_recipes: response.data.recipes
-                });
+                if (this.state.recipeFilter === 'noFilter') {
+                    this.setState({
+                        user_recipe_list: response.data.recipes,
+                        selected_recipes: response.data.recipes
+                    });
+                } else if (this.state.recipeFilter === 'filterByIngredients') {
+                    let rcpFilter = response.data.recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
+
+                    this.setState({
+                        user_recipe_list: response.data.recipes,
+                        selected_recipes: rcpFilter
+                    })
+                } else if (this.state.recipeFilter === 'filterByMealtype') {
+                    let rcpFilter = [];
+                    response.data.recipes.forEach(recipe =>  {
+                        if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length) {
+                            if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
+                                rcpFilter.push(recipe);
+                            }
+                        }
+                    });
+
+                    this.setState({
+                        user_recipe_list: response.data.recipes,
+                        selected_recipes: rcpFilter
+                    })
+                }
             })
             .catch(error => {
                 console.log(error);
             });
-    }
-
-    handleRecipeMealtypeFilter() {
-        let rcpFilter = this.state.contributed_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
-
-        this.setState({
-            contributed_recipe_list: rcpFilter,
-            filterByIngredient: false
-        })
-    }
-
-    handleRecipeIngredientFilter() {
-        let rcpFilter = [];
-        this.state.contributed_recipe_list.forEach(recipe =>  {
-            if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length) {
-                if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
-                    rcpFilter.push(recipe);
-                }
-            }
-        });
-
-        this.setState({
-            contributed_recipe_list: rcpFilter,
-            filterByMealtype: false
-        })
     }
 
     handleSearchParamChange(event) {
@@ -692,15 +691,15 @@ class UserHomePage extends React.Component {
             const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
-            axios.get(URL)
-                .then(response => {
-                    this.setState({
-                        api_recipe_list: response.data.results,
-                        isShowCategory: true,
-                        isShowIngrSearch: false,
-                        recipeFilter: 'noFilter'
-                    });
-                });
+            // axios.get(URL)
+            //     .then(response => {
+            //         this.setState({
+            //             api_recipe_list: response.data.results,
+            //             isShowCategory: true,
+            //             isShowIngrSearch: false,
+            //             recipeFilter: 'noFilter'
+            //         });
+            //     });
         } else if (this.state.searchParam === 'ingredients') {
             let response = await axios.post('/ingredient', {
                 'ingredient': this.state.searched_ingredient
