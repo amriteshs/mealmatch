@@ -232,7 +232,7 @@ class UserHomePage extends React.Component {
             searchParam: 'recipes',
             recipeFilter: 'noFilter',
             suggested_ingredients: {},
-            user_recipe_list: {}
+            user_recipe_list: []
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
