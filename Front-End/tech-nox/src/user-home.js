@@ -692,15 +692,15 @@ class UserHomePage extends React.Component {
             const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
-            // axios.get(URL)
-            //     .then(response => {
-            //         this.setState({
-            //             api_recipe_list: response.data.results,
-            //             isShowCategory: true,
-            //             isShowIngrSearch: false,
-            //             recipeFilter: 'noFilter'
-            //         });
-            //     });
+            axios.get(URL)
+                .then(response => {
+                    this.setState({
+                        api_recipe_list: response.data.results,
+                        isShowCategory: true,
+                        isShowIngrSearch: false,
+                        recipeFilter: 'noFilter'
+                    });
+                });
         } else if (this.state.searchParam === 'ingredients') {
             let response = await axios.post('/ingredient', {
                 'ingredient': this.state.searched_ingredient
@@ -763,7 +763,8 @@ class UserHomePage extends React.Component {
             .catch(error => {
                 this.setState({
                     suggested_ingredients: {},
-                    isShowIngrSuggest: true
+                    isShowIngrSuggest: true,
+                    isShowCategory: true
                 });
             });
     }
@@ -786,16 +787,31 @@ class UserHomePage extends React.Component {
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
-                                <InputBase
-                                    placeholder="Search..."
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                    onChange={this.setSearchValue}
-                                    onBlur={this.setSearchValue}
-                                />
+                                {this.state.searchParam === 'recipes' ?
+                                    <InputBase
+                                        placeholder="Search..."
+                                        classes={{
+                                            root: classes.inputRoot,
+                                            input: classes.inputInput,
+                                        }}
+                                        inputProps={{ 'aria-label': 'search' }}
+                                        value={this.state.api_recipe_name}
+                                        onChange={this.setSearchValue}
+                                        onBlur={this.setSearchValue}
+                                    />
+                                :
+                                    <InputBase
+                                        placeholder="Search..."
+                                        classes={{
+                                            root: classes.inputRoot,
+                                            input: classes.inputInput,
+                                        }}
+                                        inputProps={{ 'aria-label': 'search' }}
+                                        value={this.state.searched_ingredient}
+                                        onChange={this.setSearchValue}
+                                        onBlur={this.setSearchValue}
+                                    />
+                                }
                                 <NativeSelect
                                     value={this.state.searchParam}
                                     onChange={this.handleSearchParamChange}

@@ -1514,16 +1514,31 @@ class ContributePage extends React.Component {
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
-                                <InputBase
-                                    placeholder="Search..."
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                    onChange={this.setSearchValue}
-                                    onBlur={this.setSearchValue}
-                                />
+                                {this.state.searchParam === 'recipes' ?
+                                    <InputBase
+                                        placeholder="Search..."
+                                        classes={{
+                                            root: classes.inputRoot,
+                                            input: classes.inputInput,
+                                        }}
+                                        inputProps={{ 'aria-label': 'search' }}
+                                        value={this.state.searched_recipe}
+                                        onChange={this.setSearchValue}
+                                        onBlur={this.setSearchValue}
+                                    />
+                                :
+                                    <InputBase
+                                        placeholder="Search..."
+                                        classes={{
+                                            root: classes.inputRoot,
+                                            input: classes.inputInput,
+                                        }}
+                                        inputProps={{ 'aria-label': 'search' }}
+                                        value={this.state.searched_ingredient}
+                                        onChange={this.setSearchValue}
+                                        onBlur={this.setSearchValue}
+                                    />
+                                }
                                 <NativeSelect
                                     value={this.state.searchParam}
                                     onChange={this.handleSearchParamChange}
