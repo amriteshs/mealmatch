@@ -115,7 +115,7 @@ const useStyles = theme => ({
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-            width: '25ch',
+            width: '40ch',
         },
     },
     searchIcon: {
@@ -325,10 +325,11 @@ const useStyles = theme => ({
     },
     searchSelect: {
         paddingLeft:5,
-        backgroundColor:'#EEEDEE',
         fontSize:13,
         height:'100%',
-        float:'right'
+        float:'right',
+        color:'black',
+        backgroundColor:'orange',
     }
 });
 
@@ -1491,7 +1492,7 @@ class ContributePage extends React.Component {
                 />);
             } else {
                 $imagePreview = (<img
-                    src={require('./static/images/plate.png' + this.state.selected_recipe_id + '.jpg')}
+                    src={require('./static/images/' + this.state.selected_recipe_id + '.jpg')}
                     alt="not available"
                     className={classes.imageUpload}
                 />)
@@ -1513,16 +1514,31 @@ class ContributePage extends React.Component {
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
-                                <InputBase
-                                    placeholder="Search..."
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                    onChange={this.setSearchValue}
-                                    onBlur={this.setSearchValue}
-                                />
+                                {this.state.searchParam === 'recipes' ?
+                                    <InputBase
+                                        placeholder="Search..."
+                                        classes={{
+                                            root: classes.inputRoot,
+                                            input: classes.inputInput,
+                                        }}
+                                        inputProps={{ 'aria-label': 'search' }}
+                                        value={this.state.searched_recipe}
+                                        onChange={this.setSearchValue}
+                                        onBlur={this.setSearchValue}
+                                    />
+                                :
+                                    <InputBase
+                                        placeholder="Search..."
+                                        classes={{
+                                            root: classes.inputRoot,
+                                            input: classes.inputInput,
+                                        }}
+                                        inputProps={{ 'aria-label': 'search' }}
+                                        value={this.state.searched_ingredient}
+                                        onChange={this.setSearchValue}
+                                        onBlur={this.setSearchValue}
+                                    />
+                                }
                                 <NativeSelect
                                     value={this.state.searchParam}
                                     onChange={this.handleSearchParamChange}
@@ -1731,7 +1747,7 @@ class ContributePage extends React.Component {
                 {this.state.isShowCategory ? (
                         <Card variant="outlined">
                             <CardContent>
-                                <div>static
+                                <div>
                                     <Grid container direction="row" justify="center" alignItems="center">
                                         <Grid item xs={8}>
                                             {this.state.isShowIngrSearch ?
@@ -1994,7 +2010,7 @@ class ContributePage extends React.Component {
                                             
                                             <CardMedia
                                                 className={classes.media}
-                                                image={require('./static/images/plate.png' + recipe.recipe_id + '.jpg')}
+                                                image={require('./static/recipes/' + recipe.recipe_id + '.jpg')}
                                                 alt="no image"
                                                 title={recipe.recipe_name}
                                             />
