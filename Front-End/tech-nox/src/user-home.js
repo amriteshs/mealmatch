@@ -113,14 +113,11 @@ const useStyles = theme => ({
     },
     searchSelect: {
         paddingLeft:5,
-        // backgroundColor:'#EEEDEE',
         fontSize:13,
         height:'100%',
         float:'right',
         color:'black',
         backgroundColor:'orange',
-        // borderColor:'orange',
-        // border:'1px solid orange',
     },
     cardsContaioner:{
         height: '100%',
@@ -882,7 +879,7 @@ class UserHomePage extends React.Component {
                             <Grid item xs={3}>
                                 <IconButton
                                     value={this.state.selected_mealtype}
-                                    aria-label="delete" color="orange"
+                                    aria-label="delete" color="secondary"
                                     onClick={this.handleMealtypeDelete}
                                 >
                                     <DeleteIcon />
@@ -969,7 +966,7 @@ class UserHomePage extends React.Component {
                                     <Grid item xs={3}>
                                         <IconButton
                                             name={obj.ingredient_name} value={index}
-                                            aria-label="delete" color="orange"
+                                            aria-label="delete" color="secondary"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
                                             <DeleteIcon />
@@ -1013,7 +1010,7 @@ class UserHomePage extends React.Component {
                                     <Grid item xs={3}>
                                         <IconButton
                                             name={obj.ingredient_name} value={index}
-                                            aria-label="delete" color="orange"
+                                            aria-label="delete" color="secondary"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
                                             <DeleteIcon />
