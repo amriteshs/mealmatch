@@ -768,7 +768,7 @@ class UserHomePage extends React.Component {
     async getApiRecipes() {
         if (this.state.recipeFilter === 'noFilter') {
             // fetch all recipes
-            const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
+            const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10';
 
             axios.get(URL)
@@ -786,7 +786,7 @@ class UserHomePage extends React.Component {
             // fetch recipes by meal type
         } else if (this.state.recipeFilter === 'filterByIngredients') {
             // fetch recipes by ingredients
-            const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
+            const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
             this.state.selected_ingredients.forEach(ingredient => {
                 URL += (ingredient.ingredient_name.replace(" ","") + ",+");
@@ -838,7 +838,7 @@ class UserHomePage extends React.Component {
     async getSearchResults() {
         if (this.state.searchParam === 'recipes') {
             // all recipes are fetched here
-            const API_KEY= 'c972685406f94d8cac65c8c6c48febeb';
+            const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
             axios.get(URL)
@@ -1663,6 +1663,7 @@ class UserHomePage extends React.Component {
                                             source={recipe.sourceUrl}
                                             time={recipe.readyInMinutes}
                                             serves={recipe.servings}
+                                            recipeid={recipe.id}
                                         />
                                     </Grid>
                                 )
