@@ -207,6 +207,19 @@ const useStyles = theme => ({
     },
     expandOpen: {
         transform: 'rotate(180deg)',
+    },
+    titleSize:{
+        fontSize:"1rem",
+        fontWeight:"bold",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        width:"14rem",
+        textOverflow:"ellipsis",
+        textTransform:"capitalize"
+    },
+    media: {
+        height: 0,
+        paddingTop: '56.25%', // 16:9
     }
 });
 
