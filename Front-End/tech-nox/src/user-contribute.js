@@ -420,10 +420,6 @@ class ContributePage extends React.Component {
         this.handleLogout = this.handleLogout.bind(this);
         this.handleDeleteDialogOpen = this.handleDeleteDialogOpen.bind(this);
         this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
-        // this.setIngredientNameValue = this.setIngredientNameValue.bind(this);
-        // this.handleIngredientSearch = this.handleIngredientSearch.bind(this);
-        // this.setRecipeNameValue = this.setRecipeNameValue.bind(this);
-        // this.handleRecipeSearch = this.handleRecipeSearch.bind(this);
         this.handleSearchParamChange = this.handleSearchParamChange.bind(this);
         this.setSearchValue = this.setSearchValue.bind(this);
         this.getSearchResults = this.getSearchResults.bind(this);
