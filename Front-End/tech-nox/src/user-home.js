@@ -797,6 +797,10 @@ class UserHomePage extends React.Component {
                 });
         } else if (filterVal === 'filterByMealtype') {
             // fetch recipes by meal type
+            this.setState({
+                api_recipe_list: [],
+                recipeFilter: filterVal
+            });
         } else if (filterVal === 'filterByIngredients') {
             // fetch recipes by ingredients
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
