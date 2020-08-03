@@ -241,7 +241,6 @@ class UserHomePage extends React.Component {
             isIngrInc: true,
             isShowIngrSearch: false,
             isShowIngrSuggest: false,
-            includePublicRecipes: false,
             searchParam: 'recipes',
             recipeFilter: 'noFilter'
         };

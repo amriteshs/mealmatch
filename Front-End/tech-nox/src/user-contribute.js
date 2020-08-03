@@ -374,7 +374,9 @@ class ContributePage extends React.Component {
             recipeErrorMessage: '',
             anchorEl: null,
             openRecipeDelete: [],
-            isShowIngrSearch: false
+            isShowIngrSearch: false,
+            searchParam: 'recipes',
+            recipeFilter: 'noFilter'
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
