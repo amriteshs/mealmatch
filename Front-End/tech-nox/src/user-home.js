@@ -785,10 +785,29 @@ class UserHomePage extends React.Component {
             });
         } else if (filterVal === 'filterByMealtype') {
             // fetch recipes by meal type
-            this.setState({
+            const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
+            const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&type=' + this.state.selected_mealtype;
+            await axios.get(URL)
+                .then(response => {
+                    this.setState({
+                        api_recipe_list: response.data.results,
+                        recipeFilter: filterVal
+                    });
+                })
+                .catch(error => {
+                     this.setState({
+                         api_recipe_list: [],
+                         recipeFilter: filterVal
+                     });
+                 });
+
+            
+
+
+            /*this.setState({
                 api_recipe_list: [],
                 recipeFilter: filterVal
-            });
+            });*/
         } else if (filterVal === 'filterByIngredients') {
             // fetch recipes by ingredients
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
@@ -1656,7 +1675,7 @@ class UserHomePage extends React.Component {
                         <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>RECIPES</b></Typography>
                         <Divider className={classes.dividerStyle1} />
                         <FormControl component="fieldset">
-                            <RadioGroup style={{fontSize:12}} aria-label="filter" name="filter" value={this.state.recipeFilter} onChange={this.handleRecipeFilterChange}>
+                            <RadioGroup style={{fontSize:12}} aria-label="filter" name="filter" onChange={this.handleRecipeFilterChange}>
                                 <FormControlLabel value="noFilter" control={<Radio style={{color: "orange"}}/>} label="Show all recipes" />
                                 {(this.state.selected_ingredients.length || this.state.selected_ingredients_exclude.length) ?
                                     <FormControlLabel value="filterByIngredients" control={<Radio style={{color: "orange"}}/>} label="Search by selected ingredients" />
@@ -1666,7 +1685,7 @@ class UserHomePage extends React.Component {
                                 {this.state.selected_mealtype !== '' ?
                                     <FormControlLabel value="filterByMealtype" control={<Radio style={{color: "orange"}}/>} label="Search by selected meal type" />
                                 :
-                                    <FormControlLabel disabled value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
+                                    <FormControlLabel value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
                                 }
                             </RadioGroup>
                         </FormControl>
@@ -1790,12 +1809,14 @@ class UserHomePage extends React.Component {
                                     :
                                         this.state.api_recipe_list.map((recipe, index) =>
                                             <Grid item sm={4} key={index}>
-                                                <IngredientCard
-                                                    title={recipe.title}
-                                                    imageUrl={recipe.image}
-                                                    likes={recipe.likes}
-                                                    missed={recipe.missedIngredients}
-                                                />
+                                                <RecipeReviewCard
+                                                title={recipe.title}
+                                                imageUrl={this.state.base_uri + recipe.image}
+                                                source={recipe.sourceUrl}
+                                                time={recipe.readyInMinutes}
+                                                serves={recipe.servings}
+                                                recipeid={recipe.id}
+                                            />
                                             </Grid>
                                         )
                                 }
