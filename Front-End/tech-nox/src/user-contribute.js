@@ -1429,7 +1429,7 @@ class ContributePage extends React.Component {
 
     async getSearchResults() {
         if (this.state.searchParam === 'recipes') {
-            let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.recipe_name.toLowerCase().includes(this.state.searched_recipe));
+            let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.recipe_name.trim().toLowerCase().includes(this.state.searched_recipe));
             
             this.setState({
                 selected_recipes: rcpFilter,
@@ -1440,7 +1440,7 @@ class ContributePage extends React.Component {
             });
         } else if (this.state.searchParam === 'ingredients') {
             let response = await axios.post('/ingredient', {
-                'ingredient': this.state.searched_ingredient
+                'ingredient': this.state.searched_ingredient.trim().toLowerCase()
             });
     
             let ingrSearchList = response.data.ingredients;
