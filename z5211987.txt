@@ -58,6 +58,25 @@
 • WORK FOR NEXT WEEK: Complete recipe contribution module in time for the progressive demo on Friday.
 
   WEEK 8
-• Completed the recipe contribution module.
+• Completed the recipe contribution module, adding the following fuctionalities:
+    - Allow user to add a recipe, in which the user can specify quantities for selected ingredients, as well as add, remove, and change the order of the steps, in addition to other information. The user can also add an image for his recipe.
+    - Display the list of recipes contributed by the user.
+    - Allow user to update any of his previously contributed recipes, with all the previous information being loaded on the page.
+    - Allow user to delete any of his previously contributed recipes.
+    - Allow user to filter his recipes by ingredients or meal type.
+    - Allow user to change the visibility of any of his previously contributed recipes, so that private recipes don't appear on the recipe explorer page.
 • Presented the project, with all tasks of the second and third sprints completed, to the mentor during the lab session and noted the feedback received.
-• WORK FOR NEXT WEEK: Complete the remaining tasks in time to submit the project on Friday.
+• WORK FOR NEXT WEEK: Implement most of the major features and work on improving the front-end design.
+
+  WEEK 9
+• Created a central search bar for recipes as well as ingredients.
+• Created a feature to allow users to search ingredients, allow them to be selected or deselected from the running list.
+• Created a feature to allow users to view the category for any ingredient on hovering above it.
+• Created tabs for selecting ingredients on the recipe explorer page, one for ingredients to include and the other for those to exclude from the search. When one tab is open, the checkboxes for the ingredients selected in the other tab are disabled.
+• Modified the design of the main app bar.
+• Modified the design of the ingredient category and meal type views.
+• Added radio buttons to switch between ingredient-based, mealtype-based or normal recipe search.
+• Display public recipes stored in the database (contributed by users) on recipe explorer page, and allow ingredient-based (with the exclusion feature) and meal type-based search for them as well.
+• Add a "Suggest Ingredients" button and display the ingredients being suggested, and allow them to be selected or deselected from the running list.
+• Helped team member in debugging the ingredient-based search feature for recipe fetched from the API.
+• WORK FOR NEXT WEEK: Add the remaining features, complete the report and prepare for the final demo on Friday.
