@@ -327,6 +327,9 @@ const useStyles = theme => ({
         float:'right',
         color:'black',
         backgroundColor:'orange',
+    },
+    iconColor: {
+        fill: "#FF7600"
     }
 });
 
@@ -1666,7 +1669,7 @@ class ContributePage extends React.Component {
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleSingleMealtypeDelete}
                                     >
-                                        <DeleteIcon style={{fill: "orange"}}/>
+                                        <DeleteIcon className={classes.iconColor}/>
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
@@ -1708,7 +1711,7 @@ class ContributePage extends React.Component {
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                     >
-                                        <DeleteIcon style={{fill: "orange"}}/>
+                                        <DeleteIcon className={classes.iconColor}/>
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
@@ -1752,7 +1755,7 @@ class ContributePage extends React.Component {
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                     >
-                                        <DeleteIcon style={{fill: "orange"}}/>
+                                        <DeleteIcon className={classes.iconColor}/>
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
@@ -1840,7 +1843,7 @@ class ContributePage extends React.Component {
                                                         control={
                                                             <Checkbox checked={value.checked}
                                                             onChange={this.handleIngredientCheckChange} 
-                                                            name={key} value={key} color="primary"
+                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                         />}
                                                         label={key}
                                                     />
@@ -1858,7 +1861,7 @@ class ContributePage extends React.Component {
                                                             control={
                                                                 <Checkbox checked={value.checked}
                                                                 onChange={this.handleIngredientCheckChange} 
-                                                                name={key} value={key} color="primary" 
+                                                                name={key} value={key} style={{color: "#FF7600"}}
                                                             />}
                                                             label={key}
                                                         />
@@ -1887,7 +1890,7 @@ class ContributePage extends React.Component {
                                                                 control={
                                                                     <Checkbox checked={value.checked}
                                                                     onChange={this.handleIngredientCheckChange} 
-                                                                    name={key} value={key} color="primary" 
+                                                                    name={key} value={key} style={{color: "#FF7600"}}
                                                                 />}
                                                                 label={key}
                                                             />
@@ -2286,7 +2289,7 @@ class ContributePage extends React.Component {
                                                     aria-label="delete" color="secondary"
                                                     onClick={this.handleRecipeStepDelete.bind(this, index)}
                                                 >
-                                                    <DeleteIcon style={{fill: "orange"}}/>
+                                                    <DeleteIcon className={classes.iconColor}/>
                                                 </IconButton>
                                             </Grid>
                                             <Grid item xs={10}>
@@ -2320,7 +2323,7 @@ class ContributePage extends React.Component {
                                                         aria-label="upward" color="primary"
                                                         onClick={this.handleRecipeStepMoveUp.bind(this, index)}
                                                     >
-                                                        <ArrowUpwardIcon style={{fill: "orange"}}/>
+                                                        <ArrowUpwardIcon className={classes.iconColor}/>
                                                     </IconButton>
                                                 )}
                                                 {(index === (this.state.recipe_steps_input.length - 1)) ? (
@@ -2337,7 +2340,7 @@ class ContributePage extends React.Component {
                                                         aria-label="downward" color="primary"
                                                         onClick={this.handleRecipeStepMoveDown.bind(this, index)}
                                                     >
-                                                        <ArrowDownwardIcon style={{fill: "orange"}}/>
+                                                        <ArrowDownwardIcon className={classes.iconColor}/>
                                                     </IconButton>
                                                 )}
                                             </Grid>
@@ -2402,7 +2405,7 @@ class ContributePage extends React.Component {
                                                     aria-label="delete" color="secondary"
                                                     onClick={this.handleMealtypeDelete.bind(this, obj)}
                                                 >
-                                                    <DeleteIcon style={{fill: "orange"}}/>
+                                                    <DeleteIcon className={classes.iconColor}/>
                                                 </IconButton>
                                             </Grid>
                                             <Grid item xs={11}>

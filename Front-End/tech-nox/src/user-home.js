@@ -214,6 +214,9 @@ const useStyles = theme => ({
     media: {
         height: 0,
         paddingTop: '56.25%', // 16:9
+    },
+    iconColor: {
+        fill: "#FF7600"
     }
 });
 
@@ -1175,7 +1178,7 @@ class UserHomePage extends React.Component {
                                     aria-label="delete" color="secondary"
                                     onClick={this.handleMealtypeDelete}
                                 >
-                                    <DeleteIcon style={{fill: "orange"}}/>
+                                    <DeleteIcon className={classes.iconColor}/>
                                 </IconButton>
                             </Grid>
                             <Grid item xs={9}>
@@ -1190,16 +1193,16 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{color:"black",backgroundColor:"white",fontSize:10,borderRadius:'0px'}}
-                                fullWidth
+                                style={{fontSize:10,borderRadius:'0px',color:"black",backgroundColor:"white"}}
+                                fullWidth disabled
                             >
                                     INGREDIENTS TO INCLUDE
                             </Button>   
                         :
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{color:"white",fontSize:10,borderRadius:'0px',backgroundColor:"#FF7600"}}
-                                fullWidth
+                                style={{fontSize:10,borderRadius:'0px',color:"white",backgroundColor:"#333333"}}
+                                fullWidth disableElevation
                                 variant="contained"
                             >
                                     INGREDIENTS TO INCLUDE
@@ -1210,8 +1213,8 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{color:"white",fontSize:10,borderRadius:'0px',backgroundColor:"#FF7600"}}
-                                fullWidth
+                                style={{fontSize:10,borderRadius:'0px',color:"white",backgroundColor:"#333333"}}
+                                fullWidth disableElevation
                                 variant="contained"
 
                             >
@@ -1220,8 +1223,8 @@ class UserHomePage extends React.Component {
                         :
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{color:"black", fontSize:10,borderRadius:'0px',backgroundColor:"white"}}
-                                fullWidth
+                                style={{fontSize:10,borderRadius:'0px',color:"black",backgroundColor:"white"}}
+                                fullWidth disabled
                             >
                                     INGREDIENTS TO EXCLUDE
                             </Button>
@@ -1258,7 +1261,7 @@ class UserHomePage extends React.Component {
                                             aria-label="delete" color="secondary"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
-                                            <DeleteIcon style={{fill: "orange"}}/>
+                                            <DeleteIcon className={classes.iconColor}/>
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
@@ -1302,7 +1305,7 @@ class UserHomePage extends React.Component {
                                             aria-label="delete" color="secondary"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
-                                            <DeleteIcon style={{fill: "orange"}}/>
+                                            <DeleteIcon className={classes.iconColor}/>
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
@@ -1414,7 +1417,7 @@ class UserHomePage extends React.Component {
                                                                 control={
                                                                     <Checkbox checked={value.checked}
                                                                     onChange={this.handleIngredientCheckChange}
-                                                                    name={key} value={key} color="primary"
+                                                                    name={key} value={key} style={{color: "#FF7600"}}
                                                                 />}
                                                                 label={key}
                                                             />
@@ -1450,7 +1453,7 @@ class UserHomePage extends React.Component {
                                                                         control={
                                                                             <Checkbox checked={value.checked}
                                                                             onChange={this.handleIngredientCheckChange}
-                                                                            name={key} value={key} color="primary"
+                                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1481,7 +1484,7 @@ class UserHomePage extends React.Component {
                                                                         control={
                                                                             <Checkbox checked={value.checked}
                                                                             onChange={this.handleIngredientCheckChange}
-                                                                            name={key} value={key} color="primary"
+                                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1514,7 +1517,7 @@ class UserHomePage extends React.Component {
                                                                         control={
                                                                             <Checkbox checked={value.checked}
                                                                             onChange={this.handleIngredientCheckChange}
-                                                                            name={key} value={key} color="primary"
+                                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1545,7 +1548,7 @@ class UserHomePage extends React.Component {
                                                                         control={
                                                                             <Checkbox checked={value.checked}
                                                                             onChange={this.handleIngredientCheckChange}
-                                                                            name={key} value={key} color="primary"
+                                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1587,7 +1590,7 @@ class UserHomePage extends React.Component {
                                                                             control={
                                                                                 <Checkbox checked={value.checked}
                                                                                 onChange={this.handleIngredientCheckChange}
-                                                                                name={key} value={key} color="primary"
+                                                                                name={key} value={key} style={{color: "#FF7600"}}
                                                                             />}
                                                                             label={key}
                                                                         />
@@ -1614,7 +1617,7 @@ class UserHomePage extends React.Component {
                                                                             control={
                                                                                 <Checkbox checked={value.checked}
                                                                                 onChange={this.handleIngredientCheckChange}
-                                                                                name={key} value={key} color="primary"
+                                                                                name={key} value={key} style={{color: "#FF7600"}}
                                                                             />}
                                                                             label={key}
                                                                         />
@@ -1663,14 +1666,14 @@ class UserHomePage extends React.Component {
                         <Divider className={classes.dividerStyle1} />
                         <FormControl component="fieldset">
                             <RadioGroup style={{fontSize:12}} aria-label="filter" name="filter" value={this.state.recipeFilter} onChange={this.handleRecipeFilterChange}>
-                                <FormControlLabel value="noFilter" control={<Radio style={{color: "orange"}}/>} label="Show all recipes" />
+                                <FormControlLabel value="noFilter" control={<Radio style={{color: "#FF7600"}}/>} label="Show all recipes" />
                                 {(this.state.selected_ingredients.length || this.state.selected_ingredients_exclude.length) ?
-                                    <FormControlLabel value="filterByIngredients" control={<Radio style={{color: "orange"}}/>} label="Search by selected ingredients" />
+                                    <FormControlLabel value="filterByIngredients" control={<Radio style={{color: "#FF7600"}}/>} label="Search by selected ingredients" />
                                 :
                                     <FormControlLabel disabled value="filterByIngredients" control={<Radio />} label="Search by selected ingredients" />
                                 }
                                 {this.state.selected_mealtype !== '' ?
-                                    <FormControlLabel value="filterByMealtype" control={<Radio style={{color: "orange"}}/>} label="Search by selected meal type" />
+                                    <FormControlLabel value="filterByMealtype" control={<Radio style={{color: "#FF7600"}}/>} label="Search by selected meal type" />
                                 :
                                     <FormControlLabel disabled value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
                                 }
