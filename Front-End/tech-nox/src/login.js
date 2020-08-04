@@ -1,17 +1,18 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 import axios from 'axios';
+import auth from './auth';
+
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -25,11 +26,13 @@ class LoginPage extends React.Component {
             alertOpen: false,
             redirectToHome: false
         }
+
+        this.LoginHandler = this.LoginHandler.bind(this);
     }
 
-    LoginHandler = () => {
+    async LoginHandler() {
         // check if user and password exists in database
-        axios.post('/login', {
+        await axios.post('/login', {
                 'username': this.state.userData.userName,
                 'password': this.state.userData.password
             })
@@ -40,7 +43,13 @@ class LoginPage extends React.Component {
                         password: response.data.password
                     },
                     redirectToHome: true
-                })
+                });
+
+                auth.setUserDetails(response.data.username);
+                
+                auth.login(() => {
+                    this.props.history.push('/' + response.data.username);
+                });
             })
             .catch(error => {
                 this.setState({
@@ -70,10 +79,6 @@ class LoginPage extends React.Component {
     }
 
     render() {
-        if (this.state.redirectToHome === true) {
-            return <Redirect to={'/' + this.state.userData.username} />
-        }
-
         return (
             <div>
                 <Dialog open={true}>

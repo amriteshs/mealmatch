@@ -12,43 +12,37 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardActions from '@material-ui/core/CardActions';
 import Typography from "@material-ui/core/Typography";
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Button from '@material-ui/core/Button';
-import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import Grid from '@material-ui/core/Grid';
-import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Collapse from '@material-ui/core/Collapse';
 import Tooltip from '@material-ui/core/Tooltip';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Box from '@material-ui/core/Box';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { deepOrange, green } from '@material-ui/core/colors';
-import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import { deepOrange, green } from '@material-ui/core/colors';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SearchIcon from '@material-ui/icons/Search';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import 'fontsource-roboto';
 import axios from 'axios';
+import auth from './auth';
 import RecipeReviewCard from './recipeCards';
 import IngredientCard from './ingredicard';
-
 
 const drawerWidth = 240;
 const topAppBarWidth = 64;
@@ -81,7 +75,7 @@ const useStyles = theme => ({
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade(theme.palette.common.white, 0.15),
         '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
+            backgroundColor: fade(theme.palette.common.white, 0.25),
         },
         marginRight: theme.spacing(2),
         marginLeft: 0,
@@ -226,9 +220,9 @@ const useStyles = theme => ({
 class UserHomePage extends React.Component {
     constructor(props) {
         super(props);
-
+        
         this.state = {
-            username: this.props.match.params.username,
+            username: auth.getUserDetails(),
             ingredient_count: 0,
             category_count: 0,
             mealtype_count: 0,
@@ -280,7 +274,6 @@ class UserHomePage extends React.Component {
         this.handlePublicRecipeCardExpand = this.handlePublicRecipeCardExpand.bind(this);
         this.getContributedRecipes = this.getContributedRecipes.bind(this);
         this.getApiRecipes = this.getApiRecipes.bind(this);
-        this.getSearchResults = this.getSearchResults.bind(this);
     }
 
     componentDidMount() {
@@ -316,10 +309,6 @@ class UserHomePage extends React.Component {
             anchorEl: null
         })
     };
-
-    handleLogout(nav) {
-        window.location.href = nav;
-    }
 
     updateCardState = (name) => {
         if (name === "Ingredient Category") {
@@ -424,7 +413,6 @@ class UserHomePage extends React.Component {
                     ingredient_search_results: ingrSearchList,
                     suggested_ingredients: ingrSuggestList,
                     selected_ingredients: ingrSelect
-                    // recipeFilter: 'noFilter'
                 });
 
                 this.getContributedRecipes('noFilter');
@@ -485,7 +473,6 @@ class UserHomePage extends React.Component {
                     category_list: catList,
                     ingredient_search_results: ingrSearchList,
                     selected_ingredients_exclude: ingrSelect
-                    // recipeFilter: 'noFilter'
                 });
 
                 this.getContributedRecipes('noFilter');
@@ -538,7 +525,6 @@ class UserHomePage extends React.Component {
                     ingredient_search_results: ingrSearchList,
                     suggested_ingredients: ingrSuggestList,
                     selected_ingredients: []
-                    // recipeFilter: 'noFilter'
                 });
 
                 this.getContributedRecipes('noFilter');
@@ -581,7 +567,6 @@ class UserHomePage extends React.Component {
                     category_list: catList,
                     ingredient_search_results: ingrSearchList,
                     selected_ingredients_exclude: []
-                    // recipeFilter: 'noFilter'
                 });
 
                 this.getContributedRecipes('noFilter');
@@ -636,7 +621,6 @@ class UserHomePage extends React.Component {
                     ingredient_search_results: ingrSearchList,
                     suggested_ingredients: ingrSuggestList,
                     selected_ingredients: ingrSelect
-                    // recipeFilter: 'noFilter'
                 });
 
                 this.getContributedRecipes('noFilter');
@@ -681,7 +665,6 @@ class UserHomePage extends React.Component {
                     category_list: catList,
                     ingredient_search_results: ingrSearchList,
                     selected_ingredients_exclude: ingrSelect
-                    // recipeFilter: 'noFilter'
                 });
 
                 this.getContributedRecipes('noFilter');
@@ -718,7 +701,6 @@ class UserHomePage extends React.Component {
         if (this.state.recipeFilter === 'filterByMealtype') {
             this.setState({
                 selected_mealtype: ''
-                // recipeFilter: 'noFilter'
             });
 
             this.getContributedRecipes('noFilter');
@@ -782,19 +764,25 @@ class UserHomePage extends React.Component {
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10';
 
-            await axios.get(URL)
-                .then(response => {
-                    this.setState({
-                        api_recipe_list: response.data.results,
-                        recipeFilter: filterVal
-                    });
-                })
-                .catch(error => {
-                    this.setState({
-                        api_recipe_list: [],
-                        recipeFilter: filterVal
-                    });
-                });
+            // await axios.get(URL)
+            //     .then(response => {
+            //         this.setState({
+            //             api_recipe_list: response.data.results,
+            //             recipeFilter: filterVal
+            //         });
+            //     })
+            //     .catch(error => {
+            //         this.setState({
+            //             api_recipe_list: [],
+            //             recipeFilter: filterVal
+            //         });
+            //     });
+
+            // comment code below when uncommenting above
+            this.setState({
+                api_recipe_list: [],
+                recipeFilter: filterVal
+            });
         } else if (filterVal === 'filterByMealtype') {
             // fetch recipes by meal type
             this.setState({
@@ -807,23 +795,35 @@ class UserHomePage extends React.Component {
             let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
             this.state.selected_ingredients.forEach(ingredient => {
                 URL += (ingredient.ingredient_name.replace(" ","") + ",+");
+                // URL += (ingredient.ingredient_name.replace(" ","+") + ",+");
             });
             URL = URL.slice(0,-2);
 
-            await axios.get(URL)
-                .then(response => {
-                    console.log(response.data);
-                    this.setState({
-                        api_recipe_list: response.data,
-                        recipeFilter: filterVal
-                    });
-                })
-                .catch(error => {
-                    this.setState({
-                        api_recipe_list: [],
-                        recipeFilter: filterVal
-                    });
-                });
+            // await axios.get(URL)
+            //     .then(response => {
+            //         let rcpFilter = [];
+            //         response.data.forEach(recipe =>  {
+            //             if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)).length) {
+            //                 rcpFilter.push(recipe);
+            //             }
+            //         });
+            //         this.setState({
+            //             api_recipe_list: response.data,
+            //             recipeFilter: filterVal
+            //         });
+            //     })
+            //     .catch(error => {
+            //         this.setState({
+            //             api_recipe_list: [],
+            //             recipeFilter: filterVal
+            //         });
+            //     });
+
+            // comment code below when uncommenting above
+            this.setState({
+                api_recipe_list: [],
+                recipeFilter: filterVal
+            });
         }
     }
 
@@ -846,10 +846,6 @@ class UserHomePage extends React.Component {
     }
 
     handleRecipeFilterChange(event) {
-        // this.setState({
-        //     recipeFilter: event.target.value
-        // })
-
         this.getContributedRecipes(event.target.value);
         this.getApiRecipes(event.target.value);
     }
@@ -860,23 +856,31 @@ class UserHomePage extends React.Component {
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
-            axios.get(URL)
-                .then(response => {
-                    this.setState({
-                        api_recipe_list: response.data.results,
-                        isShowCategory: true,
-                        isShowIngrSearch: false,
-                        recipeFilter: 'noFilter'
-                    });
-                })
-                .catch(error => {
-                    this.setState({
-                        api_recipe_list: [],
-                        isShowCategory: true,
-                        isShowIngrSearch: false,
-                        recipeFilter: 'noFilter'
-                    });
-                });
+            // axios.get(URL)
+            //     .then(response => {
+            //         this.setState({
+            //             api_recipe_list: response.data.results,
+            //             isShowCategory: true,
+            //             isShowIngrSearch: false,
+            //             recipeFilter: 'noFilter'
+            //         });
+            //     })
+            //     .catch(error => {
+            //         this.setState({
+            //             api_recipe_list: [],
+            //             isShowCategory: true,
+            //             isShowIngrSearch: false,
+            //             recipeFilter: 'noFilter'
+            //         });
+            //     });
+
+            // comment code below when uncommenting above
+            this.setState({
+                api_recipe_list: [],
+                isShowCategory: true,
+                isShowIngrSearch: false,
+                recipeFilter: 'noFilter'
+            });
         } else if (this.state.searchParam === 'ingredients') {
             let response = await axios.post('/ingredient', {
                 'ingredient': this.state.searched_ingredient
@@ -954,6 +958,32 @@ class UserHomePage extends React.Component {
         });
     }
 
+    onClickAbout() {
+        this.props.history.push('/about');
+    }
+
+    onClickHome() {
+        if (!auth.isAuthenticated()) {
+            this.props.history.push('/');
+        } else {
+            this.props.history.push('/' + this.state.username);
+        }
+    }
+
+    onClickContribute() {
+        this.props.history.push('/' + this.state.username + '/contribute');
+    }
+
+    onClickLogin() {
+        this.props.history.push('/login');
+    }
+
+    handleLogout() {
+        auth.logout(() => {
+            this.props.history.push('/');
+        })
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -961,17 +991,72 @@ class UserHomePage extends React.Component {
             <div className={classes.root}>
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
-                <Toolbar>
-                    <Box display='flex' flexGrow={1}>
-                        <Typography variant="h6" noWrap>
-                            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-                        </Typography>
-                        <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
-                        <Button color="inherit" style={{marginLeft:'1%',marginRight:'4%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
-                        <div className={classes.search}>
-                            <div className={classes.searchIcon}>
-                                <SearchIcon />
+                {!auth.isAuthenticated() ?
+                    <Toolbar>
+                        <Box display='flex' flexGrow={1}>
+                            <Typography variant="h6" noWrap>
+                                <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                            </Typography>
+                            <Button color="inherit" style={{marginLeft:'5%',marginRight:'15%'}} onClick={this.onClickHome.bind(this)}>Home</Button>
+                            <div className={classes.search}>
+                                <div className={classes.searchIcon}>
+                                    <SearchIcon />
+                                </div>
+                                    {this.state.searchParam === 'recipes' ?
+                                        <InputBase
+                                            placeholder="Search..."
+                                            classes={{
+                                                root: classes.inputRoot,
+                                                input: classes.inputInput,
+                                            }}
+                                            inputProps={{ 'aria-label': 'search' }}
+                                            value={this.state.api_recipe_name}
+                                            onChange={this.setSearchValue}
+                                            onBlur={this.setSearchValue}
+                                        />
+                                    :
+                                        <InputBase
+                                            placeholder="Search..."
+                                            classes={{
+                                                root: classes.inputRoot,
+                                                input: classes.inputInput,
+                                            }}
+                                            inputProps={{ 'aria-label': 'search' }}
+                                            value={this.state.searched_ingredient}
+                                            onChange={this.setSearchValue}
+                                            onBlur={this.setSearchValue}
+                                        />
+                                    }
+                                    <NativeSelect
+                                        value={this.state.searchParam}
+                                        onChange={this.handleSearchParamChange}
+                                        className={classes.searchSelect}
+                                        name="name"
+                                        inputProps={{
+                                            id: 'name-native-error',
+                                        }}
+                                    >
+                                        <option value="recipes">Recipes</option>
+                                        <option value="ingredients">Ingredients</option>
+                                    </NativeSelect>
                             </div>
+                            <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
+                        </Box>
+                        <Button style={{marginRight:'2%'}} color="inherit" onClick={this.onClickAbout.bind(this)}>About</Button>
+                        <Button color="inherit" onClick={this.onClickLogin.bind(this)}>Login</Button>
+                    </Toolbar>
+                :
+                    <Toolbar>
+                        <Box display='flex' flexGrow={1}>
+                            <Typography variant="h6" noWrap>
+                                <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                            </Typography>
+                            <Button color="inherit" style={{marginLeft:'5%'}} onClick={this.onClickHome.bind(this)}>Home</Button>
+                            <Button color="inherit" style={{marginLeft:'1%',marginRight:'4%'}} onClick={this.onClickContribute.bind(this)}>Contribute</Button>
+                            <div className={classes.search}>
+                                <div className={classes.searchIcon}>
+                                    <SearchIcon />
+                                </div>
                                 {this.state.searchParam === 'recipes' ?
                                     <InputBase
                                         placeholder="Search..."
@@ -1009,42 +1094,43 @@ class UserHomePage extends React.Component {
                                     <option value="recipes">Recipes</option>
                                     <option value="ingredients">Ingredients</option>
                                 </NativeSelect>
+                            </div>
+                            <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
+                        </Box>
+                        <Button style={{marginRight:'2%'}} color="inherit" onClick={this.onClickAbout.bind(this)}>About</Button>
+                        <div>
+                            <IconButton
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={this.handleMenu}
+                                color="inherit"
+                            >
+                                <AccountCircleIcon />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={this.state.anchorEl}
+                                getContentAnchorEl={null}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(this.state.anchorEl)}
+                                onClose={this.handleMenuClose}
+                            >
+                                <MenuItem style={{fontSize:14}}><b>{this.state.username}</b></MenuItem>
+                                <Divider/>
+                                <MenuItem style={{fontSize:14}} onClick={this.handleLogout.bind(this)}>Logout</MenuItem>
+                            </Menu>
                         </div>
-                        <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
-                    </Box>
-                    <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
-                    <div>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={this.handleMenu}
-                            color="inherit"
-                        >
-                            <AccountCircleIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={this.state.anchorEl}
-                            getContentAnchorEl={null}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(this.state.anchorEl)}
-                            onClose={this.handleMenuClose}
-                        >
-                            <MenuItem style={{fontSize:14}}><b>{this.state.username}</b></MenuItem>
-                            <Divider/>
-                            <MenuItem style={{fontSize:14}} onClick={() => {this.handleLogout("/")}}>Logout</MenuItem>
-                        </Menu>
-                    </div>
-                </Toolbar>
+                    </Toolbar>
+                }
             </AppBar>
             <Drawer
                 className={classes.drawer}
