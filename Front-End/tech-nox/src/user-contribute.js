@@ -1,26 +1,24 @@
 import React from "react";
 import { fade, withStyles } from "@material-ui/core/styles";
-import { Redirect } from 'react-router-dom';
 import clsx from 'clsx';
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
-import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from '@material-ui/core/Button';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
-import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
+import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
@@ -31,12 +29,19 @@ import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import InputBase from '@material-ui/core/InputBase';
 import Switch from '@material-ui/core/Switch';
+import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import Dialog from '@material-ui/core/Dialog';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import { red } from '@material-ui/core/colors';
+import Tooltip from '@material-ui/core/Tooltip';
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import { red, deepOrange, green } from '@material-ui/core/colors';
+import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -47,18 +52,10 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import Menu from '@material-ui/core/Menu';
-import Tooltip from '@material-ui/core/Tooltip';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import { deepOrange, green } from '@material-ui/core/colors';
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import List from "@material-ui/core/List";
-import Avatar from '@material-ui/core/Avatar';
-import NativeSelect from '@material-ui/core/NativeSelect';
 
 import 'fontsource-roboto';
 import axios from 'axios';
+import auth from './auth';
 
 const drawerWidth = 240;
 const topAppBarWidth = 64;
@@ -105,7 +102,7 @@ const useStyles = theme => ({
         marginLeft: 0,
         width: '20rem',
         [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(1),
+            marginLeft: theme.spacing(3),
             width: 'auto',
         },
     },
@@ -333,12 +330,13 @@ const useStyles = theme => ({
     }
 });
 
+
 class ContributePage extends React.Component {
     constructor(props) {
         super(props);
-
+        
         this.state = {
-            username: this.props.match.params.username,
+            username: auth.getUserDetails(),
             ingredient_count: 0,
             category_count: 0,
             mealtype_count: 0,
@@ -374,7 +372,9 @@ class ContributePage extends React.Component {
             recipeErrorMessage: '',
             anchorEl: null,
             openRecipeDelete: [],
-            isShowIngrSearch: false
+            isShowIngrSearch: false,
+            searchParam: 'recipes',
+            recipeFilter: 'noFilter'
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -418,10 +418,6 @@ class ContributePage extends React.Component {
         this.handleLogout = this.handleLogout.bind(this);
         this.handleDeleteDialogOpen = this.handleDeleteDialogOpen.bind(this);
         this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
-        // this.setIngredientNameValue = this.setIngredientNameValue.bind(this);
-        // this.handleIngredientSearch = this.handleIngredientSearch.bind(this);
-        // this.setRecipeNameValue = this.setRecipeNameValue.bind(this);
-        // this.handleRecipeSearch = this.handleRecipeSearch.bind(this);
         this.handleSearchParamChange = this.handleSearchParamChange.bind(this);
         this.setSearchValue = this.setSearchValue.bind(this);
         this.getSearchResults = this.getSearchResults.bind(this);
@@ -1138,7 +1134,8 @@ class ContributePage extends React.Component {
             isShowAllIngredients: false,
             isShowCategory: true,
             file: '',
-            imagePreviewUrl: ''
+            imagePreviewUrl: '',
+            searchParam: 'recipes'
         });
 
         window.scrollTo(0, 0);
@@ -1173,7 +1170,8 @@ class ContributePage extends React.Component {
             isShowCategory: true,
             isShowAllIngredients: false,
             file: '',
-            imagePreviewUrl: ''
+            imagePreviewUrl: '',
+            searchParam: 'ingredients'
         });
 
         window.scrollTo(0, 0);
@@ -1223,7 +1221,8 @@ class ContributePage extends React.Component {
             isShowCategory: true,
             isShowAllIngredients: false,
             file: '',
-            imagePreviewUrl: ''
+            imagePreviewUrl: '',
+            searchParam: 'ingredients'
         });
 
         window.scrollTo(0, 0);
@@ -1410,10 +1409,6 @@ class ContributePage extends React.Component {
         }
     }
 
-    handleLogout(nav) {
-        window.location.href = nav;
-    }
-
     handleSearchParamChange(event) {
         this.setState({
             searchParam: event.target.value,
@@ -1465,6 +1460,28 @@ class ContributePage extends React.Component {
         }
     }
 
+    onClickAbout() {
+        this.props.history.push('/about');
+    }
+
+    onClickHome() {
+        this.props.history.push('/' + this.state.username);
+    }
+
+    onClickContribute() {
+        this.props.history.push('/' + this.state.username + '/contribute');
+    }
+
+    onClickLogin() {
+        this.props.history.push('/login');
+    }
+
+    handleLogout() {
+        auth.logout(() => {
+            this.props.history.push('/');
+        })
+    }
+
     render() {
         const { classes } = this.props;
         
@@ -1492,7 +1509,7 @@ class ContributePage extends React.Component {
                 />);
             } else {
                 $imagePreview = (<img
-                    src={require('./static/images/' + this.state.selected_recipe_id + '.jpg')}
+                    src={require('./static/recipes/' + this.state.selected_recipe_id + '.jpg')}
                     alt="not available"
                     className={classes.imageUpload}
                 />)
@@ -1508,37 +1525,38 @@ class ContributePage extends React.Component {
                         <Typography variant="h6" noWrap>
                             <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
                         </Typography>
-                        <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
-                        <Button color="inherit" style={{marginLeft:'1%',marginRight:'4%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                        <Button color="inherit" style={{marginLeft:'5%'}} onClick={this.onClickHome.bind(this)}>Home</Button>
+                        <Button color="inherit" style={{marginLeft:'1%',marginRight:'4%'}} onClick={this.onClickContribute.bind(this)}>Contribute</Button>
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
-                                {this.state.searchParam === 'recipes' ?
-                                    <InputBase
-                                        placeholder="Search..."
-                                        classes={{
-                                            root: classes.inputRoot,
-                                            input: classes.inputInput,
-                                        }}
-                                        inputProps={{ 'aria-label': 'search' }}
-                                        value={this.state.searched_recipe}
-                                        onChange={this.setSearchValue}
-                                        onBlur={this.setSearchValue}
-                                    />
-                                :
-                                    <InputBase
-                                        placeholder="Search..."
-                                        classes={{
-                                            root: classes.inputRoot,
-                                            input: classes.inputInput,
-                                        }}
-                                        inputProps={{ 'aria-label': 'search' }}
-                                        value={this.state.searched_ingredient}
-                                        onChange={this.setSearchValue}
-                                        onBlur={this.setSearchValue}
-                                    />
-                                }
+                            {this.state.searchParam === 'recipes' ?
+                                <InputBase
+                                    placeholder="Search..."
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    value={this.state.searched_recipe}
+                                    onChange={this.setSearchValue}
+                                    onBlur={this.setSearchValue}
+                                />
+                            :
+                                <InputBase
+                                    placeholder="Search..."
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    value={this.state.searched_ingredient}
+                                    onChange={this.setSearchValue}
+                                    onBlur={this.setSearchValue}
+                                />
+                            }
+                            {(!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) ?
                                 <NativeSelect
                                     value={this.state.searchParam}
                                     onChange={this.handleSearchParamChange}
@@ -1551,10 +1569,22 @@ class ContributePage extends React.Component {
                                     <option value="recipes">Recipes</option>
                                     <option value="ingredients">Ingredients</option>
                                 </NativeSelect>
+                            :
+                                <NativeSelect
+                                    value={this.state.searchParam}
+                                    className={classes.searchSelect}
+                                    name="name"
+                                    inputProps={{
+                                        id: 'name-native-error',
+                                    }}
+                                >
+                                    <option value="ingredients">Ingredients</option>
+                                </NativeSelect>
+                            }
                         </div>
                         <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
                     </Box>
-                    <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
+                    <Button style={{marginRight:'2%'}} color="inherit" onClick={this.onClickAbout.bind(this)}>About</Button>
                     <div>
                         <IconButton
                             aria-label="account of current user"
@@ -1583,7 +1613,7 @@ class ContributePage extends React.Component {
                         >
                             <MenuItem style={{fontSize:14}}><b>{this.state.username}</b></MenuItem>
                             <Divider/>
-                            <MenuItem style={{fontSize:14}} onClick={() => {this.handleLogout("/")}}>Logout</MenuItem>
+                            <MenuItem style={{fontSize:14}} onClick={this.handleLogout.bind(this)}>Logout</MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>

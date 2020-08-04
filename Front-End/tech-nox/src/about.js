@@ -9,7 +9,12 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
 import 'fontsource-roboto';
+import auth from "./auth";
 
 
 const useStyles = theme => ({
@@ -18,8 +23,6 @@ const useStyles = theme => ({
         fontFamily: 'Roboto'
       },
     appBar: {
-        // width: `calc(100% - ${drawerWidth}px)`,
-        // marginLeft: drawerWidth,
         backgroundColor:'black'
     },
     searchBar:{
@@ -88,7 +91,6 @@ const useStyles = theme => ({
       maxWidth: '25%',
     },
     row1: {
-
       display: 'flex',
       flexWrap: 'wrap',
       marginRight: '-15px',
@@ -113,8 +115,56 @@ const useStyles = theme => ({
 
   class AboutPage extends React.Component {
     constructor(props) {
-      super(props);
-      }
+        super(props);
+
+        this.state = {
+            username: auth.getUserDetails(),
+            anchorEl: null
+        };
+
+        this.handleMenu = this.handleMenu.bind(this);
+        this.handleMenuClose = this.handleMenuClose.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
+    }
+
+    handleMenu = (event) => {
+        this.setState({
+            anchorEl: event.currentTarget
+        })
+    };
+    
+    handleMenuClose = () => {
+        this.setState({
+            anchorEl: null
+        })
+    };
+
+    onClickAbout() {
+        this.props.history.push('/about');
+    }
+
+    onClickHome() {
+        if (!auth.isAuthenticated()) {
+            this.props.history.push('/');
+        } else {
+            this.props.history.push('/' + this.state.username);
+        }
+    }
+
+    onClickContribute() {
+        this.props.history.push('/' + this.state.username + '/contribute');
+    }
+
+    onClickLogin() {
+        this.props.history.push('/login');
+    }
+
+    handleLogout() {
+        auth.logout(() => {
+            this.props.history.push('/');
+        });
+    }
+
     render() {
       const { classes } = this.props;
 
@@ -122,16 +172,60 @@ const useStyles = theme => ({
         <div className={classes.root}>
           <CssBaseline />
           <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar>
-              <Box display='flex' flexGrow={1}>
-                  <Typography variant="h6" noWrap>
-                      <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-                  </Typography>
-                  <Button color="inherit" style={{marginLeft:'5%'}} href='/'>Home</Button>
-              </Box>
-              <Button color="inherit" href='/about'>About</Button>
-              <Button color="inherit" href='/login'>Login</Button>
-            </Toolbar>
+            {!auth.isAuthenticated() ?
+              <Toolbar>
+                <Box display='flex' flexGrow={1}>
+                    <Typography variant="h6" noWrap>
+                        <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                    </Typography>
+                    <Button color="inherit" style={{marginLeft:'5%'}} onClick={this.onClickHome.bind(this)}>Home</Button>
+                </Box>
+                <Button color="inherit" style={{marginRight:'2%'}} onClick={this.onClickAbout.bind(this)}>About</Button>
+                <Button color="inherit" onClick={this.onClickLogin.bind(this)}>Login</Button>
+              </Toolbar>
+            :
+              <Toolbar>
+                  <Box display='flex' flexGrow={1}>
+                      <Typography variant="h6" noWrap>
+                          <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                      </Typography>
+                      <Button color="inherit" style={{marginLeft:'5%'}} onClick={this.onClickHome.bind(this)}>Home</Button>
+                      <Button color="inherit" style={{marginLeft:'1%'}} onClick={this.onClickContribute.bind(this)}>Contribute</Button>
+                  </Box>
+                  <Button style={{marginRight:'2%'}} color="inherit" onClick={this.onClickAbout.bind(this)}>About</Button>
+                  <div>
+                      <IconButton
+                          aria-label="account of current user"
+                          aria-controls="menu-appbar"
+                          aria-haspopup="true"
+                          onClick={this.handleMenu}
+                          color="inherit"
+                      >
+                          <AccountCircleIcon />
+                      </IconButton>
+                      <Menu
+                          id="menu-appbar"
+                          anchorEl={this.state.anchorEl}
+                          getContentAnchorEl={null}
+                          anchorOrigin={{
+                              vertical: 'bottom',
+                              horizontal: 'right',
+                          }}
+                          keepMounted
+                          transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'right',
+                          }}
+                          open={Boolean(this.state.anchorEl)}
+                          onClose={this.handleMenuClose}
+                      >
+                          <MenuItem style={{fontSize:14}}><b>{this.state.username}</b></MenuItem>
+                          <Divider/>
+                          <MenuItem style={{fontSize:14}} onClick={this.handleLogout.bind(this)}>Logout</MenuItem>
+                      </Menu>
+                  </div>
+              </Toolbar>
+            }
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
