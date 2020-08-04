@@ -1134,7 +1134,8 @@ class ContributePage extends React.Component {
             isShowAllIngredients: false,
             isShowCategory: true,
             file: '',
-            imagePreviewUrl: ''
+            imagePreviewUrl: '',
+            searchParam: 'recipes'
         });
 
         window.scrollTo(0, 0);
@@ -1169,7 +1170,8 @@ class ContributePage extends React.Component {
             isShowCategory: true,
             isShowAllIngredients: false,
             file: '',
-            imagePreviewUrl: ''
+            imagePreviewUrl: '',
+            searchParam: 'ingredients'
         });
 
         window.scrollTo(0, 0);
@@ -1219,7 +1221,8 @@ class ContributePage extends React.Component {
             isShowCategory: true,
             isShowAllIngredients: false,
             file: '',
-            imagePreviewUrl: ''
+            imagePreviewUrl: '',
+            searchParam: 'ingredients'
         });
 
         window.scrollTo(0, 0);
@@ -1506,7 +1509,7 @@ class ContributePage extends React.Component {
                 />);
             } else {
                 $imagePreview = (<img
-                    src={require('./static/images/' + this.state.selected_recipe_id + '.jpg')}
+                    src={require('./static/recipes/' + this.state.selected_recipe_id + '.jpg')}
                     alt="not available"
                     className={classes.imageUpload}
                 />)
@@ -1553,18 +1556,31 @@ class ContributePage extends React.Component {
                                     onBlur={this.setSearchValue}
                                 />
                             }
-                            <NativeSelect
-                                value={this.state.searchParam}
-                                onChange={this.handleSearchParamChange}
-                                className={classes.searchSelect}
-                                name="name"
-                                inputProps={{
-                                    id: 'name-native-error',
-                                }}
-                            >
-                                <option value="recipes">Recipes</option>
-                                <option value="ingredients">Ingredients</option>
-                            </NativeSelect>
+                            {(!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) ?
+                                <NativeSelect
+                                    value={this.state.searchParam}
+                                    onChange={this.handleSearchParamChange}
+                                    className={classes.searchSelect}
+                                    name="name"
+                                    inputProps={{
+                                        id: 'name-native-error',
+                                    }}
+                                >
+                                    <option value="recipes">Recipes</option>
+                                    <option value="ingredients">Ingredients</option>
+                                </NativeSelect>
+                            :
+                                <NativeSelect
+                                    value={this.state.searchParam}
+                                    className={classes.searchSelect}
+                                    name="name"
+                                    inputProps={{
+                                        id: 'name-native-error',
+                                    }}
+                                >
+                                    <option value="ingredients">Ingredients</option>
+                                </NativeSelect>
+                            }
                         </div>
                         <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
                     </Box>
