@@ -1175,7 +1175,7 @@ class UserHomePage extends React.Component {
                                     aria-label="delete" color="secondary"
                                     onClick={this.handleMealtypeDelete}
                                 >
-                                    <DeleteIcon />
+                                    <DeleteIcon style={{fill: "orange"}}/>
                                 </IconButton>
                             </Grid>
                             <Grid item xs={9}>
@@ -1258,7 +1258,7 @@ class UserHomePage extends React.Component {
                                             aria-label="delete" color="secondary"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
-                                            <DeleteIcon />
+                                            <DeleteIcon style={{fill: "orange"}}/>
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
@@ -1302,7 +1302,7 @@ class UserHomePage extends React.Component {
                                             aria-label="delete" color="secondary"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
-                                            <DeleteIcon />
+                                            <DeleteIcon style={{fill: "orange"}}/>
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>

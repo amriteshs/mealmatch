@@ -1666,7 +1666,7 @@ class ContributePage extends React.Component {
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleSingleMealtypeDelete}
                                     >
-                                        <DeleteIcon />
+                                        <DeleteIcon style={{fill: "orange"}}/>
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
@@ -1708,7 +1708,7 @@ class ContributePage extends React.Component {
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                     >
-                                        <DeleteIcon />
+                                        <DeleteIcon style={{fill: "orange"}}/>
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
@@ -1752,7 +1752,7 @@ class ContributePage extends React.Component {
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                     >
-                                        <DeleteIcon />
+                                        <DeleteIcon style={{fill: "orange"}}/>
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
@@ -2286,7 +2286,7 @@ class ContributePage extends React.Component {
                                                     aria-label="delete" color="secondary"
                                                     onClick={this.handleRecipeStepDelete.bind(this, index)}
                                                 >
-                                                    <DeleteIcon />
+                                                    <DeleteIcon style={{fill: "orange"}}/>
                                                 </IconButton>
                                             </Grid>
                                             <Grid item xs={10}>
@@ -2320,7 +2320,7 @@ class ContributePage extends React.Component {
                                                         aria-label="upward" color="primary"
                                                         onClick={this.handleRecipeStepMoveUp.bind(this, index)}
                                                     >
-                                                        <ArrowUpwardIcon />
+                                                        <ArrowUpwardIcon style={{fill: "orange"}}/>
                                                     </IconButton>
                                                 )}
                                                 {(index === (this.state.recipe_steps_input.length - 1)) ? (
@@ -2337,7 +2337,7 @@ class ContributePage extends React.Component {
                                                         aria-label="downward" color="primary"
                                                         onClick={this.handleRecipeStepMoveDown.bind(this, index)}
                                                     >
-                                                        <ArrowDownwardIcon />
+                                                        <ArrowDownwardIcon style={{fill: "orange"}}/>
                                                     </IconButton>
                                                 )}
                                             </Grid>
@@ -2402,7 +2402,7 @@ class ContributePage extends React.Component {
                                                     aria-label="delete" color="secondary"
                                                     onClick={this.handleMealtypeDelete.bind(this, obj)}
                                                 >
-                                                    <DeleteIcon />
+                                                    <DeleteIcon style={{fill: "orange"}}/>
                                                 </IconButton>
                                             </Grid>
                                             <Grid item xs={11}>
