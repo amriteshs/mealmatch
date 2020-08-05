@@ -788,7 +788,8 @@ class UserHomePage extends React.Component {
         } else if (filterVal === 'filterByMealtype') {
             // fetch recipes by meal type
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
-            const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&type=' + this.state.selected_mealtype;
+            const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&type=' + this.state.selected_mealtype.replace(" ", "+");
+            
             await axios.get(URL)
                 .then(response => {
                     this.setState({
@@ -803,20 +804,17 @@ class UserHomePage extends React.Component {
                      });
                  });
 
-            
-
-
-            /*this.setState({
-                api_recipe_list: [],
-                recipeFilter: filterVal
-            });*/
+            // // comment code below when uncommenting above
+            // this.setState({
+            //     api_recipe_list: [],
+            //     recipeFilter: filterVal
+            // });
         } else if (filterVal === 'filterByIngredients') {
             // fetch recipes by ingredients
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
             this.state.selected_ingredients.forEach(ingredient => {
-                URL += (ingredient.ingredient_name.replace(" ","") + ",+");
-                // URL += (ingredient.ingredient_name.replace(" ","+") + ",+");
+                URL += (ingredient.ingredient_name.replace(" ", "+") + ",+");
             });
             URL = URL.slice(0,-2);
 
