@@ -330,7 +330,11 @@ const useStyles = theme => ({
     },
     iconColor: {
         fill: "#FF7600"
-    }
+    },
+    catMtColor: {
+        color: 'orange',
+        backgroundColor: '#333333',
+    },
 });
 
 
@@ -1672,21 +1676,21 @@ class ContributePage extends React.Component {
                 <List>
                     <ListItem button onClick={this.updateCardState.bind(this, "Ingredient Category")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.green} variant="rounded"><b>C</b></Avatar>
+                            <Avatar className={classes.catMtColor} variant="rounded"><b>C</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Ingredient Category</b>} />
                     </ListItem>
                     {(this.state.isAddingRecipe || this.state.isUpdatingRecipe) ?
                         <ListItem button disabled onClick={this.updateCardState.bind(this, "Meal Type")}>
                             <ListItemAvatar>
-                                <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
+                                <Avatar className={classes.catMtColor} variant="rounded"><b>M</b></Avatar>
                             </ListItemAvatar>
                             <ListItemText primary={<b>Meal Type</b>} />
                         </ListItem>
                     :
                         <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
                             <ListItemAvatar>
-                                <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
+                                <Avatar className={classes.catMtColor} variant="rounded"><b>M</b></Avatar>
                             </ListItemAvatar>
                             <ListItemText primary={<b>Meal Type</b>} />
                         </ListItem>

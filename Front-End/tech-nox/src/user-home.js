@@ -188,6 +188,10 @@ const useStyles = theme => ({
         color: 'white',
         backgroundColor: deepOrange[500],
     },
+    catMtColor: {
+        color: 'orange',
+        backgroundColor: '#333333',
+    },
     catMtBtn: {
         textTransform: 'capitalize',
         justifyContent: 'flex-start'
@@ -1096,13 +1100,13 @@ class UserHomePage extends React.Component {
                 <List>
                     <ListItem button onClick={this.updateCardState.bind(this, "Ingredient Category")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.green} variant="rounded"><b>C</b></Avatar>
+                            <Avatar className={classes.catMtColor} variant="rounded"><b>C</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Ingredient Category</b>} />
                     </ListItem>
                     <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
+                            <Avatar className={classes.catMtColor} variant="rounded"><b>M</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Meal Type</b>} />
                     </ListItem>
@@ -1137,17 +1141,17 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{fontSize:10,borderRadius:'0px',color:"black",backgroundColor:"white"}}
-                                fullWidth disabled
+                                style={{fontSize:10,borderRadius:'0px',color:"orange",backgroundColor:"#333333"}}
+                                fullWidth
+                                variant="contained"
                             >
                                     INGREDIENTS TO INCLUDE
                             </Button>   
                         :
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{fontSize:10,borderRadius:'0px',color:"white",backgroundColor:"#333333"}}
-                                fullWidth disableElevation
-                                variant="contained"
+                                style={{fontSize:10,borderRadius:'0px',color:"#333333",backgroundColor:"#CCCCCC"}}
+                                fullWidth
                             >
                                     INGREDIENTS TO INCLUDE
                             </Button>
@@ -1157,9 +1161,8 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{fontSize:10,borderRadius:'0px',color:"white",backgroundColor:"#333333"}}
-                                fullWidth disableElevation
-                                variant="contained"
+                                style={{fontSize:10,borderRadius:'0px',color:"#333333",backgroundColor:"#CCCCCC"}}
+                                fullWidth
 
                             >
                                     INGREDIENTS TO EXCLUDE
@@ -1167,8 +1170,9 @@ class UserHomePage extends React.Component {
                         :
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{fontSize:10,borderRadius:'0px',color:"black",backgroundColor:"white"}}
-                                fullWidth disabled
+                                style={{fontSize:10,borderRadius:'0px',color:"orange",backgroundColor:"#333333"}}
+                                fullWidth
+                                variant="contained"
                             >
                                     INGREDIENTS TO EXCLUDE
                             </Button>
