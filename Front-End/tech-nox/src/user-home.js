@@ -408,30 +408,17 @@ class UserHomePage extends React.Component {
                 ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.value);
             }
 
-            if (!ingrSelect.length && !this.state.selected_ingredients_exclude.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: ingrSelect
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                suggested_ingredients: ingrSuggestList,
+                selected_ingredients: ingrSelect
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: ingrSelect
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         } else {
             let ingrList = {...this.state.ingredient_list};
@@ -469,28 +456,16 @@ class UserHomePage extends React.Component {
                 ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.value);
             }
 
-            if (!ingrSelect.length && !this.state.selected_ingredients.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: ingrSelect
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                selected_ingredients_exclude: ingrSelect
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: ingrSelect
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         }
     }
@@ -520,30 +495,17 @@ class UserHomePage extends React.Component {
                 }
             });
 
-            if (!this.state.selected_ingredients_exclude.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: []
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                suggested_ingredients: ingrSuggestList,
+                selected_ingredients: []
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: []
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         } else {
             let ingrList = {...this.state.ingredient_list};
@@ -563,28 +525,16 @@ class UserHomePage extends React.Component {
                 }
             });
 
-            if (!this.state.selected_ingredients.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: []
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                selected_ingredients_exclude: []
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: []
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         }
     }
@@ -616,30 +566,17 @@ class UserHomePage extends React.Component {
 
             ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
-            if (!ingrSelect.length && !this.state.selected_ingredients_exclude.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: ingrSelect
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                suggested_ingredients: ingrSuggestList,
+                selected_ingredients: ingrSelect
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: ingrSelect,
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         } else {
             let ingrList = {...this.state.ingredient_list};
@@ -661,28 +598,16 @@ class UserHomePage extends React.Component {
 
             ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
-            if (!ingrSelect.length && !this.state.selected_ingredients.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: ingrSelect
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                selected_ingredients_exclude: ingrSelect
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: ingrSelect,
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         }
     }
@@ -821,14 +746,16 @@ class UserHomePage extends React.Component {
             await axios.get(URL)
                 .then(response => {
                     let rcpFilter = [];
+                    
                     response.data.forEach(recipe =>  {
+                        console.log(this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)));
                         if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)).length) {
                             rcpFilter.push(recipe);
                         }
                     });
 
                     this.setState({
-                        api_recipe_list: response.data,
+                        api_recipe_list: rcpFilter,
                         recipeFilter: filterVal
                     });
                 })
@@ -1692,7 +1619,7 @@ class UserHomePage extends React.Component {
                                 {this.state.selected_mealtype !== '' ?
                                     <FormControlLabel value="filterByMealtype" control={<Radio style={{color: "#FF7600"}}/>} label="Search by selected meal type" />
                                 :
-                                    <FormControlLabel value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
+                                    <FormControlLabel disabled value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
                                 }
                             </RadioGroup>
                         </FormControl>
