@@ -695,49 +695,37 @@ class UserHomePage extends React.Component {
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10';
 
-            // await axios.get(URL)
-            //     .then(response => {
-            //         this.setState({
-            //             api_recipe_list: response.data.results,
-            //             recipeFilter: filterVal
-            //         });
-            //     })
-            //     .catch(error => {
-            //         this.setState({
-            //             api_recipe_list: [],
-            //             recipeFilter: filterVal
-            //         });
-            //     });
-
-            // comment code below when uncommenting above
-            this.setState({
-                api_recipe_list: [],
-                recipeFilter: filterVal
-            });
+            await axios.get(URL)
+                .then(response => {
+                    this.setState({
+                        api_recipe_list: response.data.results,
+                        recipeFilter: filterVal
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        api_recipe_list: [],
+                        recipeFilter: filterVal
+                    });
+                });
         } else if (filterVal === 'filterByMealtype') {
             // fetch recipes by meal type
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&type=' + this.state.selected_mealtype.replace(" ", "+");
             
-            // await axios.get(URL)
-            //     .then(response => {
-            //         this.setState({
-            //             api_recipe_list: response.data.results,
-            //             recipeFilter: filterVal
-            //         });
-            //     })
-            //     .catch(error => {
-            //          this.setState({
-            //              api_recipe_list: [],
-            //              recipeFilter: filterVal
-            //          });
-            //      });
-
-            // comment code below when uncommenting above
-            this.setState({
-                api_recipe_list: [],
-                recipeFilter: filterVal
-            });
+            await axios.get(URL)
+                .then(response => {
+                    this.setState({
+                        api_recipe_list: response.data.results,
+                        recipeFilter: filterVal
+                    });
+                })
+                .catch(error => {
+                     this.setState({
+                         api_recipe_list: [],
+                         recipeFilter: filterVal
+                     });
+                 });
         } else if (filterVal === 'filterByIngredients') {
             // fetch recipes by ingredients
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
@@ -747,34 +735,28 @@ class UserHomePage extends React.Component {
             });
             URL = URL.slice(0,-2);
 
-            // await axios.get(URL)
-            //     .then(response => {
-            //         let rcpFilter = [];
+            await axios.get(URL)
+                .then(response => {
+                    let rcpFilter = [];
                     
-            //         response.data.forEach(recipe =>  {
-            //             console.log(this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)));
-            //             if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)).length) {
-            //                 rcpFilter.push(recipe);
-            //             }
-            //         });
+                    response.data.forEach(recipe =>  {
+                        console.log(this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)));
+                        if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)).length) {
+                            rcpFilter.push(recipe);
+                        }
+                    });
 
-            //         this.setState({
-            //             api_recipe_list: rcpFilter,
-            //             recipeFilter: filterVal
-            //         });
-            //     })
-            //     .catch(error => {
-            //         this.setState({
-            //             api_recipe_list: [],
-            //             recipeFilter: filterVal
-            //         });
-            //     });
-
-            // comment code below when uncommenting above
-            this.setState({
-                api_recipe_list: [],
-                recipeFilter: filterVal
-            });
+                    this.setState({
+                        api_recipe_list: rcpFilter,
+                        recipeFilter: filterVal
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        api_recipe_list: [],
+                        recipeFilter: filterVal
+                    });
+                });
         }
     }
 
@@ -811,34 +793,25 @@ class UserHomePage extends React.Component {
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
-            // await axios.get(URL)
-            //     .then(response => {
-            //         this.setState({
-            //             contributed_recipe_list: ctbRcpFilter.slice(0, 10),
-            //             api_recipe_list: response.data.results,
-            //             isShowCategory: true,
-            //             isShowIngrSearch: false,
-            //             recipeFilter: 'noFilter'
-            //         });
-            //     })
-            //     .catch(error => {
-            //         this.setState({
-            //             contributed_recipe_list: ctbRcpFilter.slice(0, 10),
-            //             api_recipe_list: [],
-            //             isShowCategory: true,
-            //             isShowIngrSearch: false,
-            //             recipeFilter: 'noFilter'
-            //         });
-            //     });
-
-            // comment code below when uncommenting above
-            this.setState({
-                contributed_recipe_list: ctbRcpFilter.slice(0, 10),
-                api_recipe_list: [],
-                isShowCategory: true,
-                isShowIngrSearch: false,
-                recipeFilter: 'noFilter'
-            });
+            await axios.get(URL)
+                .then(response => {
+                    this.setState({
+                        contributed_recipe_list: ctbRcpFilter.slice(0, 10),
+                        api_recipe_list: response.data.results,
+                        isShowCategory: true,
+                        isShowIngrSearch: false,
+                        recipeFilter: 'noFilter'
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        contributed_recipe_list: ctbRcpFilter.slice(0, 10),
+                        api_recipe_list: [],
+                        isShowCategory: true,
+                        isShowIngrSearch: false,
+                        recipeFilter: 'noFilter'
+                    });
+                });
         } else if (this.state.searchParam === 'ingredients') {
             let response = await axios.post('/ingredient', {
                 'ingredient': this.state.searched_ingredient.trim().toLowerCase()

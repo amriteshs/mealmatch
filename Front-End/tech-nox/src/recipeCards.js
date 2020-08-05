@@ -95,16 +95,13 @@ export default function RecipeReviewCard(props) {
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-            <div>Time to Prepare the dish : {props.time} minutes </div>
-            <div>Serves people : {props.serves}</div>
+            <div>Time to prepare the dish: {props.time} minutes </div>
+            <div>Serves people: {props.serves}</div>
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
         </IconButton>
         <IconButton
           className={clsx(classes.expand, {
