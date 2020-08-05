@@ -55,7 +55,7 @@ class SuggestedIngredientsContributor(Resource):
                 contributor_ingredients.append(q[0])
 
         print(contributor_ingredients)
-        suggested_ingredients_contributor = ingredient_suggestion(contributor_ingredients)
+        suggested_ingredients_contributor = sorted(ingredient_suggestion(contributor_ingredients))
 
         data = {}
 

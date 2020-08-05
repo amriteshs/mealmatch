@@ -38213,7 +38213,7 @@ class SuggestedIngredients(Resource):
         for ingredient_fields in ingredients:
             user_ingredients.append(ingredient_fields["ingredient_name"])
 
-        suggested_ingredients = ingredient_suggestion(user_ingredients)
+        suggested_ingredients = sorted(ingredient_suggestion(user_ingredients))
 
         conn = db_connect(db_file)
         c = conn.cursor()
