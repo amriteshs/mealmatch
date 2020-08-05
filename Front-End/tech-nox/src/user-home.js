@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from 'react-router-dom';
 import { fade, withStyles } from "@material-ui/core/styles";
 import clsx from 'clsx';
 import Drawer from "@material-ui/core/Drawer";
@@ -229,7 +230,7 @@ class UserHomePage extends React.Component {
         super(props);
         
         this.state = {
-            username: auth.getUserDetails(),
+            username: this.props.match.params.username,
             ingredient_count: 0,
             category_count: 0,
             mealtype_count: 0,
@@ -256,7 +257,8 @@ class UserHomePage extends React.Component {
             isShowIngrSearch: false,
             isShowIngrSuggest: false,
             searchParam: 'recipes',
-            recipeFilter: 'noFilter'
+            recipeFilter: 'noFilter',
+            redirectToHome: false
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -708,12 +710,6 @@ class UserHomePage extends React.Component {
                         recipeFilter: filterVal
                     });
                 });
-
-            // // comment code below when uncommenting above
-            // this.setState({
-            //     api_recipe_list: [],
-            //     recipeFilter: filterVal
-            // });
         } else if (filterVal === 'filterByMealtype') {
             // fetch recipes by meal type
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
@@ -732,12 +728,6 @@ class UserHomePage extends React.Component {
                          recipeFilter: filterVal
                      });
                  });
-
-            // // comment code below when uncommenting above
-            // this.setState({
-            //     api_recipe_list: [],
-            //     recipeFilter: filterVal
-            // });
         } else if (filterVal === 'filterByIngredients') {
             // fetch recipes by ingredients
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
@@ -769,12 +759,6 @@ class UserHomePage extends React.Component {
                         recipeFilter: filterVal
                     });
                 });
-
-            // // comment code below when uncommenting above
-            // this.setState({
-            //     api_recipe_list: [],
-            //     recipeFilter: filterVal
-            // });
         }
     }
 
@@ -805,7 +789,7 @@ class UserHomePage extends React.Component {
         if (this.state.searchParam === 'recipes') {
             // all recipes from database are fetched here
             let response = await axios.get('/recipe');
-            let ctbRcpFilter = response.data.recipes.filter(recipe => recipe.recipe_name.trim().toLowerCase().includes(this.state.api_recipe_name));
+            let ctbRcpFilter = response.data.recipes.filter(recipe => recipe.recipe_name.toLowerCase().includes(this.state.api_recipe_name.trim().toLowerCase()));
 
             // all recipes from API are fetched here
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
@@ -830,14 +814,6 @@ class UserHomePage extends React.Component {
                         recipeFilter: 'noFilter'
                     });
                 });
-
-            // // comment code below when uncommenting above
-            // this.setState({
-            //     api_recipe_list: [],
-            //     isShowCategory: true,
-            //     isShowIngrSearch: false,
-            //     recipeFilter: 'noFilter'
-            // });
         } else if (this.state.searchParam === 'ingredients') {
             let response = await axios.post('/ingredient', {
                 'ingredient': this.state.searched_ingredient.trim().toLowerCase()
@@ -915,179 +891,107 @@ class UserHomePage extends React.Component {
         });
     }
 
-    onClickAbout() {
-        this.props.history.push('/about');
-    }
-
-    onClickHome() {
-        if (!auth.isAuthenticated()) {
-            this.props.history.push('/');
-        } else {
-            this.props.history.push('/' + this.state.username);
-        }
-    }
-
-    onClickContribute() {
-        this.props.history.push('/' + this.state.username + '/contribute');
-    }
-
-    onClickLogin() {
-        this.props.history.push('/login');
-    }
-
     handleLogout() {
-        auth.logout(() => {
-            this.props.history.push('/');
-        })
+        this.setState({
+            redirectToHome: true
+        });
     }
 
     render() {
+        if (this.state.redirectToHome === true) {
+            return <Redirect to={'/'} />
+        }
+
         const { classes } = this.props;
 
         return (
             <div className={classes.root}>
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
-                {!auth.isAuthenticated() ?
-                    <Toolbar>
-                        <Box display='flex' flexGrow={1}>
-                            <Typography variant="h6" noWrap>
-                                <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-                            </Typography>
-                            <Button color="inherit" style={{marginLeft:'5%',marginRight:'15%'}} onClick={this.onClickHome.bind(this)}>Home</Button>
-                            <div className={classes.search}>
-                                <div className={classes.searchIcon}>
-                                    <SearchIcon />
-                                </div>
-                                    {this.state.searchParam === 'recipes' ?
-                                        <InputBase
-                                            placeholder="Search..."
-                                            classes={{
-                                                root: classes.inputRoot,
-                                                input: classes.inputInput,
-                                            }}
-                                            inputProps={{ 'aria-label': 'search' }}
-                                            value={this.state.api_recipe_name}
-                                            onChange={this.setSearchValue}
-                                            onBlur={this.setSearchValue}
-                                        />
-                                    :
-                                        <InputBase
-                                            placeholder="Search..."
-                                            classes={{
-                                                root: classes.inputRoot,
-                                                input: classes.inputInput,
-                                            }}
-                                            inputProps={{ 'aria-label': 'search' }}
-                                            value={this.state.searched_ingredient}
-                                            onChange={this.setSearchValue}
-                                            onBlur={this.setSearchValue}
-                                        />
-                                    }
-                                    <NativeSelect
-                                        value={this.state.searchParam}
-                                        onChange={this.handleSearchParamChange}
-                                        className={classes.searchSelect}
-                                        name="name"
-                                        inputProps={{
-                                            id: 'name-native-error',
-                                        }}
-                                    >
-                                        <option value="recipes">Recipes</option>
-                                        <option value="ingredients">Ingredients</option>
-                                    </NativeSelect>
+                <Toolbar>
+                    <Box display='flex' flexGrow={1}>
+                        <Typography variant="h6" noWrap>
+                            <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                        </Typography>
+                        <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
+                        <Button color="inherit" style={{marginLeft:'1%',marginRight:'4%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
                             </div>
-                            <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
-                        </Box>
-                        <Button style={{marginRight:'2%'}} color="inherit" onClick={this.onClickAbout.bind(this)}>About</Button>
-                        <Button color="inherit" onClick={this.onClickLogin.bind(this)}>Login</Button>
-                    </Toolbar>
-                :
-                    <Toolbar>
-                        <Box display='flex' flexGrow={1}>
-                            <Typography variant="h6" noWrap>
-                                <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-                            </Typography>
-                            <Button color="inherit" style={{marginLeft:'5%'}} onClick={this.onClickHome.bind(this)}>Home</Button>
-                            <Button color="inherit" style={{marginLeft:'1%',marginRight:'4%'}} onClick={this.onClickContribute.bind(this)}>Contribute</Button>
-                            <div className={classes.search}>
-                                <div className={classes.searchIcon}>
-                                    <SearchIcon />
-                                </div>
-                                {this.state.searchParam === 'recipes' ?
-                                    <InputBase
-                                        placeholder="Search..."
-                                        classes={{
-                                            root: classes.inputRoot,
-                                            input: classes.inputInput,
-                                        }}
-                                        inputProps={{ 'aria-label': 'search' }}
-                                        value={this.state.api_recipe_name}
-                                        onChange={this.setSearchValue}
-                                        onBlur={this.setSearchValue}
-                                    />
-                                :
-                                    <InputBase
-                                        placeholder="Search..."
-                                        classes={{
-                                            root: classes.inputRoot,
-                                            input: classes.inputInput,
-                                        }}
-                                        inputProps={{ 'aria-label': 'search' }}
-                                        value={this.state.searched_ingredient}
-                                        onChange={this.setSearchValue}
-                                        onBlur={this.setSearchValue}
-                                    />
-                                }
-                                <NativeSelect
-                                    value={this.state.searchParam}
-                                    onChange={this.handleSearchParamChange}
-                                    className={classes.searchSelect}
-                                    name="name"
-                                    inputProps={{
-                                        id: 'name-native-error',
+                            {this.state.searchParam === 'recipes' ?
+                                <InputBase
+                                    placeholder="Search..."
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
                                     }}
-                                >
-                                    <option value="recipes">Recipes</option>
-                                    <option value="ingredients">Ingredients</option>
-                                </NativeSelect>
-                            </div>
-                            <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
-                        </Box>
-                        <Button style={{marginRight:'2%'}} color="inherit" onClick={this.onClickAbout.bind(this)}>About</Button>
-                        <div>
-                            <IconButton
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={this.handleMenu}
-                                color="inherit"
-                            >
-                                <AccountCircleIcon />
-                            </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={this.state.anchorEl}
-                                getContentAnchorEl={null}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'right',
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    value={this.state.api_recipe_name}
+                                    onChange={this.setSearchValue}
+                                    onBlur={this.setSearchValue}
+                                />
+                            :
+                                <InputBase
+                                    placeholder="Search..."
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    value={this.state.searched_ingredient}
+                                    onChange={this.setSearchValue}
+                                    onBlur={this.setSearchValue}
+                                />
+                            }
+                            <NativeSelect
+                                value={this.state.searchParam}
+                                onChange={this.handleSearchParamChange}
+                                className={classes.searchSelect}
+                                name="name"
+                                inputProps={{
+                                    id: 'name-native-error',
                                 }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(this.state.anchorEl)}
-                                onClose={this.handleMenuClose}
                             >
-                                <MenuItem style={{fontSize:14}}><b>{this.state.username}</b></MenuItem>
-                                <Divider/>
-                                <MenuItem style={{fontSize:14}} onClick={this.handleLogout.bind(this)}>Logout</MenuItem>
-                            </Menu>
+                                <option value="recipes">Recipes</option>
+                                <option value="ingredients">Ingredients</option>
+                            </NativeSelect>
                         </div>
-                    </Toolbar>
-                }
+                        <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
+                    </Box>
+                    <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={this.handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircleIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={this.state.anchorEl}
+                            getContentAnchorEl={null}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(this.state.anchorEl)}
+                            onClose={this.handleMenuClose}
+                        >
+                            <MenuItem style={{fontSize:14}}><b>{this.state.username}</b></MenuItem>
+                            <Divider/>
+                            <MenuItem style={{fontSize:14}} onClick={this.handleLogout.bind(this)}>Logout</MenuItem>
+                        </Menu>
+                    </div>
+                </Toolbar>
             </AppBar>
             <Drawer
                 className={classes.drawer}

@@ -4,15 +4,15 @@ class Auth {
         this.username = '';
     }
 
-    login(cb) {
+    login() {
         this.authenticated = true;
-        cb();
+        // cb();
     }
 
-    logout(cb) {
+    logout() {
         this.authenticated = false;
         this.username = '';
-        cb();
+        // cb();
     }
 
     isAuthenticated() {

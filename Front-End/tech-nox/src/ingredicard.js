@@ -84,9 +84,7 @@ export default function IngredientCard(props) {
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
-          {props.likes
-
-          }
+          {props.likes}
         </IconButton>
         <IconButton
           className={clsx(classes.expand, {

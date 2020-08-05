@@ -23,7 +23,7 @@ def ingredient_suggestion(contributor_ingredient_list):
     if len(suggested_ingredient_list) >= 16:
         suggested_ingredients = random.sample(suggested_ingredient_list, 16)
     else:
-        suggested_ingredients = random.sample(suggested_ingredient_list, len(list_of_random_items))
+        suggested_ingredients = random.sample(suggested_ingredient_list, len(suggested_ingredient_list))
     return suggested_ingredients
 
 
@@ -55,7 +55,7 @@ class SuggestedIngredientsContributor(Resource):
                 contributor_ingredients.append(q[0])
 
         print(contributor_ingredients)
-        suggested_ingredients_contributor = ingredient_suggestion(contributor_ingredients)
+        suggested_ingredients_contributor = sorted(ingredient_suggestion(contributor_ingredients))
 
         data = {}
 
