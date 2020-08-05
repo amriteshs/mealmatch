@@ -23,7 +23,7 @@ def ingredient_suggestion(contributor_ingredient_list):
     if len(suggested_ingredient_list) >= 16:
         suggested_ingredients = random.sample(suggested_ingredient_list, 16)
     else:
-        suggested_ingredients = random.sample(suggested_ingredient_list, len(list_of_random_items))
+        suggested_ingredients = random.sample(suggested_ingredient_list, len(suggested_ingredient_list))
     return suggested_ingredients
 
 
