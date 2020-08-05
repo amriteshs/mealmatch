@@ -327,7 +327,14 @@ const useStyles = theme => ({
         float:'right',
         color:'black',
         backgroundColor:'orange',
-    }
+    },
+    iconColor: {
+        fill: "#FF7600"
+    },
+    catMtColor: {
+        color: 'orange',
+        backgroundColor: '#333333',
+    },
 });
 
 
@@ -1432,8 +1439,8 @@ class ContributePage extends React.Component {
 
     async getSearchResults() {
         if (this.state.searchParam === 'recipes') {
-            let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.recipe_name.toLowerCase().includes(this.state.searched_recipe));
-
+            let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.recipe_name.trim().toLowerCase().includes(this.state.searched_recipe));
+            
             this.setState({
                 selected_recipes: rcpFilter,
                 isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
@@ -1443,7 +1450,7 @@ class ContributePage extends React.Component {
             });
         } else if (this.state.searchParam === 'ingredients') {
             let response = await axios.post('/ingredient', {
-                'ingredient': this.state.searched_ingredient
+                'ingredient': this.state.searched_ingredient.trim().toLowerCase()
             });
 
             let ingrSearchList = response.data.ingredients;
@@ -1669,21 +1676,21 @@ class ContributePage extends React.Component {
                 <List>
                     <ListItem button onClick={this.updateCardState.bind(this, "Ingredient Category")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.green} variant="rounded"><b>C</b></Avatar>
+                            <Avatar className={classes.catMtColor} variant="rounded"><b>C</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Ingredient Category</b>} />
                     </ListItem>
                     {(this.state.isAddingRecipe || this.state.isUpdatingRecipe) ?
                         <ListItem button disabled onClick={this.updateCardState.bind(this, "Meal Type")}>
                             <ListItemAvatar>
-                                <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
+                                <Avatar className={classes.catMtColor} variant="rounded"><b>M</b></Avatar>
                             </ListItemAvatar>
                             <ListItemText primary={<b>Meal Type</b>} />
                         </ListItem>
                     :
                         <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
                             <ListItemAvatar>
-                                <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
+                                <Avatar className={classes.catMtColor} variant="rounded"><b>M</b></Avatar>
                             </ListItemAvatar>
                             <ListItemText primary={<b>Meal Type</b>} />
                         </ListItem>
@@ -1706,7 +1713,7 @@ class ContributePage extends React.Component {
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleSingleMealtypeDelete}
                                     >
-                                        <DeleteIcon />
+                                        <DeleteIcon className={classes.iconColor}/>
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
@@ -1748,7 +1755,7 @@ class ContributePage extends React.Component {
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                     >
-                                        <DeleteIcon />
+                                        <DeleteIcon className={classes.iconColor}/>
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
@@ -1792,7 +1799,7 @@ class ContributePage extends React.Component {
                                         aria-label="delete" color="secondary"
                                         onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                     >
-                                        <DeleteIcon />
+                                        <DeleteIcon className={classes.iconColor}/>
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={9}>
@@ -1879,8 +1886,8 @@ class ContributePage extends React.Component {
                                                     <FormControlLabel key={key}
                                                         control={
                                                             <Checkbox checked={value.checked}
-                                                            onChange={this.handleIngredientCheckChange}
-                                                            name={key} value={key} color="primary"
+                                                            onChange={this.handleIngredientCheckChange} 
+                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                         />}
                                                         label={key}
                                                     />
@@ -1897,8 +1904,8 @@ class ContributePage extends React.Component {
                                                         <FormControlLabel key={key}
                                                             control={
                                                                 <Checkbox checked={value.checked}
-                                                                onChange={this.handleIngredientCheckChange}
-                                                                name={key} value={key} color="primary"
+                                                                onChange={this.handleIngredientCheckChange} 
+                                                                name={key} value={key} style={{color: "#FF7600"}}
                                                             />}
                                                             label={key}
                                                         />
@@ -1926,8 +1933,8 @@ class ContributePage extends React.Component {
                                                             <FormControlLabel key={key}
                                                                 control={
                                                                     <Checkbox checked={value.checked}
-                                                                    onChange={this.handleIngredientCheckChange}
-                                                                    name={key} value={key} color="primary"
+                                                                    onChange={this.handleIngredientCheckChange} 
+                                                                    name={key} value={key} style={{color: "#FF7600"}}
                                                                 />}
                                                                 label={key}
                                                             />
@@ -2326,7 +2333,7 @@ class ContributePage extends React.Component {
                                                     aria-label="delete" color="secondary"
                                                     onClick={this.handleRecipeStepDelete.bind(this, index)}
                                                 >
-                                                    <DeleteIcon />
+                                                    <DeleteIcon className={classes.iconColor}/>
                                                 </IconButton>
                                             </Grid>
                                             <Grid item xs={10}>
@@ -2360,7 +2367,7 @@ class ContributePage extends React.Component {
                                                         aria-label="upward" color="primary"
                                                         onClick={this.handleRecipeStepMoveUp.bind(this, index)}
                                                     >
-                                                        <ArrowUpwardIcon />
+                                                        <ArrowUpwardIcon className={classes.iconColor}/>
                                                     </IconButton>
                                                 )}
                                                 {(index === (this.state.recipe_steps_input.length - 1)) ? (
@@ -2377,7 +2384,7 @@ class ContributePage extends React.Component {
                                                         aria-label="downward" color="primary"
                                                         onClick={this.handleRecipeStepMoveDown.bind(this, index)}
                                                     >
-                                                        <ArrowDownwardIcon />
+                                                        <ArrowDownwardIcon className={classes.iconColor}/>
                                                     </IconButton>
                                                 )}
                                             </Grid>
@@ -2442,7 +2449,7 @@ class ContributePage extends React.Component {
                                                     aria-label="delete" color="secondary"
                                                     onClick={this.handleMealtypeDelete.bind(this, obj)}
                                                 >
-                                                    <DeleteIcon />
+                                                    <DeleteIcon className={classes.iconColor}/>
                                                 </IconButton>
                                             </Grid>
                                             <Grid item xs={11}>

@@ -188,6 +188,10 @@ const useStyles = theme => ({
         color: 'white',
         backgroundColor: deepOrange[500],
     },
+    catMtColor: {
+        color: 'orange',
+        backgroundColor: '#333333',
+    },
     catMtBtn: {
         textTransform: 'capitalize',
         justifyContent: 'flex-start'
@@ -214,6 +218,9 @@ const useStyles = theme => ({
     media: {
         height: 0,
         paddingTop: '56.25%', // 16:9
+    },
+    iconColor: {
+        fill: "#FF7600"
     }
 });
 
@@ -280,7 +287,6 @@ class UserHomePage extends React.Component {
         this.getIngredients();
         this.getCategories();
         this.getMealtypes();
-        this.getSearchResults();
         this.getContributedRecipes('noFilter');
         this.getApiRecipes('noFilter');
     }
@@ -406,30 +412,17 @@ class UserHomePage extends React.Component {
                 ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.value);
             }
 
-            if (!ingrSelect.length && !this.state.selected_ingredients_exclude.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: ingrSelect
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                suggested_ingredients: ingrSuggestList,
+                selected_ingredients: ingrSelect
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: ingrSelect
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         } else {
             let ingrList = {...this.state.ingredient_list};
@@ -467,28 +460,16 @@ class UserHomePage extends React.Component {
                 ingrSelect = ingrSelect.filter(x => x.ingredient_name !== event.target.value);
             }
 
-            if (!ingrSelect.length && !this.state.selected_ingredients.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: ingrSelect
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                selected_ingredients_exclude: ingrSelect
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: ingrSelect
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         }
     }
@@ -518,30 +499,17 @@ class UserHomePage extends React.Component {
                 }
             });
 
-            if (!this.state.selected_ingredients_exclude.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: []
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                suggested_ingredients: ingrSuggestList,
+                selected_ingredients: []
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: []
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         } else {
             let ingrList = {...this.state.ingredient_list};
@@ -561,28 +529,16 @@ class UserHomePage extends React.Component {
                 }
             });
 
-            if (!this.state.selected_ingredients.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: []
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                selected_ingredients_exclude: []
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: []
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         }
     }
@@ -614,30 +570,17 @@ class UserHomePage extends React.Component {
 
             ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
-            if (!ingrSelect.length && !this.state.selected_ingredients_exclude.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: ingrSelect
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                suggested_ingredients: ingrSuggestList,
+                selected_ingredients: ingrSelect
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    suggested_ingredients: ingrSuggestList,
-                    selected_ingredients: ingrSelect,
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         } else {
             let ingrList = {...this.state.ingredient_list};
@@ -659,28 +602,16 @@ class UserHomePage extends React.Component {
 
             ingrSelect = ingrSelect.filter(x => x.ingredient_name !== obj);
 
-            if (!ingrSelect.length && !this.state.selected_ingredients.length && this.state.recipeFilter === 'filterByIngredients') {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: ingrSelect
-                });
+            this.setState({
+                ingredient_list: ingrList,
+                category_list: catList,
+                ingredient_search_results: ingrSearchList,
+                selected_ingredients_exclude: ingrSelect
+            });
 
+            if (this.state.recipeFilter === 'filterByIngredients') {
                 this.getContributedRecipes('noFilter');
                 this.getApiRecipes('noFilter');
-            } else {
-                this.setState({
-                    ingredient_list: ingrList,
-                    category_list: catList,
-                    ingredient_search_results: ingrSearchList,
-                    selected_ingredients_exclude: ingrSelect,
-                });
-
-                if (this.state.recipeFilter === 'filterByIngredients') {
-                    this.getContributedRecipes('filterByIngredients');
-                    this.getApiRecipes('filterByIngredients');
-                }
             }
         }
     }
@@ -734,13 +665,13 @@ class UserHomePage extends React.Component {
         
         if (filterVal === 'noFilter') {
             this.setState({
-                contributed_recipe_list: response.data.recipes
+                contributed_recipe_list: response.data.recipes.slice(0, 10)
             });
         } else if (filterVal === 'filterByMealtype') {
             let rcpFilter = response.data.recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
 
             this.setState({
-                contributed_recipe_list: rcpFilter
+                contributed_recipe_list: rcpFilter.slice(0, 10)
             })
         } else if (filterVal === 'filterByIngredients') {
             let rcpFilter = [];
@@ -753,7 +684,7 @@ class UserHomePage extends React.Component {
             });
 
             this.setState({
-                contributed_recipe_list: rcpFilter
+                contributed_recipe_list: rcpFilter.slice(0, 10)
             })
         }
     }
@@ -764,29 +695,30 @@ class UserHomePage extends React.Component {
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10';
 
-            // await axios.get(URL)
-            //     .then(response => {
-            //         this.setState({
-            //             api_recipe_list: response.data.results,
-            //             recipeFilter: filterVal
-            //         });
-            //     })
-            //     .catch(error => {
-            //         this.setState({
-            //             api_recipe_list: [],
-            //             recipeFilter: filterVal
-            //         });
-            //     });
+            await axios.get(URL)
+                .then(response => {
+                    this.setState({
+                        api_recipe_list: response.data.results,
+                        recipeFilter: filterVal
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        api_recipe_list: [],
+                        recipeFilter: filterVal
+                    });
+                });
 
-            // comment code below when uncommenting above
-            this.setState({
-                api_recipe_list: [],
-                recipeFilter: filterVal
-            });
+            // // comment code below when uncommenting above
+            // this.setState({
+            //     api_recipe_list: [],
+            //     recipeFilter: filterVal
+            // });
         } else if (filterVal === 'filterByMealtype') {
             // fetch recipes by meal type
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
-            const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&type=' + this.state.selected_mealtype;
+            const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&type=' + this.state.selected_mealtype.replace(" ", "+");
+            
             await axios.get(URL)
                 .then(response => {
                     this.setState({
@@ -801,48 +733,48 @@ class UserHomePage extends React.Component {
                      });
                  });
 
-            
-
-
-            /*this.setState({
-                api_recipe_list: [],
-                recipeFilter: filterVal
-            });*/
+            // // comment code below when uncommenting above
+            // this.setState({
+            //     api_recipe_list: [],
+            //     recipeFilter: filterVal
+            // });
         } else if (filterVal === 'filterByIngredients') {
             // fetch recipes by ingredients
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
             this.state.selected_ingredients.forEach(ingredient => {
-                URL += (ingredient.ingredient_name.replace(" ","") + ",+");
-                // URL += (ingredient.ingredient_name.replace(" ","+") + ",+");
+                URL += (ingredient.ingredient_name.replace(" ", "+") + ",+");
             });
             URL = URL.slice(0,-2);
 
-            // await axios.get(URL)
-            //     .then(response => {
-            //         let rcpFilter = [];
-            //         response.data.forEach(recipe =>  {
-            //             if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)).length) {
-            //                 rcpFilter.push(recipe);
-            //             }
-            //         });
-            //         this.setState({
-            //             api_recipe_list: response.data,
-            //             recipeFilter: filterVal
-            //         });
-            //     })
-            //     .catch(error => {
-            //         this.setState({
-            //             api_recipe_list: [],
-            //             recipeFilter: filterVal
-            //         });
-            //     });
+            await axios.get(URL)
+                .then(response => {
+                    let rcpFilter = [];
+                    
+                    response.data.forEach(recipe =>  {
+                        console.log(this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)));
+                        if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.missedIngredients.some(x => x.name === ingr.ingredient_name)).length) {
+                            rcpFilter.push(recipe);
+                        }
+                    });
 
-            // comment code below when uncommenting above
-            this.setState({
-                api_recipe_list: [],
-                recipeFilter: filterVal
-            });
+                    this.setState({
+                        api_recipe_list: rcpFilter,
+                        recipeFilter: filterVal
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        api_recipe_list: [],
+                        recipeFilter: filterVal
+                    });
+                });
+
+            // // comment code below when uncommenting above
+            // this.setState({
+            //     api_recipe_list: [],
+            //     recipeFilter: filterVal
+            // });
         }
     }
 
@@ -871,38 +803,44 @@ class UserHomePage extends React.Component {
 
     async getSearchResults() {
         if (this.state.searchParam === 'recipes') {
-            // all recipes are fetched here
+            // all recipes from database are fetched here
+            let response = await axios.get('/recipe');
+            let ctbRcpFilter = response.data.recipes.filter(recipe => recipe.recipe_name.trim().toLowerCase().includes(this.state.api_recipe_name));
+
+            // all recipes from API are fetched here
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             const URL = 'https://api.spoonacular.com/recipes/search?apiKey=' + API_KEY + '&number=10&query=' + this.state.api_recipe_name;
 
-            // axios.get(URL)
-            //     .then(response => {
-            //         this.setState({
-            //             api_recipe_list: response.data.results,
-            //             isShowCategory: true,
-            //             isShowIngrSearch: false,
-            //             recipeFilter: 'noFilter'
-            //         });
-            //     })
-            //     .catch(error => {
-            //         this.setState({
-            //             api_recipe_list: [],
-            //             isShowCategory: true,
-            //             isShowIngrSearch: false,
-            //             recipeFilter: 'noFilter'
-            //         });
-            //     });
+            await axios.get(URL)
+                .then(response => {
+                    this.setState({
+                        contributed_recipe_list: ctbRcpFilter.slice(0, 10),
+                        api_recipe_list: response.data.results,
+                        isShowCategory: true,
+                        isShowIngrSearch: false,
+                        recipeFilter: 'noFilter'
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        contributed_recipe_list: ctbRcpFilter.slice(0, 10),
+                        api_recipe_list: [],
+                        isShowCategory: true,
+                        isShowIngrSearch: false,
+                        recipeFilter: 'noFilter'
+                    });
+                });
 
-            // comment code below when uncommenting above
-            this.setState({
-                api_recipe_list: [],
-                isShowCategory: true,
-                isShowIngrSearch: false,
-                recipeFilter: 'noFilter'
-            });
+            // // comment code below when uncommenting above
+            // this.setState({
+            //     api_recipe_list: [],
+            //     isShowCategory: true,
+            //     isShowIngrSearch: false,
+            //     recipeFilter: 'noFilter'
+            // });
         } else if (this.state.searchParam === 'ingredients') {
             let response = await axios.post('/ingredient', {
-                'ingredient': this.state.searched_ingredient
+                'ingredient': this.state.searched_ingredient.trim().toLowerCase()
             });
 
             let ingrSearchList = response.data.ingredients;
@@ -1162,13 +1100,13 @@ class UserHomePage extends React.Component {
                 <List>
                     <ListItem button onClick={this.updateCardState.bind(this, "Ingredient Category")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.green} variant="rounded"><b>C</b></Avatar>
+                            <Avatar className={classes.catMtColor} variant="rounded"><b>C</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Ingredient Category</b>} />
                     </ListItem>
                     <ListItem button onClick={this.updateCardState.bind(this, "Meal Type")}>
                         <ListItemAvatar>
-                            <Avatar className={classes.orange} variant="rounded"><b>M</b></Avatar>
+                            <Avatar className={classes.catMtColor} variant="rounded"><b>M</b></Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={<b>Meal Type</b>} />
                     </ListItem>
@@ -1188,7 +1126,7 @@ class UserHomePage extends React.Component {
                                     aria-label="delete" color="secondary"
                                     onClick={this.handleMealtypeDelete}
                                 >
-                                    <DeleteIcon />
+                                    <DeleteIcon className={classes.iconColor}/>
                                 </IconButton>
                             </Grid>
                             <Grid item xs={9}>
@@ -1203,17 +1141,17 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{color:"black",backgroundColor:"white",fontSize:10,borderRadius:'0px'}}
+                                style={{fontSize:10,borderRadius:'0px',color:"orange",backgroundColor:"#333333"}}
                                 fullWidth
+                                variant="contained"
                             >
                                     INGREDIENTS TO INCLUDE
                             </Button>   
                         :
                             <Button
                                 onClick={this.handleIngredientInclusion}
-                                style={{color:"white",fontSize:10,borderRadius:'0px',backgroundColor:"#FF7600"}}
+                                style={{fontSize:10,borderRadius:'0px',color:"#333333",backgroundColor:"#CCCCCC"}}
                                 fullWidth
-                                variant="contained"
                             >
                                     INGREDIENTS TO INCLUDE
                             </Button>
@@ -1223,9 +1161,8 @@ class UserHomePage extends React.Component {
                         {this.state.isIngrInc ?
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{color:"white",fontSize:10,borderRadius:'0px',backgroundColor:"#FF7600"}}
+                                style={{fontSize:10,borderRadius:'0px',color:"#333333",backgroundColor:"#CCCCCC"}}
                                 fullWidth
-                                variant="contained"
 
                             >
                                     INGREDIENTS TO EXCLUDE
@@ -1233,8 +1170,9 @@ class UserHomePage extends React.Component {
                         :
                             <Button
                                 onClick={this.handleIngredientExclusion}
-                                style={{color:"black", fontSize:10,borderRadius:'0px',backgroundColor:"white"}}
+                                style={{fontSize:10,borderRadius:'0px',color:"orange",backgroundColor:"#333333"}}
                                 fullWidth
+                                variant="contained"
                             >
                                     INGREDIENTS TO EXCLUDE
                             </Button>
@@ -1271,7 +1209,7 @@ class UserHomePage extends React.Component {
                                             aria-label="delete" color="secondary"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
-                                            <DeleteIcon />
+                                            <DeleteIcon className={classes.iconColor}/>
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
@@ -1315,7 +1253,7 @@ class UserHomePage extends React.Component {
                                             aria-label="delete" color="secondary"
                                             onClick={this.handleIngredientDelete.bind(this, obj.ingredient_name)}
                                         >
-                                            <DeleteIcon />
+                                            <DeleteIcon className={classes.iconColor}/>
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs={9}>
@@ -1427,7 +1365,7 @@ class UserHomePage extends React.Component {
                                                                 control={
                                                                     <Checkbox checked={value.checked}
                                                                     onChange={this.handleIngredientCheckChange}
-                                                                    name={key} value={key} color="primary"
+                                                                    name={key} value={key} style={{color: "#FF7600"}}
                                                                 />}
                                                                 label={key}
                                                             />
@@ -1463,7 +1401,7 @@ class UserHomePage extends React.Component {
                                                                         control={
                                                                             <Checkbox checked={value.checked}
                                                                             onChange={this.handleIngredientCheckChange}
-                                                                            name={key} value={key} color="primary"
+                                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1494,7 +1432,7 @@ class UserHomePage extends React.Component {
                                                                         control={
                                                                             <Checkbox checked={value.checked}
                                                                             onChange={this.handleIngredientCheckChange}
-                                                                            name={key} value={key} color="primary"
+                                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1527,7 +1465,7 @@ class UserHomePage extends React.Component {
                                                                         control={
                                                                             <Checkbox checked={value.checked}
                                                                             onChange={this.handleIngredientCheckChange}
-                                                                            name={key} value={key} color="primary"
+                                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1558,7 +1496,7 @@ class UserHomePage extends React.Component {
                                                                         control={
                                                                             <Checkbox checked={value.checked}
                                                                             onChange={this.handleIngredientCheckChange}
-                                                                            name={key} value={key} color="primary"
+                                                                            name={key} value={key} style={{color: "#FF7600"}}
                                                                         />}
                                                                         label={key}
                                                                     />
@@ -1600,7 +1538,7 @@ class UserHomePage extends React.Component {
                                                                             control={
                                                                                 <Checkbox checked={value.checked}
                                                                                 onChange={this.handleIngredientCheckChange}
-                                                                                name={key} value={key} color="primary"
+                                                                                name={key} value={key} style={{color: "#FF7600"}}
                                                                             />}
                                                                             label={key}
                                                                         />
@@ -1627,7 +1565,7 @@ class UserHomePage extends React.Component {
                                                                             control={
                                                                                 <Checkbox checked={value.checked}
                                                                                 onChange={this.handleIngredientCheckChange}
-                                                                                name={key} value={key} color="primary"
+                                                                                name={key} value={key} style={{color: "#FF7600"}}
                                                                             />}
                                                                             label={key}
                                                                         />
@@ -1675,17 +1613,17 @@ class UserHomePage extends React.Component {
                         <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>RECIPES</b></Typography>
                         <Divider className={classes.dividerStyle1} />
                         <FormControl component="fieldset">
-                            <RadioGroup style={{fontSize:12}} aria-label="filter" name="filter" onChange={this.handleRecipeFilterChange}>
-                                <FormControlLabel value="noFilter" control={<Radio style={{color: "orange"}}/>} label="Show all recipes" />
+                            <RadioGroup style={{fontSize:12}} aria-label="filter" name="filter" value={this.state.recipeFilter} onChange={this.handleRecipeFilterChange}>
+                                <FormControlLabel value="noFilter" control={<Radio style={{color: "#FF7600"}}/>} label="Show all recipes" />
                                 {(this.state.selected_ingredients.length || this.state.selected_ingredients_exclude.length) ?
-                                    <FormControlLabel value="filterByIngredients" control={<Radio style={{color: "orange"}}/>} label="Search by selected ingredients" />
+                                    <FormControlLabel value="filterByIngredients" control={<Radio style={{color: "#FF7600"}}/>} label="Search by selected ingredients" />
                                 :
                                     <FormControlLabel disabled value="filterByIngredients" control={<Radio />} label="Search by selected ingredients" />
                                 }
                                 {this.state.selected_mealtype !== '' ?
-                                    <FormControlLabel value="filterByMealtype" control={<Radio style={{color: "orange"}}/>} label="Search by selected meal type" />
+                                    <FormControlLabel value="filterByMealtype" control={<Radio style={{color: "#FF7600"}}/>} label="Search by selected meal type" />
                                 :
-                                    <FormControlLabel value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
+                                    <FormControlLabel disabled value="filterByMealtype" control={<Radio />} label="Search by selected meal type" />
                                 }
                             </RadioGroup>
                         </FormControl>
@@ -1810,13 +1748,13 @@ class UserHomePage extends React.Component {
                                         this.state.api_recipe_list.map((recipe, index) =>
                                             <Grid item sm={4} key={index}>
                                                 <RecipeReviewCard
-                                                title={recipe.title}
-                                                imageUrl={this.state.base_uri + recipe.image}
-                                                source={recipe.sourceUrl}
-                                                time={recipe.readyInMinutes}
-                                                serves={recipe.servings}
-                                                recipeid={recipe.id}
-                                            />
+                                                    title={recipe.title}
+                                                    imageUrl={this.state.base_uri + recipe.image}
+                                                    source={recipe.sourceUrl}
+                                                    time={recipe.readyInMinutes}
+                                                    serves={recipe.servings}
+                                                    recipeid={recipe.id}
+                                                />
                                             </Grid>
                                         )
                                 }
