@@ -5,9 +5,11 @@ import ProtectedRoute from './protected-route';
 
 import LoginPage from './login';
 import SignUpPage from './signup';
+import HomePage from './home';
+import AboutPage from './about';
 import UserHomePage from './user-home';
 import ContributePage from './user-contribute';
-import AboutPage from './about';
+import UserAboutPage from './user-about';
 
 
 class LandingPage extends React.Component {
@@ -15,13 +17,14 @@ class LandingPage extends React.Component {
         return (
             <BrowserRouter>
                 <Switch>
-                    <Route path='/' exact component={UserHomePage}/>
+                    <Route path='/' exact component={HomePage}/>
                     <Route exact path='/login' component={LoginPage}/>
                     <Route exact path='/signup' component={SignUpPage}/>
-                    <Route exact path='/home' component={UserHomePage}/>
+                    <Route exact path='/home' component={HomePage}/>
                     <Route exact path='/about' component={AboutPage}/>
-                    <ProtectedRoute exact path='/:username' component={UserHomePage}/>
-                    <ProtectedRoute exact path='/:username/contribute' component={ContributePage}/>
+                    <Route exact path='/:username' component={UserHomePage}/>
+                    <Route exact path='/:username/contribute' component={ContributePage}/>
+                    <Route exact path='/:username/about' component={UserAboutPage}/>
                 </Switch>
             </BrowserRouter>
         );

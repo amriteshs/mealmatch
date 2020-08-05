@@ -39,7 +39,7 @@ const useStyles = theme => ({
       backgroundColor: theme.palette.background.default,
       padding: theme.spacing(3),
       fontFamily: 'Avenir',
-      fontSize: "16px"
+      fontSize: "16px",
     },
     padding20: {
     padding: '20px 20px',
@@ -107,13 +107,14 @@ const useStyles = theme => ({
       marginTop: '-20px',
     },
 
-  });
+});
 
-class AboutPage extends React.Component {
+class UserAboutPage extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            username: this.props.match.params.username,
             anchorEl: null,
             redirectToHome: false
         };
@@ -143,25 +144,56 @@ class AboutPage extends React.Component {
 
     render() {
       if (this.state.redirectToHome === true) {
-          return <Redirect to={'/'} />
+          return <Redirect to={'/' + this.state.username} />
       }
-
+      
       const { classes } = this.props;
 
       return (
         <div className={classes.root}>
           <CssBaseline />
           <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar>
-              <Box display='flex' flexGrow={1}>
-                  <Typography variant="h6" noWrap>
-                      <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
-                  </Typography>
-                  <Button color="inherit" style={{marginLeft:'5%'}} href={'/'}>Home</Button>
-              </Box>
-              <Button color="inherit" style={{marginRight:'2%'}} href={'/about'}>About</Button>
-              <Button color="inherit" href={'/login'}>Login</Button>
-            </Toolbar>
+              <Toolbar>
+                  <Box display='flex' flexGrow={1}>
+                      <Typography variant="h6" noWrap>
+                          <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
+                      </Typography>
+                      <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
+                      <Button color="inherit" style={{marginLeft:'1%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
+                  </Box>
+                  <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
+                  <div>
+                      <IconButton
+                          aria-label="account of current user"
+                          aria-controls="menu-appbar"
+                          aria-haspopup="true"
+                          onClick={this.handleMenu}
+                          color="inherit"
+                      >
+                          <AccountCircleIcon />
+                      </IconButton>
+                      <Menu
+                          id="menu-appbar"
+                          anchorEl={this.state.anchorEl}
+                          getContentAnchorEl={null}
+                          anchorOrigin={{
+                              vertical: 'bottom',
+                              horizontal: 'right',
+                          }}
+                          keepMounted
+                          transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'right',
+                          }}
+                          open={Boolean(this.state.anchorEl)}
+                          onClose={this.handleMenuClose}
+                      >
+                          <MenuItem style={{fontSize:14}}><b>{this.state.username}</b></MenuItem>
+                          <Divider/>
+                          <MenuItem style={{fontSize:14}} onClick={this.handleLogout.bind(this)}>Logout</MenuItem>
+                      </Menu>
+                  </div>
+              </Toolbar>
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
@@ -389,4 +421,4 @@ of recipes in its database, it does all the brainstorming work for you.
     }
 }
 
-export default withStyles(useStyles)(AboutPage);
+export default withStyles(useStyles)(UserAboutPage);

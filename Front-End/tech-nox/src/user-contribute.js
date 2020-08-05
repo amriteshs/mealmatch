@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from 'react-router-dom';
 import { fade, withStyles } from "@material-ui/core/styles";
 import clsx from 'clsx';
 import Drawer from "@material-ui/core/Drawer";
@@ -55,7 +56,6 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import 'fontsource-roboto';
 import axios from 'axios';
-import auth from './auth';
 
 const drawerWidth = 240;
 const topAppBarWidth = 64;
@@ -343,7 +343,7 @@ class ContributePage extends React.Component {
         super(props);
 
         this.state = {
-            username: auth.getUserDetails(),
+            username: this.props.match.params.username,
             ingredient_count: 0,
             category_count: 0,
             mealtype_count: 0,
@@ -383,7 +383,8 @@ class ContributePage extends React.Component {
             isShowIngrSearch: false,
             searchParam: 'recipes',
             recipeFilter: 'noFilter',
-            suggested_ingredients_contributor: {}
+            suggested_ingredients_contributor: {},
+            redirectToHome: false
         };
 
         this.handleIngredientCheckChange = this.handleIngredientCheckChange.bind(this);
@@ -1540,29 +1541,17 @@ class ContributePage extends React.Component {
             });
     }
 
-    onClickAbout() {
-        this.props.history.push('/about');
-    }
-
-    onClickHome() {
-        this.props.history.push('/' + this.state.username);
-    }
-
-    onClickContribute() {
-        this.props.history.push('/' + this.state.username + '/contribute');
-    }
-
-    onClickLogin() {
-        this.props.history.push('/login');
-    }
-
     handleLogout() {
-        auth.logout(() => {
-            this.props.history.push('/');
-        })
+        this.setState({
+            redirectToHome: true
+        });
     }
 
     render() {
+        if (this.state.redirectToHome === true) {
+            return <Redirect to={'/'} />
+        }
+
         const { classes } = this.props;
 
         let {imagePreviewUrl} = this.state;
@@ -1605,8 +1594,8 @@ class ContributePage extends React.Component {
                         <Typography variant="h6" noWrap>
                             <span style={{color: "#FFA500"}}>m</span>eal<span style={{color: "#FFA500"}}>m</span>atch
                         </Typography>
-                        <Button color="inherit" style={{marginLeft:'5%'}} onClick={this.onClickHome.bind(this)}>Home</Button>
-                        <Button color="inherit" style={{marginLeft:'1%',marginRight:'4%'}} onClick={this.onClickContribute.bind(this)}>Contribute</Button>
+                        <Button color="inherit" style={{marginLeft:'5%'}} href={'/' + this.state.username}>Home</Button>
+                        <Button color="inherit" style={{marginLeft:'1%',marginRight:'4%'}} href={'/' + this.state.username + '/contribute'}>Contribute</Button>
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -1664,7 +1653,7 @@ class ContributePage extends React.Component {
                         </div>
                         <Button className={classes.searchBtn} onClick={this.getSearchResults}>Search</Button>
                     </Box>
-                    <Button style={{marginRight:'2%'}} color="inherit" onClick={this.onClickAbout.bind(this)}>About</Button>
+                    <Button style={{marginRight:'2%'}} color="inherit" href={'/' + this.state.username + '/about'}>About</Button>
                     <div>
                         <IconButton
                             aria-label="account of current user"

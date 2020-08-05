@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -11,7 +12,6 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 import axios from 'axios';
-import auth from './auth';
 
 
 class LoginPage extends React.Component {
@@ -44,12 +44,6 @@ class LoginPage extends React.Component {
                     },
                     redirectToHome: true
                 });
-
-                auth.setUserDetails(response.data.username);
-                
-                auth.login(() => {
-                    this.props.history.push('/' + response.data.username);
-                });
             })
             .catch(error => {
                 this.setState({
@@ -79,6 +73,10 @@ class LoginPage extends React.Component {
     }
 
     render() {
+        if (this.state.redirectToHome === true) {
+            return <Redirect to={'/' + this.state.userData.username} />
+        }
+
         return (
             <div>
                 <Dialog open={true}>
