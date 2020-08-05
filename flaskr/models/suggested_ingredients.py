@@ -38178,6 +38178,8 @@ def ingredient_suggestion(user_ingredient_list):
             for ingredient in [x for x in recipe if x not in user_ingredient_list]:
                 suggested_ingredient_dict[ingredient] += 1
         if suggested_ingredient_dict:
+            if len(suggested_ingredient_dict) > 0:
+                suggested_ingredient_dict = {k: v for k, v in sorted(suggested_ingredient_dict.items(), key=lambda item: item[1], reverse=True)}
             if len(suggested_ingredient_dict) >= 8:
                 suggested_ingredients = list(suggested_ingredient_dict.keys())[:8]
             else:
