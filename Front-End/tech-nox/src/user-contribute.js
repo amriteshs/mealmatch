@@ -1056,38 +1056,42 @@ class ContributePage extends React.Component {
             this.setState({
                 recipeErrorMessage: 'Recipe preparation time must be specified.'
             });
-        } else if (this.state.imagePreviewUrl === '') {
-            this.setState({
-                recipeErrorMessage: 'Recipe must have an image.'
-            });
         } else {
             const endpoint = '/recipe/' + this.state.username;
 
             if (this.state.isAddingRecipe) {
-                let response = await axios.post(endpoint, {
-                    'username': this.state.username,
-                    'recipe_name': this.state.recipe_name_input,
-                    'recipe_description': this.state.recipe_description_input,
-                    'preparation_time': this.state.recipe_prep_time_input,
-                    'people_served': this.state.recipe_people_served_input,
-                    'visibility': this.state.selected_visibility,
-                    'mealtypes': this.state.selected_mealtypes,
-                    'ingredients': this.state.selected_ingredients,
-                    'steps': this.state.recipe_steps_input,
-                });
+                if (this.state.imagePreviewUrl === '') {
+                    this.setState({
+                        recipeErrorMessage: 'Recipe must have an image.'
+                    });
 
-                // save image
-                const data = new FormData();
-                data.append('image_file', this.state.file);
+                    return;
+                } else {
+                    let response = await axios.post(endpoint, {
+                        'username': this.state.username,
+                        'recipe_name': this.state.recipe_name_input,
+                        'recipe_description': this.state.recipe_description_input,
+                        'preparation_time': this.state.recipe_prep_time_input,
+                        'people_served': this.state.recipe_people_served_input,
+                        'visibility': this.state.selected_visibility,
+                        'mealtypes': this.state.selected_mealtypes,
+                        'ingredients': this.state.selected_ingredients,
+                        'steps': this.state.recipe_steps_input,
+                    });
 
-                let img_response = await axios.post('/recipe_image/1',
-                    data,
-                    {
-                        headers: {
-                            'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
-                    },
-                    timeout: 30000,
-                });
+                    // save image
+                    const data = new FormData();
+                    data.append('image_file', this.state.file);
+
+                    let img_response = await axios.post('/recipe_image/1',
+                        data,
+                        {
+                            headers: {
+                                'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                        },
+                        timeout: 30000,
+                    });
+                }
             } else if (this.state.isUpdatingRecipe) {
                 let response = await axios.put(endpoint, {
                     'username': this.state.username,
@@ -1102,20 +1106,22 @@ class ContributePage extends React.Component {
                     'steps': this.state.recipe_steps_input,
                 });
 
-                // update image
-                const endpoint1 = '/recipe_image/' + this.state.selected_recipe_id;
+                if (this.state.imagePreviewUrl !== '') {
+                    // update image
+                    const endpoint1 = '/recipe_image/' + this.state.selected_recipe_id;
 
-                const data = new FormData();
-                data.append('image_file', this.state.file);
+                    const data = new FormData();
+                    data.append('image_file', this.state.file);
 
-                let img_response = await axios.put(endpoint1,
-                    data,
-                    {
-                        headers: {
-                            'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
-                    },
-                    timeout: 30000,
-                });
+                    let img_response = await axios.put(endpoint1,
+                        data,
+                        {
+                            headers: {
+                                'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                        },
+                        timeout: 30000,
+                    });
+                }
             }
 
             this.setState({
