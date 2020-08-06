@@ -80,3 +80,14 @@
 • Add a "Suggest Ingredients" button and display the ingredients being suggested, and allow them to be selected or deselected from the running list.
 • Helped team member in debugging the ingredient-based search feature for recipe fetched from the API.
 • WORK FOR NEXT WEEK: Add the remaining features, complete the report and prepare for the final demo on Friday.
+
+  WEEK 10
+• Implemented the ingredient exclusion feature for recipes being fetched from the API.
+• Added the steps for the recipe cards being fetched from the API, for normal search and mealtype-based search.
+• Integrated the ingredient combination suggestion feature (developed by team member) in the recipe contributor page, by adding buttons for access and displaying and allowing selection of returned ingredients consistent with the rest of the website.
+• Helped team member in integrating the mealtype-based recipe search code into the recipe explorer page.
+• Modified the design of the website to match the chosen colour theme of black, orange, and white.
+• Updated the profile descriptions in the About page.
+• Prepared the assigned part for the Final Report submission.
+• Conducted rigorous testing of the website to check for any errors.
+• Discussed and prepared the final demo presentation with team members.
