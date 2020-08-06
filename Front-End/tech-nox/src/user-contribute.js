@@ -434,6 +434,7 @@ class ContributePage extends React.Component {
         this.getSuggestedIngredientsContributor = this.getSuggestedIngredientsContributor.bind(this);
     }
 
+    // initial components mounted
     componentDidMount() {
         this.getIngredients();
         this.getCategories();
@@ -441,18 +442,21 @@ class ContributePage extends React.Component {
         this.getUserRecipes();
     }
 
+    // display user account menu
     handleMenu = (event) => {
         this.setState({
             anchorEl: event.currentTarget
         })
     };
 
+    // close user account menu
     handleMenuClose = () => {
         this.setState({
             anchorEl: null
         })
     };
 
+    // open confirm dialog for recipe deletion
     handleDeleteDialogOpen(index) {
         let opRcpDel = [...this.state.openRecipeDelete];
         opRcpDel[index] = true;
@@ -462,6 +466,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // cancel recipe deletion
     handleDeleteCancel(index) {
         let opRcpDel = [...this.state.openRecipeDelete];
         opRcpDel[index] = false;
@@ -471,6 +476,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // switch between ingredient category and meal type displays
     updateCardState = (name) => {
         if (name === "Ingredient Category") {
             this.setState({
@@ -487,6 +493,7 @@ class ContributePage extends React.Component {
         }
     }
 
+    // fetch list of all ingredients from Flask endpoint
     async getIngredients() {
         await axios.get('/ingredient')
         .then(response => {
@@ -500,6 +507,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // fetch list of all categories and their associated ingredients from Flask endpoint
     async getCategories() {
         await axios.get('/category')
         .then(response => {
@@ -513,6 +521,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // fetch list of all meal types and their associated recipes from Flask endpoint
     async getMealtypes() {
         await axios.get('/mealtype')
         .then(response => {
@@ -526,6 +535,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // fetch recipes contributed by the particular user
     async getUserRecipes() {
         const endpoint = '/recipe/' + this.state.username;
 
@@ -543,6 +553,7 @@ class ContributePage extends React.Component {
             });
     }
 
+    // check (select) or uncheck (deselect) an ingredient checkbox
     handleIngredientCheckChange(event) {
         let ingrList = {...this.state.ingredient_list};
         let catList = {...this.state.category_list};
@@ -624,6 +635,7 @@ class ContributePage extends React.Component {
         }
     }
 
+    // clear selected ingredients list
     handleIngredientCheckReset() {
         let ingrList = {...this.state.ingredient_list};
         let catList = {...this.state.category_list};
@@ -685,6 +697,7 @@ class ContributePage extends React.Component {
         }
     }
 
+    // deselect an ingredient from running list by clicking on delete icon
     handleIngredientDelete(obj) {
         let ingrList = {...this.state.ingredient_list};
         let catList = {...this.state.category_list};
@@ -749,6 +762,7 @@ class ContributePage extends React.Component {
         }
     }
 
+    // display list of all ingredients
     handleShowAllIngredients() {
         this.setState({
             selected_category: '',
@@ -756,6 +770,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // send display back to category selection view
     handleBackToCategorySelect() {
         this.setState({
             selected_category: '',
@@ -767,12 +782,14 @@ class ContributePage extends React.Component {
         })
     }
 
+    // select an ingredient category
     handleCategorySelect(obj) {
         this.setState({
             selected_category: obj
         });
     }
 
+    // select a meal type
     handleSingleMealtypeSelect(obj) {
         if (!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) {
             if (this.state.filterByIngredient) {
@@ -809,6 +826,7 @@ class ContributePage extends React.Component {
         }
     }
 
+    // deselect a meal type
     handleSingleMealtypeDelete() {
         if (!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) {
             if (this.state.filterByIngredient) {
@@ -845,6 +863,7 @@ class ContributePage extends React.Component {
         }
     }
 
+    // tag meal type(s) for recipe in recipe contribution form
     handleMealtypeSelect(event) {
         let mtSelect = [...this.state.selected_mealtypes];
 
@@ -860,6 +879,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // untag meal type(s) for recipe in recipe contribution form
     handleMealtypeDelete(obj) {
         let mtSelect = [...this.state.selected_mealtypes];
         mtSelect = mtSelect.filter(x => x !== obj);
@@ -869,36 +889,42 @@ class ContributePage extends React.Component {
         });
     }
 
+    // clear meal type list for recipe in recipe contribution form
     handleMealTypeReset() {
         this.setState({
             selected_mealtypes: []
         });
     }
 
+    // select visibility for recipe in recipe contribution form
     handleVisibilitySelect(event) {
         this.setState({
             selected_visibility: event.target.value
         });
     }
 
+    // input recipe name in recipe contribution form
     handleOnBlurRecipeName(event) {
         this.setState({
             recipe_name_input: event.target.value
         });
     }
 
+    // input recipe description in recipe contribution form
     handleOnBlurRecipeDescription(event) {
         this.setState({
             recipe_description_input: event.target.value
         });
     }
 
+    // input recipe preparation time in recipe contribution form
     handleOnBlurRecipePrepTime(event) {
         this.setState({
             recipe_prep_time_input: event.target.value
         });
     }
 
+    // input recipe people served in recipe contribution form
     handleOnBlurRecipePeopleServed(event) {
         const parsedVal = Number(event.target.value);
 
@@ -911,6 +937,7 @@ class ContributePage extends React.Component {
         }
     }
 
+    // input ingredient quantity for ingredients in recipe contribution form
     handleOnChangeIngredientQty = obj => event => {
         let ingrSelect = [...this.state.selected_ingredients];
 
@@ -924,6 +951,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // input ingredient quantity for ingredients in recipe contribution form
     handleOnBlurIngredientQty = obj => event => {
         let ingrSelect = [...this.state.selected_ingredients];
 
@@ -937,6 +965,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // add recipe step in recipe contribution form
     handleRecipeStepAdd(event) {
         let recipeSteps = [...this.state.recipe_steps_input];
         recipeSteps.push('');
@@ -946,6 +975,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // remove recipe step in recipe contribution form
     handleRecipeStepDelete(index) {
         let recipeSteps = [...this.state.recipe_steps_input];
         recipeSteps.splice(index, 1);
@@ -955,12 +985,14 @@ class ContributePage extends React.Component {
         });
     }
 
+    // clear recipe steps in recipe contribution form
     handleRecipeStepReset(event) {
         this.setState({
             recipe_steps_input: []
         });
     }
 
+    // move up recipe step in recipe contribution form
     handleRecipeStepMoveUp(index) {
         let recipeSteps = [...this.state.recipe_steps_input];
 
@@ -973,6 +1005,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // move down recipe step in recipe contribution form
     handleRecipeStepMoveDown(index) {
         let recipeSteps = [...this.state.recipe_steps_input];
 
@@ -985,6 +1018,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // input recipe step in recipe contribution form
     handleOnBlurRecipeSteps = index => event => {
         let recipeSteps = [...this.state.recipe_steps_input];
         recipeSteps[index] = event.target.value;
@@ -994,6 +1028,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // input recipe step in recipe contribution form
     handleOnChangeRecipeSteps = index => event => {
         let recipeSteps = [...this.state.recipe_steps_input];
         recipeSteps[index] = event.target.value;
@@ -1003,6 +1038,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // upload recipe image in recipe contribution form
     handleRecipeImageChange(event) {
         event.preventDefault();
 
@@ -1023,7 +1059,9 @@ class ContributePage extends React.Component {
         }
     }
 
+    // save recipe after add or update
     async handleSaveRecipe() {
+        // error checks
         if (this.state.recipe_name_input === '') {
             this.setState({
                 recipeErrorMessage: 'Recipe name cannot be empty.'
@@ -1060,6 +1098,7 @@ class ContributePage extends React.Component {
             const endpoint = '/recipe/' + this.state.username;
 
             if (this.state.isAddingRecipe) {
+                // for add recipe
                 if (this.state.imagePreviewUrl === '') {
                     this.setState({
                         recipeErrorMessage: 'Recipe must have an image.'
@@ -1093,6 +1132,7 @@ class ContributePage extends React.Component {
                     });
                 }
             } else if (this.state.isUpdatingRecipe) {
+                // for update recipe
                 let response = await axios.put(endpoint, {
                     'username': this.state.username,
                     'recipe_id': this.state.selected_recipe_id,
@@ -1147,11 +1187,13 @@ class ContributePage extends React.Component {
                 searchParam: 'recipes'
             });
 
+            // display user's contributed recipes
             this.getUserRecipes();
             window.scrollTo(0, 0);
         }
     }
 
+    // go back to contributed recipe display view from recipe add or update view
     handleContributeFormBack() {
         let ingrList = {...this.state.ingredient_list};
         let catList = {...this.state.category_list};
@@ -1191,6 +1233,7 @@ class ContributePage extends React.Component {
         window.scrollTo(0, 0);
     }
 
+    // go to recipe add view
     handleContributeViewAdd() {
         let ingrList = {...this.state.ingredient_list};
         let catList = {...this.state.category_list};
@@ -1229,6 +1272,7 @@ class ContributePage extends React.Component {
         window.scrollTo(0, 0);
     }
 
+    // go to recipe update view
     handleRecipeUpdate = obj => event => {
         let ingrList = {...this.state.ingredient_list};
         let catList = {...this.state.category_list};
@@ -1282,6 +1326,7 @@ class ContributePage extends React.Component {
         window.scrollTo(0, 0);
     }
 
+    // delete a recipe from database
     async handleRecipeDelete(obj) {
         const endpoint1 = '/recipe_image/' + obj;
         let response1 = await axios.delete(endpoint1);
@@ -1296,6 +1341,7 @@ class ContributePage extends React.Component {
         this.getUserRecipes();
     }
 
+    // update visibility of recipe upon clicking the visibility icon
     async handleVisibilityUpdate(obj) {
         const endpoint = '/recipe/' + this.state.username;
         let temp_mealtypes = [];
@@ -1340,6 +1386,7 @@ class ContributePage extends React.Component {
         this.getUserRecipes();
     }
 
+    // expand contributed recipe card
     handleCardExpandClick = index => event => {
         let cdExpand = [...this.state.isCardExpanded];
         cdExpand[index] = !cdExpand[index];
@@ -1349,6 +1396,7 @@ class ContributePage extends React.Component {
         });
     }
 
+    // filter contributed recipes by ingredients
     handleFilterByIngredient() {
         if (this.state.filterByIngredient) {
             if (this.state.filterByMealtype) {
@@ -1406,6 +1454,7 @@ class ContributePage extends React.Component {
         }
     }
 
+    // filter contributed recipes by meal type
     handleFilterByMealtype() {
         if (this.state.filterByMealtype) {
             if (this.state.filterByIngredient) {
@@ -1463,24 +1512,29 @@ class ContributePage extends React.Component {
         }
     }
 
+    // set search type to either "recipes" or "ingredients"
     handleSearchParamChange(event) {
         this.setState({
             searchParam: event.target.value,
         });
     }
 
+    // save value input in search field
     setSearchValue(event) {
         if (this.state.searchParam === 'recipes') {
+            // recipe search
             this.setState({
                 searched_recipe: event.target.value
             });
         } else if (this.state.searchParam === 'ingredients') {
+            // ingredient search
             this.setState({
                 searched_ingredient: event.target.value
             });
         }
     }
 
+    // fetch recipe or ingredient search results, based on the selected search type
     async getSearchResults() {
         if (this.state.searchParam === 'recipes') {
             let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.recipe_name.trim().toLowerCase().includes(this.state.searched_recipe));
@@ -1515,6 +1569,7 @@ class ContributePage extends React.Component {
         }
     }
 
+    // get set of most frequently searched ingredients for which user has not contributed a recipe
     async getSuggestedIngredientsContributor() {
         const endpoint = '/suggested-ingredients-contributor/' + this.state.username;
 
@@ -1547,19 +1602,23 @@ class ContributePage extends React.Component {
             });
     }
 
+    // log out of current session
     handleLogout() {
         this.setState({
             redirectToHome: true
         });
     }
 
+    // display the web page
     render() {
+        // redirect to home page if logged out
         if (this.state.redirectToHome === true) {
             return <Redirect to={'/'} />
         }
 
         const { classes } = this.props;
 
+        // set recipe image url
         let {imagePreviewUrl} = this.state;
         let $imagePreview = null;
 
@@ -1595,6 +1654,7 @@ class ContributePage extends React.Component {
             <div className={classes.root}>
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
+                {/* top app bar contents */}
                 <Toolbar>
                     <Box display='flex' flexGrow={1}>
                         <Typography variant="h6" noWrap>
@@ -1724,6 +1784,7 @@ class ContributePage extends React.Component {
                         </ListItem>
                     }
                 </List>
+                {/* selected meal type view */}
                 {(!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) &&
                     <>
                     <Divider />
@@ -1753,6 +1814,7 @@ class ContributePage extends React.Component {
                     </>
                 }
                 <Divider />
+                {/* selected ingredients view */}
                 {(!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) ?
                     <div className={classes.selectedIngrDiv1}>
                     {!this.state.selected_ingredients.length ?
@@ -1845,6 +1907,7 @@ class ContributePage extends React.Component {
 
             </Drawer>
             <main className={classes.content}>
+                {/* ingredient category / meal type views */}
                 <div className={classes.toolbar} />
                 {(this.state.isAddingRecipe || this.state.isUpdatingRecipe) &&
                     <Typography style={{marginLeft:10,marginBottom:8}}><b>STEP 1: INGREDIENT SELECTION</b></Typography>
@@ -2041,6 +2104,7 @@ class ContributePage extends React.Component {
                             </CardContent>
                         </Card>
                     )}
+                    {/* contributed recipe card display */}
                     {(!this.state.isAddingRecipe && !this.state.isUpdatingRecipe) ? (
                         <>
                         <Container className={classes.mainContainer}>
@@ -2291,6 +2355,7 @@ class ContributePage extends React.Component {
                         ) : (
                             <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>EDIT THE RECIPE DETAILS</b></Typography>
                         )}
+                        {/* recipe add / update form view */}
                         </Grid>
                         <Grid item xs={4}>
                         <Button
