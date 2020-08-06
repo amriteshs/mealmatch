@@ -79,5 +79,16 @@ to complete more goals in the limited timeframe.
 - Initiated planning for the final presentation adhering to the guidelines given.
 
 
+WEEK 10:
+- Final sprint completed with all the assigned tasks
+- Created endpoints for ingredient suggestion module in the backend
+- Added ingredient suggestion module for the contributor part which would show list of common ingredients for which contributor
+has not contributed any recipe
+- Completed styling of the website to maintain consistency, overall style and presentation
+- Revised presentation for the final demonstration activity in Week 11 as per the guidelines
+- Coordinated with other team members to debug and correct all the errors
+- Corrected profile descriptions for the About page
+- Completed Documentation part in the report and improved formatting of the overall report
+
 
 
