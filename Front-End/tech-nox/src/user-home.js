@@ -37,6 +37,7 @@ import { deepOrange, green } from '@material-ui/core/colors';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import 'fontsource-roboto';
@@ -285,6 +286,7 @@ class UserHomePage extends React.Component {
         this.getApiRecipes = this.getApiRecipes.bind(this);
     }
 
+    // initial components mounted
     componentDidMount() {
         this.getIngredients();
         this.getCategories();
@@ -293,12 +295,14 @@ class UserHomePage extends React.Component {
         this.getApiRecipes('noFilter');
     }
 
+    // activate ingredient inclusion tab
     handleIngredientInclusion(event) {
         this.setState({
             isIngrInc: true
         });
     }
 
+    // activate ingredient exclusion tab
     handleIngredientExclusion(event) {
         this.setState({
             isShowIngrSuggest: false,
@@ -306,18 +310,21 @@ class UserHomePage extends React.Component {
         });
     }
 
+    // display user account menu
     handleMenu = (event) => {
         this.setState({
             anchorEl: event.currentTarget
         })
     };
 
+    // close user account menu
     handleMenuClose = () => {
         this.setState({
             anchorEl: null
         })
     };
 
+    // switch between ingredient category and meal type displays
     updateCardState = (name) => {
         if (name === "Ingredient Category") {
             this.setState({
@@ -332,6 +339,7 @@ class UserHomePage extends React.Component {
         }
     }
 
+    // fetch list of all ingredients from Flask endpoint
     async getIngredients() {
         await axios.get('/ingredient')
         .then(response => {
@@ -345,6 +353,7 @@ class UserHomePage extends React.Component {
         });
     }
 
+    // fetch list of all categories and their associated ingredients from Flask endpoint
     async getCategories() {
         await axios.get('/category')
         .then(response => {
@@ -358,6 +367,7 @@ class UserHomePage extends React.Component {
         });
     }
 
+    // fetch list of all meal types and their associated recipes from Flask endpoint
     async getMealtypes() {
         await axios.get('/mealtype')
         .then(response => {
@@ -371,6 +381,7 @@ class UserHomePage extends React.Component {
         });
     }
 
+    // check (select) or uncheck (deselect) an ingredient checkbox, either for inclusion or exclusion
     handleIngredientCheckChange(event) {
         if (this.state.isIngrInc) {
             let ingrList = {...this.state.ingredient_list};
@@ -476,6 +487,7 @@ class UserHomePage extends React.Component {
         }
     }
 
+    // clear selected ingredients list, either for inclusion or exclusion
     handleIngredientCheckReset() {
         if (this.state.isIngrInc) {
             let ingrList = {...this.state.ingredient_list};
@@ -545,6 +557,7 @@ class UserHomePage extends React.Component {
         }
     }
 
+    // deselect an ingredient from running list by clicking on delete icon, either for inclusion or exclusion
     handleIngredientDelete(obj) {
         if (this.state.isIngrInc) {
             let ingrList = {...this.state.ingredient_list};
@@ -618,18 +631,21 @@ class UserHomePage extends React.Component {
         }
     }
 
+    // select an ingredient category
     handleCategorySelect(obj) {
         this.setState({
             selected_category: obj
         });
     }
 
+    // select a meal type
     handleMealtypeSelect(obj) {
         this.setState({
             selected_mealtype: obj
         });
     }
 
+    // deselect a meal type
     handleMealtypeDelete() {
         if (this.state.recipeFilter === 'filterByMealtype') {
             this.setState({
@@ -645,6 +661,7 @@ class UserHomePage extends React.Component {
         }
     }
 
+    // display list of all ingredients
     handleShowAllIngredients() {
         this.setState({
             selected_category: '',
@@ -652,6 +669,7 @@ class UserHomePage extends React.Component {
         });
     }
 
+    // send display back to category selection view
     handleBackToCategorySelect() {
         this.setState({
             selected_category: '',
@@ -662,20 +680,24 @@ class UserHomePage extends React.Component {
         })
     }
 
+    // fetch list of recipes contributed by users from Flask endpoint
     async getContributedRecipes(filterVal) {
         let response = await axios.get('/recipe');
         
         if (filterVal === 'noFilter') {
+            // fetch all recipes
             this.setState({
                 contributed_recipe_list: response.data.recipes.slice(0, 10)
             });
         } else if (filterVal === 'filterByMealtype') {
+            // filter recipes by meal type
             let rcpFilter = response.data.recipes.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
 
             this.setState({
                 contributed_recipe_list: rcpFilter.slice(0, 10)
             })
         } else if (filterVal === 'filterByIngredients') {
+            // filter recipes by selected ingredients for inclusion and exclusion
             let rcpFilter = [];
             response.data.recipes.forEach(recipe =>  {
                 if (!this.state.selected_ingredients_exclude.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length) {
@@ -691,6 +713,7 @@ class UserHomePage extends React.Component {
         }
     }
 
+    // fetch list of recipes from the Spoonacular API
     async getApiRecipes(filterVal) {
         if (filterVal === 'noFilter') {
             // fetch all recipes
@@ -729,7 +752,7 @@ class UserHomePage extends React.Component {
                      });
                  });
         } else if (filterVal === 'filterByIngredients') {
-            // fetch recipes by ingredients
+            // fetch recipes by selected ingredients for inclusion and exclusion
             const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
             let URL = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=' + API_KEY + '&number=10&ingredients=';
             this.state.selected_ingredients.forEach(ingredient => {
@@ -762,29 +785,35 @@ class UserHomePage extends React.Component {
         }
     }
 
+    // set search type to either "recipes" or "ingredients"
     handleSearchParamChange(event) {
         this.setState({
             searchParam: event.target.value,
         });
     }
 
+    // save value input in search field
     setSearchValue(event) {
         if (this.state.searchParam === 'recipes') {
+            //recipe search
             this.setState({
                 api_recipe_name: event.target.value
             });
         } else if (this.state.searchParam === 'ingredients') {
+            // ingredient search
             this.setState({
                 searched_ingredient: event.target.value
             });
         }
     }
 
+    // display recipes based on current filter type selected (through radio buttons)
     handleRecipeFilterChange(event) {
         this.getContributedRecipes(event.target.value);
         this.getApiRecipes(event.target.value);
     }
 
+    // fetch recipe or ingredient search results, based on the selected search type
     async getSearchResults() {
         if (this.state.searchParam === 'recipes') {
             // all recipes from database are fetched here
@@ -815,6 +844,7 @@ class UserHomePage extends React.Component {
                     });
                 });
         } else if (this.state.searchParam === 'ingredients') {
+            // ingredient search
             let response = await axios.post('/ingredient', {
                 'ingredient': this.state.searched_ingredient.trim().toLowerCase()
             });
@@ -844,6 +874,7 @@ class UserHomePage extends React.Component {
         }
     }
 
+    // get list of ingredients suggested to user based on their current selections
     async getSuggestedIngredients() {
         let response = await axios.post('/suggested-ingredients', {
                 'cart_ingredients': this.state.selected_ingredients
@@ -882,6 +913,7 @@ class UserHomePage extends React.Component {
             });
     }
 
+    // expand recipe card for contributed recipes
     handlePublicRecipeCardExpand = index => event => {
         let rcpSelected = [...this.state.contributed_recipe_list];
         rcpSelected[index].expanded = !rcpSelected[index].expanded;
@@ -897,7 +929,9 @@ class UserHomePage extends React.Component {
         });
     }
 
+    // display the web page
     render() {
+        // redirect to home page if logged out
         if (this.state.redirectToHome === true) {
             return <Redirect to={'/'} />
         }
@@ -907,6 +941,7 @@ class UserHomePage extends React.Component {
         return (
             <div className={classes.root}>
             <CssBaseline />
+            {/* top app bar contents */}
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Box display='flex' flexGrow={1}>
@@ -1016,6 +1051,7 @@ class UserHomePage extends React.Component {
                     </ListItem>
                 </List>
                 <Divider />
+                {/* selected meal type view */}
                 <div className={classes.selectedMtDiv}>
                     {this.state.selected_mealtype === '' ?
                         <Typography>You have not selected a meal type.</Typography>
@@ -1040,6 +1076,7 @@ class UserHomePage extends React.Component {
                     }
                 </div>
                 <Divider />
+                {/* tabs for ingredient inclusion and exclusion */}
                 <Grid container spacing={0} direction="row" alignItems="center" justify="center">
                     <Grid item xs={6}>
                         {this.state.isIngrInc ?
@@ -1174,6 +1211,7 @@ class UserHomePage extends React.Component {
                 }
             </Drawer>
             <main className={classes.content}>
+                {/* ingredient category / meal type views */}
                 <div className={classes.toolbar} />
                     {this.state.isShowCategory ? (
                         <Card variant="outlined">
@@ -1513,6 +1551,7 @@ class UserHomePage extends React.Component {
                             </CardContent>
                         </Card>
                     )}
+                    {/* display recipe cards */}
                     <div className={classes.cardsContaioner}>
                         <Typography style={{marginTop:5,paddingLeft:10,fontSize:15}}><b>RECIPES</b></Typography>
                         <Divider className={classes.dividerStyle1} />
@@ -1561,6 +1600,10 @@ class UserHomePage extends React.Component {
                                                 </Typography>
                                             </CardContent>
                                             <CardActions disableSpacing>
+                                                <IconButton  disabled aria-label="add to favorites" style={{fontSize:14,color:'grey'}}>
+                                                    <FavoriteIcon style={{fill:"#FF1111",marginRight:5}}/>
+                                                    <b>0</b>
+                                                </IconButton>
                                                 <IconButton
                                                     className={clsx(classes.expand, {
                                                         [classes.expandOpen]: recipe.expanded,
@@ -1645,6 +1688,7 @@ class UserHomePage extends React.Component {
                                                     imageUrl={recipe.image}
                                                     likes={recipe.likes}
                                                     missed={recipe.missedIngredients}
+                                                    recipeid={recipe.id}
                                                 />
                                             </Grid>
                                         )

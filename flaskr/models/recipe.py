@@ -40,7 +40,6 @@ class PublicRecipe(Resource):
     @api.doc(description='Retrieve details for all public recipes')
     def get(self):
         '''Retrieve details for all public recipes'''
-        '''Retrieve list of recipes for a specific user'''
         conn = db_connect(db_file)
         c = conn.cursor()
 
@@ -507,6 +506,7 @@ class RecipeImage(Resource):
     @api.response(200, 'OK')
     @api.doc(description='Add image for recipe contributed by user')
     def post(self, id):
+        '''Add image for recipe contributed by user'''
         file = request.files['image_file']
 
         conn = db_connect(db_file)
@@ -536,6 +536,7 @@ class RecipeImage(Resource):
     @api.response(200, 'OK')
     @api.doc(description='Update image for recipe contributed by user')
     def put(self, id):
+        '''Update image for recipe contributed by user'''
         file = request.files['image_file']
 
         fname = f"{id}.{secure_filename(file.filename).split('.')[1]}"
@@ -553,6 +554,7 @@ class RecipeImage(Resource):
     @api.response(200, 'OK')
     @api.doc(description='Delete image for recipe contributed by user')
     def delete(self, id):
+        '''Delete image for recipe contributed by user'''
         os.remove(UPLOAD_FOLDER + '/' + id + '.jpg')
 
         return json.loads(json.dumps({

@@ -57,6 +57,7 @@ export default function RecipeReviewCard(props) {
 
   const [steps,setSteps] = useState('')
   const [showSpinner,setshowSpinner] = useState(false);
+  const [likes,setLikes] = useState(0);
 
   const getRecipeInfo = () => {
 
@@ -68,7 +69,8 @@ export default function RecipeReviewCard(props) {
       setshowSpinner(true);
       Axios.get(URL).then((response)=>{
         debugger;
-        setSteps(response.data.instructions)
+        setSteps(response.data.instructions);
+        setLikes(response.data.aggregateLikes);
         setExpanded(true)
         setshowSpinner(false);
       }).catch((error)=>{
@@ -100,8 +102,9 @@ export default function RecipeReviewCard(props) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+        <IconButton  disabled aria-label="add to favorites" style={{fontSize:14,color:'grey'}}>
+          <FavoriteIcon style={{fill:"#FF1111",marginRight:10}}/>
+          <b>{likes}</b>
         </IconButton>
         <IconButton
           className={clsx(classes.expand, {
