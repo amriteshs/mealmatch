@@ -64,3 +64,10 @@ Week6:
  - Started to work on Cards from material UI. Then finally decided to implement Grid List from Material UI.
  - for Icons used Avators from Material UI for Ingredian categories and meal type.
  - After the 2nd demo prepared Retrospective doc and started imp[lementing UI changes for Ingrediant and Meal type as Maryam suggested that there should be only one Search bar for less comfusion and more smooth experience for user.
+ 
+ 
+ Week 9 and week 10:
+ - Worked on Ingredeint categories and Meal type search responses.
+ - Worked on the final report and the retrospective B.
+ - Resloved many issues related to API calls and Meal type search based on selection.
+ - Completed the meal types and Ingredient categorie content
