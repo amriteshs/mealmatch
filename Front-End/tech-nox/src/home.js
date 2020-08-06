@@ -36,6 +36,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import { deepOrange, green } from '@material-ui/core/colors';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SearchIcon from '@material-ui/icons/Search';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -1559,6 +1560,10 @@ class HomePage extends React.Component {
                                                 </Typography>
                                             </CardContent>
                                             <CardActions disableSpacing>
+                                                <IconButton  disabled aria-label="add to favorites" style={{fontSize:14,color:'grey'}}>
+                                                    <FavoriteIcon style={{fill:"#FF1111",marginRight:5}}/>
+                                                    <b>0</b>
+                                                </IconButton>
                                                 <IconButton
                                                     className={clsx(classes.expand, {
                                                         [classes.expandOpen]: recipe.expanded,
@@ -1643,6 +1648,7 @@ class HomePage extends React.Component {
                                                     imageUrl={recipe.image}
                                                     likes={recipe.likes}
                                                     missed={recipe.missedIngredients}
+                                                    recipeid={recipe.id}
                                                 />
                                             </Grid>
                                         )
