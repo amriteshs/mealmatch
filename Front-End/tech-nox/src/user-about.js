@@ -144,7 +144,7 @@ class UserAboutPage extends React.Component {
 
     render() {
       if (this.state.redirectToHome === true) {
-          return <Redirect to={'/' + this.state.username} />
+          return <Redirect to={'/'} />
       }
       
       const { classes } = this.props;

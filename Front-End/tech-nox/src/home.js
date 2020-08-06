@@ -1636,6 +1636,7 @@ class HomePage extends React.Component {
                                                 time={recipe.readyInMinutes}
                                                 serves={recipe.servings}
                                                 recipeid={recipe.id}
+                                                likes={Math.floor(Math.random() * 1000) + 100}
                                             />
                                         </Grid>
                                     )
@@ -1662,6 +1663,7 @@ class HomePage extends React.Component {
                                                     time={recipe.readyInMinutes}
                                                     serves={recipe.servings}
                                                     recipeid={recipe.id}
+                                                    likes={Math.floor(Math.random() * 1000) + 100}
                                                 />
                                             </Grid>
                                         )
