@@ -275,19 +275,18 @@ of recipes in its database, it does all the brainstorming work for you.
                       <h4>Amritesh Singh</h4> <h6>Student, UNSW</h6>
 
                       <p>
-                          I started the diet generator in 2011 out of my college bedroom instead of studying for my biology
-                          exams - back then it was called
-
-                          The original meals were almost totally random, resembling the college “bodybuilding” diets
-                          I followed (dinner = 2 cans of tuna, stick of celery), hence the name.
-                      </p>
-
-                      <p>
-                          I kept improving it whenever I had free time, and the meals got better the more I worked on it.
-                          When they started to look
-                          like something a normal, well-adjusted person might eat, I renamed it to Eat This Much and
-                          teamed up with Patrick (my roommate at the time) to build something that everyone can use to
-                          effortlessly control their diet.
+                      I am a Master of Information Technology student at the University of New South Wales, 
+                      with dual specialization in Artificial Intelligence, and Data Science and Engineering. 
+                      I am highly motivated and pro-active with effective communication and organizational 
+                      skills. I have been involved in team-based projects that have enabled me to thrive working in 
+                      collaborative environments. I specialized in Robotics during my undergraduate period 
+                      and I have worked on projects related to problems of cognition and automation. 
+                      I am also interested in mathematics at the engineering level, and completed a course on 
+                      multivariate analysis which allowed me to gain experience in the SAS language. 
+                      My experience working on multiple projects based on software development, data science 
+                      and machine learning, have given me the required experience in the field, while 
+                      allowing me to inculcate the habit of thinking towards the logical solution of any 
+                      problem.
                       </p>
 
                   </div>
@@ -330,19 +329,16 @@ of recipes in its database, it does all the brainstorming work for you.
                       <h4>Rishabh Khurana</h4> <h6>Student, UNSW</h6>
 
                       <p>
-                          I started the diet generator in 2011 out of my college bedroom instead of studying for my biology
-                          exams - back then it was called
-
-                          The original meals were almost totally random, resembling the college “bodybuilding” diets
-                          I followed (dinner = 2 cans of tuna, stick of celery), hence the name.
-                      </p>
-
-                      <p>
-                          I kept improving it whenever I had free time, and the meals got better the more I worked on it.
-                          When they started to look
-                          like something a normal, well-adjusted person might eat, I renamed it to Eat This Much and
-                          teamed up with Patrick (my roommate at the time) to build something that everyone can use to
-                          effortlessly control their diet.
+                        I'm an engineer by trade and have had the opportunity to work as Software engineer at 
+                        Accenture for 2+ years , during which I was a part of various projects belonging to domains 
+                        such as banking/e-commerce, energy, hospitality, etc. I also have considerable amount of 
+                        international experience when it comes to technology as I worked in Germany for 1 year. 
+                        Our client was a leading bank based in Frankfurt and my role was mainly delivering technical 
+                        presentations on the new features added during that particular quarter, and also involved 
+                        developing, testing and enhancing the web application portal we were working on. 
+                        I was a part of the core team for developing this product and my role also included working 
+                        alongside software Architects, product owners and stakeholders to come up with a state of 
+                        the art banking portal with the best tech available in the market at that time.
                       </p>
 
                   </div>
@@ -359,19 +355,15 @@ of recipes in its database, it does all the brainstorming work for you.
                       <h4>Malay Raghuwanshi</h4> <h6>Student, UNSW</h6>
 
                       <p>
-                          I started the diet generator in 2011 out of my college bedroom instead of studying for my biology
-                          exams - back then it was called
-
-                          The original meals were almost totally random, resembling the college “bodybuilding” diets
-                          I followed (dinner = 2 cans of tuna, stick of celery), hence the name.
+                      I am currently pursuing Masters in Information Technology (Data Science) and 
+                      worked as a professional web and software developer. I have also worked for a 
+                      government project to improve the current systems and help society. Currently, I am looking for 
+                      an opportunity to work in an IT firm and learn new technologies.
                       </p>
 
                       <p>
-                          I kept improving it whenever I had free time, and the meals got better the more I worked on it.
-                          When they started to look
-                          like something a normal, well-adjusted person might eat, I renamed it to Eat This Much and
-                          teamed up with Patrick (my roommate at the time) to build something that everyone can use to
-                          effortlessly control their diet.
+                      I am a creative and people-oriented Computer Science Engineer with extensive 
+                      project management experience. I also possess advanced knowledge of Cyber Security and Cloud Security.
                       </p>
 
                   </div>
