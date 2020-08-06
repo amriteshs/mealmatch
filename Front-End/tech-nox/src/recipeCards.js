@@ -57,20 +57,17 @@ export default function RecipeReviewCard(props) {
 
   const [steps,setSteps] = useState('')
   const [showSpinner,setshowSpinner] = useState(false);
-  const [likes,setLikes] = useState(0);
 
   const getRecipeInfo = () => {
 
     const API_KEY= 'ace01650e38a4d5a847be07d17274eec';
     const URL = 'https://api.spoonacular.com/recipes/'+props.recipeid+'/information?apiKey=' + API_KEY;
 
-
     if(expanded===false){
       setshowSpinner(true);
       Axios.get(URL).then((response)=>{
         debugger;
         setSteps(response.data.instructions);
-        setLikes(response.data.aggregateLikes);
         setExpanded(true)
         setshowSpinner(false);
       }).catch((error)=>{
@@ -104,7 +101,7 @@ export default function RecipeReviewCard(props) {
       <CardActions disableSpacing>
         <IconButton  disabled aria-label="add to favorites" style={{fontSize:14,color:'grey'}}>
           <FavoriteIcon style={{fill:"#FF1111",marginRight:10}}/>
-          <b>{likes}</b>
+          <b>{props.likes}</b>
         </IconButton>
         <IconButton
           className={clsx(classes.expand, {
