@@ -101,9 +101,11 @@ Click on the ‘Contribute’ button located in the left side of the tool bar on
 A. **Add recipe**
 
     You can add a new recipe by clicking on the ‘+ Add Recipe’ button located in the ‘Recipes’ box. After clicking on this button, follow the below steps to add a new recipe.
+    
     STEP 1: INGREDIENT SELECTION  
         1. Select or deselect an ingredient similar to the ingredient selection module on the recipe explorer page. 
         2. Try new ingredients button: This is an additional button which appears in the ‘Ingredient’ box of Contributor page. Clicking this button, shows the combination of most common ingredients for which you haven’t contributed any recipe yet. You may select your preferred ingredients from this list.  
+        
     STEP 2: RECIPE CREATION
         1. Basic information  
                 Name: Type the name of the recipe. This field cannot be left blank.  
@@ -116,7 +118,9 @@ A. **Add recipe**
                 People served: You can enter the number of people that can be served by the prepared dish. By default, this value will be 1.  
                 Visibility: You can set the visibility public or private from the drop-down list. If you select private, the recipe will only be visible to you. If you select public, the recipe will be visible to other users.  
         6.  Add Image: You can also add an image for your recipe by choosing a file on your system. The image format must be jpg.  
+    
     SAVE RECIPE: You can click on ‘Save recipe’ button to save the recipe after completing all the steps outlined above.  
+    
     BACK BUTTON: Clicking on this button will take you back to the Contribute page and will show you all your contributed recipes.  
         
 B. **Filter recipes**  
