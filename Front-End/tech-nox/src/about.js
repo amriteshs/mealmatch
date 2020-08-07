@@ -357,16 +357,14 @@ of recipes in its database, it does all the brainstorming work for you.
 
               <div className={classes.row1+' '+classes.top_spacer}>
                   <div className={classes.col_sm_10+' '+classes.offset_sm_1}>
-                      <p>The Free License. We use the license called Creative
+                  <p>The Free License. We use the license called Creative
                           Commons Attribution-NoDerivs 3.0 Unported http://creativecommons.org/licenses/by-nd/3.0/ . Thanks
                           for letting us use your icons!
                       </p>
                       <p>
-                          Other icons made by Freepik, Anas Ramadan, SimpleIcon from flaticon.com. Licensed by
+                          Other icons made by Freepik, Anas Ramadan, SimpleIcon from flaticon.com.
                       </p>
-                      <p>In our mobiles apps, the barcode lookup is
-                      </p>
-                      <p>Last but not least, big thanks to for helping us take the planner's
+                      <p>Last but not least, big thanks to our mentor Maryam Khazaali for helping us take the product's
                           efficiency to the next level.
                       </p>
                   </div>
