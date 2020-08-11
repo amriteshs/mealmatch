@@ -1,8 +1,8 @@
 # MealMatch
 
-Instructions to use the website
+Recipe exploration and contribution website. As a recipe explorer, the user can search a recipe by name, or filter recipes either by meal type or by selecting ingredients from a list. For ingredient-based recipe search, recipes are first filtered out by ingredients to exclude, and then selected by ingredients to include. As a recipe contributor, users can contribute recipes that are stored in the database, and also featured in recipe searches if their visibility is set to public.
 
-## Front-End Initialisation
+## Front-End Initialization
 
 1. Open the terminal at the root directory of the project to initiate front-end setup. Change the directory of the command line path to reach the destination folder **tech-nox** where all the front-end files are present.  
 ```cd Front-End/tech-nox/```
@@ -13,7 +13,7 @@ Run the following commands:
 ```npm start```
 4. Open the browser and navigate to **http://localhost:3000** to visit the home page of the website.
 
-## Back-End Initialisation
+## Back-End Initialization
 
 1. Open a new terminal at the root directory of the project to initiate back-end setup.  
 2. Using the python package installer pip3, install all the required libraries from the *requirements.txt* file by running the below command.  
