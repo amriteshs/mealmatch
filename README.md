@@ -5,7 +5,7 @@ Recipe exploration and contribution website. As a recipe explorer, the user can 
 ## Front-End Initialization
 
 1. Open the terminal at the root directory of the project to initiate front-end setup. Change the directory of the command line path to reach the destination folder **tech-nox** where all the front-end files are present.  
-```cd Front-End/tech-nox/```
+```cd tech-nox/```
 2. The project is based on Node.js, which requires NPM environment to install all the needed packages. This will install all packages the project needs according to the *package.json* file in root path.  
 ```npm install```
 3. Run server file using the below run command. This would initiate the start script from the json package file.
