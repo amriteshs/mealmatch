@@ -2,5 +2,5 @@
 **/__pycache__
 **/.idea
 **/.DS_Store
-Back-End/env
 **/package-lock.json
+**/node_modules
