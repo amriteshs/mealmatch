@@ -477,6 +477,7 @@ class UserRecipe(Resource):
             'message': 'Recipe deleted successfully'
         })), 200
 
+
 @api.route(recipe_image_url)
 class RecipeImage(Resource):
     @api.response(200, 'OK')
@@ -537,6 +538,7 @@ class RecipeImage(Resource):
             'message': 'Image deleted successfully'
         })), 200
 
+
 @api.route(filter_recipe_url)
 class ContributedRecipeFilter(Resource):
     @api.response(200, 'OK')
@@ -561,7 +563,7 @@ class ContributedRecipeFilter(Resource):
                     FROM Ingredient
                     WHERE name IN ({})
                 '''.format(', '.join('?' * len(selected_ingredients)))
-                , selected_ingredients
+                , [i['ingredient_name'] for i in selected_ingredients]
             )]
 
         if selected_mealtype != '':

@@ -1397,116 +1397,154 @@ class ContributePage extends React.Component {
     }
 
     // filter contributed recipes by ingredients
-    handleFilterByIngredient() {
+    async handleFilterByIngredient() {
         if (this.state.filterByIngredient) {
             if (this.state.filterByMealtype) {
                 // filter by mealtype
-                let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
-
-                this.setState({
-                    selected_recipes: rcpFilter,
-                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    filterByIngredient: false
+                await axios.post('/filter-recipe', {
+                    'username': this.state.username,
+                    'selected_ingredients': [],
+                    'selected_mealtype': this.state.selected_mealtype
+                }).then(response => {
+                    this.setState({
+                        selected_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        openRecipeDelete: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        filterByIngredient: false
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
                 });
             } else {
                 // no filter
-                this.setState({
-                    selected_recipes: this.state.user_recipe_list,
-                    isCardExpanded: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
-                    openRecipeDelete: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
-                    filterByIngredient: false
+                await axios.post('/filter-recipe', {
+                    'username': this.state.username,
+                    'selected_ingredients': [],
+                    'selected_mealtype': ''
+                }).then(response => {
+                    this.setState({
+                        selected_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        openRecipeDelete: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        filterByIngredient: false
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
                 });
             }
         } else {
             if (this.state.filterByMealtype) {
                 // filter by mealtype and ingredient
-                let rcpFilter1 = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
-                let rcpFilter = [];
-                rcpFilter1.forEach(recipe =>  {
-                    if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
-                        rcpFilter.push(recipe);
-                    }
-                });
-
-                this.setState({
-                    selected_recipes: rcpFilter,
-                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    filterByIngredient: true
+                await axios.post('/filter-recipe', {
+                    'username': this.state.username,
+                    'selected_ingredients': this.state.selected_ingredients,
+                    'selected_mealtype': this.state.selected_mealtype
+                }).then(response => {
+                    this.setState({
+                        selected_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        openRecipeDelete: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        filterByIngredient: true
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
                 });
             } else {
                 // filter by ingredient
-                let rcpFilter = [];
-                this.state.user_recipe_list.forEach(recipe =>  {
-                    if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
-                        rcpFilter.push(recipe);
-                    }
-                });
-
-                this.setState({
-                    selected_recipes: rcpFilter,
-                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    filterByIngredient: true
+                await axios.post('/filter-recipe', {
+                    'username': this.state.username,
+                    'selected_ingredients': this.state.selected_ingredients,
+                    'selected_mealtype': ''
+                }).then(response => {
+                    this.setState({
+                        selected_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        openRecipeDelete: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        filterByIngredient: true
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
                 });
             }
         }
     }
 
     // filter contributed recipes by meal type
-    handleFilterByMealtype() {
+    async handleFilterByMealtype() {
         if (this.state.filterByMealtype) {
             if (this.state.filterByIngredient) {
                 // filter by ingredient
-                let rcpFilter = [];
-                this.state.user_recipe_list.forEach(recipe =>  {
-                    if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
-                        rcpFilter.push(recipe);
-                    }
-                });
-
-                this.setState({
-                    selected_recipes: rcpFilter,
-                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    filterByMealtype: false
+                await axios.post('/filter-recipe', {
+                    'username': this.state.username,
+                    'selected_ingredients': this.state.selected_ingredients,
+                    'selected_mealtype': ''
+                }).then(response => {
+                    this.setState({
+                        selected_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        openRecipeDelete: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        filterByMealtype: false
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
                 });
             } else {
                 // no filter
-                this.setState({
-                    selected_recipes: this.state.user_recipe_list,
-                    isCardExpanded: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
-                    openRecipeDelete: new Array(this.state.user_recipe_list.length).fill().map((item, idx) => item = false),
-                    filterByMealtype: false
+                await axios.post('/filter-recipe', {
+                    'username': this.state.username,
+                    'selected_ingredients': [],
+                    'selected_mealtype': ''
+                }).then(response => {
+                    this.setState({
+                        selected_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        openRecipeDelete: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        filterByMealtype: false
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
                 });
             }
         } else {
             if (this.state.filterByIngredient) {
                 // filter by ingredient and mealtype
-                let rcpFilter1 = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
-                let rcpFilter = [];
-                rcpFilter1.forEach(recipe =>  {
-                    if (this.state.selected_ingredients.filter(ingr => recipe.ingredients.some(x => x.ingredient_name === ingr.ingredient_name)).length === this.state.selected_ingredients.length) {
-                        rcpFilter.push(recipe);
-                    }
-                });
-
-                this.setState({
-                    selected_recipes: rcpFilter,
-                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    filterByMealtype: true
+                await axios.post('/filter-recipe', {
+                    'username': this.state.username,
+                    'selected_ingredients': this.state.selected_ingredients,
+                    'selected_mealtype': this.state.selected_mealtype
+                }).then(response => {
+                    this.setState({
+                        selected_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        openRecipeDelete: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        filterByMealtype: true
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
                 });
             } else {
                 // filter by mealtype
-                let rcpFilter = this.state.user_recipe_list.filter(recipe => recipe.mealtypes.some(mt => mt.mealtype_name === this.state.selected_mealtype));
-
-                this.setState({
-                    selected_recipes: rcpFilter,
-                    isCardExpanded: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    openRecipeDelete: new Array(rcpFilter.length).fill().map((item, idx) => item = false),
-                    filterByMealtype: true
+                await axios.post('/filter-recipe', {
+                    'username': this.state.username,
+                    'selected_ingredients': [],
+                    'selected_mealtype': this.state.selected_mealtype
+                }).then(response => {
+                    this.setState({
+                        selected_recipes: response.data.recipes,
+                        isCardExpanded: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        openRecipeDelete: new Array(response.data.count).fill().map((item, idx) => item = false),
+                        filterByMealtype: true
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
                 });
             }
         }
