@@ -36,6 +36,7 @@ class Login(Resource):
             'password': password
         })), 200
 
+
 @api.route(signup_url)
 class Signup(Resource):
     @api.response(201, 'Signup successful')

@@ -716,6 +716,8 @@ class ContributedRecipeFilter(Resource):
 
             data['recipes'] = sorted(data['recipes'], key=lambda v: v['recipe_name'])
 
+        conn.close()
+
         data['count'] = len(data['recipes'])
 
         return json.loads(json.dumps(data)), 200
