@@ -28,3 +28,9 @@ recipe_details_model_v2 = api.model('recipe_update_details', {
     'ingredients': fields.Raw,
     'steps': fields.List(fields.String)
 })
+
+filter_recipe_model = api.model('recipe_filter', {
+    'username': fields.String(example='heisenberg'),
+    'selected_ingredients': fields.List(fields.String, example=['coke', 'ice cream']),
+    'selected_mealtype': fields.String(example='beverage')
+})

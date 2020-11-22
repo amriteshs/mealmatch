@@ -15,6 +15,7 @@ mealtype_url = '/mealtype'
 public_recipe_url = '/recipe'
 user_recipe_url = '/recipe/<string:username>'
 recipe_image_url = '/recipe_image/<id>'
+filter_recipe_url = '/filter-recipe'
 
 # Ingredient suggestion URLs
 ingredient_suggestion_explorer_url = '/suggested-ingredients'
